@@ -1,0 +1,1782 @@
+{
+  "pack": "chibi",
+  "units_per_metre": 0.747,
+  "spacing": 2.0,
+  "pieces": {
+    "chibi": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "the rig root on the floor between the feet; +x the chibi's left, +z its front"
+      },
+      "recipe": {
+        "kind": "assembly",
+        "source": "the reference drawing and an earlier hand-built version"
+      },
+      "listed": [
+        {
+          "id": "head",
+          "text": "The head: one rounded solid, the widest part of the figure",
+          "source": "the reference drawing and an earlier hand-built version",
+          "min_thickness": 0.776439
+        },
+        {
+          "id": "eye",
+          "text": "An eye: an oval printed on the head",
+          "source": "the reference drawing and an earlier hand-built version",
+          "min_thickness": 0.0,
+          "finish": "print"
+        },
+        {
+          "id": "torso",
+          "text": "The torso: a rounded solid from the neck to the hips",
+          "source": "the reference drawing and an earlier hand-built version",
+          "min_thickness": 0.455154
+        },
+        {
+          "id": "arm",
+          "text": "An arm: shoulder to mitten, with a thumb bump on the inner front",
+          "source": "the reference drawing and an earlier hand-built version",
+          "min_thickness": 0.002162
+        },
+        {
+          "id": "thigh",
+          "text": "A thigh: a rounded tube from the hip to the knee",
+          "source": "the reference drawing and an earlier hand-built version",
+          "min_thickness": 0.151004
+        },
+        {
+          "id": "shin_foot",
+          "text": "A shin and foot: one rounded piece from the knee to the sole",
+          "source": "the reference drawing and an earlier hand-built version",
+          "min_thickness": 0.117805
+        }
+      ],
+      "parts": [
+        {
+          "name": "head",
+          "listed": "head",
+          "shape": "blob",
+          "on": "torso",
+          "group": "head",
+          "role": "solid",
+          "form": {
+            "half": [
+              0.35,
+              0.29,
+              0.31
+            ],
+            "centre": [
+              0.0,
+              0.71,
+              -0.045
+            ],
+            "power_side": 0.85,
+            "power_up": 0.95,
+            "power_down": 0.7,
+            "segments": 40,
+            "rings": 20,
+            "why": "The earlier hand-built version makes the 40 x 20 superellipsoid (half 0.35, 0.31, 0.29; exponent 0.85 across, 0.95 above the middle, 0.70 below). The current head restores it and shifts it 0.045 toward the back, so the centre's Z is -0.045."
+          }
+        },
+        {
+          "name": "eye_L",
+          "listed": "eye",
+          "shape": "decal",
+          "on": "head",
+          "group": "eyes",
+          "role": "eyes",
+          "form": {
+            "half": [
+              0.058,
+              0.075
+            ],
+            "segments": 64,
+            "rings": 16,
+            "at": [
+              0.12,
+              0.655,
+              0.0
+            ],
+            "along": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "why": "An eye is printed on the face, a decal, not a lens (markings are decals, a design call of this kit). The earlier hand-built version makes a lens oval (half 0.058, 0.088, 0.014) and seats it on the head from the front; the current eye moves it to x 0.12, y 0.655 and squashes its height by 0.15 / 0.176, so the half height is 0.075. The decal keeps that oval, cast onto the head from the front at the same spot, round the rim in 64 segments and across it in 16 rings (the lens had 32 segments; the grid is finer because the decal now stands off the head by the contact length (one arcminute at 1.3 m, 0.38 mm), and a coarser face dips under the head's facets: the build refuses it), so its faces are small against the head's curve."
+          }
+        },
+        {
+          "name": "eye_R",
+          "listed": "eye",
+          "shape": "decal",
+          "on": "head",
+          "group": "eyes",
+          "role": "eyes",
+          "form": {
+            "mirror_of": "eye_L",
+            "why": "The earlier hand-built version seats the right eye at -x with the same build as the left."
+          }
+        },
+        {
+          "name": "torso",
+          "listed": "torso",
+          "shape": "ring",
+          "on": "thigh_L",
+          "group": "torso",
+          "role": "solid",
+          "form": {
+            "top": [
+              0.0,
+              0.435,
+              0.0
+            ],
+            "bottom": [
+              0.0,
+              0.105,
+              0.0
+            ],
+            "rings": 22,
+            "segments": 40,
+            "blend": "smooth",
+            "stations": [
+              {
+                "u": 0.0,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.00508927906,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.020253513193,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.045184002323,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.079373233584,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.122125212823,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.136363636364,
+                "half_side": 0.185,
+                "half_depth": 0.175,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.172569633027,
+                "half_side": 0.186747524,
+                "half_depth": 0.1749640582,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.227272727273,
+                "half_side": 0.19,
+                "half_depth": 0.1747851562,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.229679591272,
+                "half_side": 0.19,
+                "half_depth": 0.1747741743,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.292292493499,
+                "half_side": 0.19,
+                "half_depth": 0.1744090326,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.359133721579,
+                "half_side": 0.19,
+                "half_depth": 0.1738800178,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.428842580863,
+                "half_side": 0.19,
+                "half_depth": 0.1732244446,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.5,
+                "half_side": 0.19,
+                "half_depth": 0.1725,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.571157419137,
+                "half_side": 0.19,
+                "half_depth": 0.1717755554,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.640866278421,
+                "half_side": 0.19,
+                "half_depth": 0.1711199822,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.707707506501,
+                "half_side": 0.19,
+                "half_depth": 0.1705909674,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.712121212121,
+                "half_side": 0.19,
+                "half_depth": 0.1705606192,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.770320408728,
+                "half_side": 0.1935238812,
+                "half_depth": 0.1702258257,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.80303030303,
+                "half_side": 0.195,
+                "half_depth": 0.1700983796,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.827430366973,
+                "half_side": 0.1967787477,
+                "half_depth": 0.1700359418,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.863636363636,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.877874787177,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.920626766416,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.954815997677,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.979746486807,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.99491072094,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 1.0,
+                "half_side": 0.2,
+                "half_depth": 0.17,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              }
+            ],
+            "caps": {
+              "top": {
+                "kind": "round",
+                "length": 0.045
+              },
+              "bottom": {
+                "kind": "super",
+                "length": 0.045,
+                "power": 5.0
+              }
+            },
+            "why": "This form sets the half width and half depth tables (HW, HD) and makes the bottom cap a super ellipse of power 5; the top cap stays round, 0.045 each. The axis runs from y 0.435 to 0.105, the span of the earlier blob. The end rows hold the values at 0.15 and 0.39. The vertex angles are the ring form's own, not taken from earlier builds. It has 22 rings, not the 20 of the earlier blob: with 20 the ring step at y 0.387, next to the top cap's start at 0.39, turned 25 to 26 degrees and drew a crease the reference does not have."
+          }
+        },
+        {
+          "name": "arm_L",
+          "listed": "arm",
+          "shape": "ring",
+          "on": "torso",
+          "group": "arms",
+          "role": "solid",
+          "form": {
+            "top": [
+              0.185,
+              0.388,
+              0.05065
+            ],
+            "bottom": [
+              0.185,
+              0.14,
+              0.05065
+            ],
+            "rings": 72,
+            "segments": 56,
+            "blend": "linear",
+            "stations": [
+              {
+                "u": 0.0,
+                "half_side": 0.0,
+                "half_depth": 0.0,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.000475889209,
+                "half_side": 0.0008075261,
+                "half_depth": 0.0038966501,
+                "off_side": 0.0008075261,
+                "off_depth": 8.2805e-06,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.001902650954,
+                "half_side": 0.0016186644,
+                "half_depth": 0.0077801902,
+                "off_side": 0.0016186644,
+                "off_depth": 3.31061e-05,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.004277569313,
+                "half_side": 0.0024350737,
+                "half_depth": 0.0116373472,
+                "off_side": 0.0024350737,
+                "off_depth": 7.44297e-05,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.007596123494,
+                "half_side": 0.0032575372,
+                "half_depth": 0.0154545203,
+                "off_side": 0.0032575372,
+                "off_depth": 0.0001321725,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.01185199644,
+                "half_side": 0.004086135,
+                "half_depth": 0.0192176117,
+                "off_side": 0.004086135,
+                "off_depth": 0.0002062247,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.017037086855,
+                "half_side": 0.0057757868,
+                "half_depth": 0.0229118507,
+                "off_side": 0.0057757868,
+                "off_depth": 0.0002964453,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.023141524626,
+                "half_side": 0.0078380714,
+                "half_depth": 0.0265216077,
+                "off_side": 0.0078380714,
+                "off_depth": 0.0004026625,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.030153689607,
+                "half_side": 0.0097115191,
+                "half_depth": 0.0300301942,
+                "off_side": 0.0097115191,
+                "off_depth": 0.0005246742,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.038060233744,
+                "half_side": 0.0116358915,
+                "half_depth": 0.0334196434,
+                "off_side": 0.0116358915,
+                "off_depth": 0.0006622481,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.046846106482,
+                "half_side": 0.0136633532,
+                "half_depth": 0.036670464,
+                "off_side": 0.0136633532,
+                "off_depth": 0.0008151223,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.056494583411,
+                "half_side": 0.0155720906,
+                "half_depth": 0.0397613574,
+                "off_side": 0.0155720906,
+                "off_depth": 0.0009830058,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.066987298108,
+                "half_side": 0.0172307132,
+                "half_depth": 0.0426688837,
+                "off_side": 0.0172307132,
+                "off_depth": 0.001165579,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.078304277094,
+                "half_side": 0.0187517119,
+                "half_depth": 0.045367058,
+                "off_side": 0.0187517119,
+                "off_depth": 0.0013624944,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.090423977856,
+                "half_side": 0.0194266281,
+                "half_depth": 0.047826847,
+                "off_side": 0.0194266281,
+                "off_depth": 0.0015733772,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.103323329854,
+                "half_side": 0.0201882548,
+                "half_depth": 0.0500155248,
+                "off_side": 0.0201882548,
+                "off_depth": 0.0017978259,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.116977778441,
+                "half_side": 0.0208740303,
+                "half_depth": 0.0518958232,
+                "off_side": 0.0208740303,
+                "off_depth": 0.0020354133,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.131361331595,
+                "half_side": 0.0219882171,
+                "half_depth": 0.0534247773,
+                "off_side": 0.0219882171,
+                "off_depth": 0.0022856872,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.146446609407,
+                "half_side": 0.0242574007,
+                "half_depth": 0.0545521059,
+                "off_side": 0.0242574007,
+                "off_depth": 0.002548171,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.162204896192,
+                "half_side": 0.0265082625,
+                "half_depth": 0.0552187449,
+                "off_side": 0.0265082625,
+                "off_depth": 0.0028223652,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.178606195157,
+                "half_side": 0.0286612471,
+                "half_depth": 0.0556706007,
+                "off_side": 0.0286612471,
+                "off_depth": 0.0031077478,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.195619285496,
+                "half_side": 0.0304377602,
+                "half_depth": 0.0561393113,
+                "off_side": 0.0304377602,
+                "off_depth": 0.0034037756,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.213211781824,
+                "half_side": 0.032259093,
+                "half_depth": 0.0566239846,
+                "off_side": 0.032259093,
+                "off_depth": 0.003709885,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.231350195827,
+                "half_side": 0.0342022915,
+                "half_depth": 0.0571236979,
+                "off_side": 0.0342022915,
+                "off_depth": 0.0040254934,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.25,
+                "half_side": 0.0358529661,
+                "half_depth": 0.0572479649,
+                "off_side": 0.0358529661,
+                "off_depth": 0.00435,
+                "inner_power": 0.6
+              },
+              {
+                "u": 0.269125693382,
+                "half_side": 0.0375430419,
+                "half_depth": 0.0572611114,
+                "off_side": 0.0375430419,
+                "off_depth": 0.0046776188,
+                "inner_power": 0.6066650126
+              },
+              {
+                "u": 0.28869086913,
+                "half_side": 0.0391707126,
+                "half_depth": 0.0572743219,
+                "off_side": 0.0391707126,
+                "off_depth": 0.0050068318,
+                "inner_power": 0.6257765975
+              },
+              {
+                "u": 0.308658283817,
+                "half_side": 0.0407409083,
+                "half_depth": 0.0572875622,
+                "off_side": 0.0407409083,
+                "off_depth": 0.0053367898,
+                "inner_power": 0.6557294982
+              },
+              {
+                "u": 0.328989928337,
+                "half_side": 0.0423356911,
+                "half_depth": 0.0573008001,
+                "off_side": 0.0423356911,
+                "off_depth": 0.0056666829,
+                "inner_power": 0.6945627054
+              },
+              {
+                "u": 0.349647100248,
+                "half_side": 0.0436554917,
+                "half_depth": 0.0573140051,
+                "off_side": 0.0436554917,
+                "off_depth": 0.0059957413,
+                "inner_power": 0.7399873994
+              },
+              {
+                "u": 0.370590477449,
+                "half_side": 0.0448934714,
+                "half_depth": 0.0573271494,
+                "off_side": 0.0448934714,
+                "off_depth": 0.0063232371,
+                "inner_power": 0.7894215357
+              },
+              {
+                "u": 0.391780193031,
+                "half_side": 0.0469114213,
+                "half_depth": 0.0573402105,
+                "off_side": 0.0469114213,
+                "off_depth": 0.006648484,
+                "inner_power": 0.8400305494
+              },
+              {
+                "u": 0.413175911167,
+                "half_side": 0.0493632299,
+                "half_depth": 0.0573531789,
+                "off_side": 0.0493632299,
+                "off_depth": 0.0069708378,
+                "inner_power": 0.8887735427
+              },
+              {
+                "u": 0.43473690389,
+                "half_side": 0.0519736896,
+                "half_depth": 0.0575257696,
+                "off_side": 0.0519736896,
+                "off_depth": 0.007297879,
+                "inner_power": 0.932454214
+              },
+              {
+                "u": 0.456422128626,
+                "half_side": 0.0536804547,
+                "half_depth": 0.0577150767,
+                "off_side": 0.0536804547,
+                "off_depth": 0.007623557,
+                "inner_power": 0.9677757003
+              },
+              {
+                "u": 0.478190306317,
+                "half_side": 0.0550488437,
+                "half_depth": 0.0579033607,
+                "off_side": 0.0550488437,
+                "off_depth": 0.0079464572,
+                "inner_power": 0.9913984272
+              },
+              {
+                "u": 0.5,
+                "half_side": 0.0561297585,
+                "half_depth": 0.0579596157,
+                "off_side": 0.0561297585,
+                "off_depth": 0.0082571348,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.521809693683,
+                "half_side": 0.0571859215,
+                "half_depth": 0.0574157783,
+                "off_side": 0.0571859215,
+                "off_depth": 0.0085188829,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.543577871374,
+                "half_side": 0.0581716168,
+                "half_depth": 0.056254529,
+                "off_side": 0.0581716168,
+                "off_depth": 0.008720422,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.56526309611,
+                "half_side": 0.0590989288,
+                "half_depth": 0.0547402365,
+                "off_side": 0.0590989288,
+                "off_depth": 0.0088735723,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.586824088833,
+                "half_side": 0.0598005005,
+                "half_depth": 0.0538692915,
+                "off_side": 0.0598005005,
+                "off_depth": 0.0090593568,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.608219806969,
+                "half_side": 0.0601693088,
+                "half_depth": 0.0535051993,
+                "off_side": 0.0601693088,
+                "off_depth": 0.0092727733,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.629409522551,
+                "half_side": 0.0606106484,
+                "half_depth": 0.0533655256,
+                "off_side": 0.0606106484,
+                "off_depth": 0.0094910761,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.650352899752,
+                "half_side": 0.060986156,
+                "half_depth": 0.0536446591,
+                "off_side": 0.060986156,
+                "off_depth": 0.0097337645,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.671010071663,
+                "half_side": 0.0612352734,
+                "half_depth": 0.0543948868,
+                "off_side": 0.0612352734,
+                "off_depth": 0.0100083754,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.691341716183,
+                "half_side": 0.0614046276,
+                "half_depth": 0.0552780555,
+                "off_side": 0.0614046276,
+                "off_depth": 0.0102816327,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.71130913087,
+                "half_side": 0.0614275651,
+                "half_depth": 0.0562504267,
+                "off_side": 0.0614275651,
+                "off_depth": 0.0105499947,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.730874306618,
+                "half_side": 0.0615323811,
+                "half_depth": 0.0572760827,
+                "off_side": 0.0615323811,
+                "off_depth": 0.0108129507,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.75,
+                "half_side": 0.0616756584,
+                "half_depth": 0.0583000277,
+                "off_side": 0.0616756584,
+                "off_depth": 0.01107,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.768649804173,
+                "half_side": 0.0618294289,
+                "half_depth": 0.0592542826,
+                "off_side": 0.0618294289,
+                "off_depth": 0.0113206534,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.786788218176,
+                "half_side": 0.0620941672,
+                "half_depth": 0.0598533697,
+                "off_side": 0.0620941672,
+                "off_depth": 0.0115644337,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.804380714504,
+                "half_side": 0.0621368169,
+                "half_depth": 0.0599288688,
+                "off_side": 0.0621368169,
+                "off_depth": 0.0118008768,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.821393804843,
+                "half_side": 0.0617439794,
+                "half_depth": 0.0594793788,
+                "off_side": 0.0617439794,
+                "off_depth": 0.0120295327,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.837795103808,
+                "half_side": 0.0612372789,
+                "half_depth": 0.0585330757,
+                "off_side": 0.0612372789,
+                "off_depth": 0.0122499662,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.853553390593,
+                "half_side": 0.0596409046,
+                "half_depth": 0.0571412503,
+                "off_side": 0.0596409046,
+                "off_depth": 0.0124617576,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.868638668405,
+                "half_side": 0.0581649722,
+                "half_depth": 0.0553675717,
+                "off_side": 0.0581649722,
+                "off_depth": 0.0126645037,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.883022221559,
+                "half_side": 0.0565859789,
+                "half_depth": 0.0532770956,
+                "off_side": 0.0565859789,
+                "off_depth": 0.0128578187,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.896676670146,
+                "half_side": 0.0542361237,
+                "half_depth": 0.0509279417,
+                "off_side": 0.0542361237,
+                "off_depth": 0.0130413344,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.909576022144,
+                "half_side": 0.0522709699,
+                "half_depth": 0.0483668383,
+                "off_side": 0.0522709699,
+                "off_depth": 0.0132147017,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.921695722906,
+                "half_side": 0.0502145963,
+                "half_depth": 0.0456282412,
+                "off_side": 0.0502145963,
+                "off_depth": 0.0133775905,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.933012701892,
+                "half_side": 0.0478783524,
+                "half_depth": 0.0427359097,
+                "off_side": 0.0478783524,
+                "off_depth": 0.0135296907,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.943505416589,
+                "half_side": 0.0458860639,
+                "half_depth": 0.0397056654,
+                "off_side": 0.0458860639,
+                "off_depth": 0.0136707128,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.953153893518,
+                "half_side": 0.0444354374,
+                "half_depth": 0.0365483229,
+                "off_side": 0.0444354374,
+                "off_depth": 0.0138003883,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.961939766256,
+                "half_side": 0.04253431,
+                "half_depth": 0.0332721863,
+                "off_side": 0.04253431,
+                "off_depth": 0.0139184705,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.969846310393,
+                "half_side": 0.0398886031,
+                "half_depth": 0.0298848733,
+                "off_side": 0.0398886031,
+                "off_depth": 0.0140247344,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.976858475374,
+                "half_side": 0.0364589902,
+                "half_depth": 0.0263944712,
+                "off_side": 0.0364589902,
+                "off_depth": 0.0141189779,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.982962913145,
+                "half_side": 0.0315538922,
+                "half_depth": 0.0228101505,
+                "off_side": 0.0315538922,
+                "off_depth": 0.0142010216,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.98814800356,
+                "half_side": 0.0265127734,
+                "half_depth": 0.0191423933,
+                "off_side": 0.0265127734,
+                "off_depth": 0.0142707092,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.992403876506,
+                "half_side": 0.0213550021,
+                "half_depth": 0.0154029798,
+                "off_side": 0.0213550021,
+                "off_depth": 0.0143279081,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.995722430687,
+                "half_side": 0.0161017262,
+                "half_depth": 0.0116048401,
+                "off_side": 0.0161017262,
+                "off_depth": 0.0143725095,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.998097349046,
+                "half_side": 0.0107755485,
+                "half_depth": 0.0077618412,
+                "off_side": 0.0107755485,
+                "off_depth": 0.0144044284,
+                "inner_power": 1.0
+              },
+              {
+                "u": 0.999524110791,
+                "half_side": 0.0054001656,
+                "half_depth": 0.0038885508,
+                "off_side": 0.0054001656,
+                "off_depth": 0.014423604,
+                "inner_power": 1.0
+              },
+              {
+                "u": 1.0,
+                "half_side": 0.0,
+                "half_depth": 0.0,
+                "off_side": 0.0,
+                "off_depth": 0.01443,
+                "inner_power": 1.0
+              }
+            ],
+            "bumps": [
+              {
+                "u": 0.74,
+                "u_width": 0.125,
+                "angle": 2.0344439358,
+                "angle_width": 0.8,
+                "height": 0.0357683957,
+                "lift": 0.0102251734
+              }
+            ],
+            "smooth": {
+              "passes": 3,
+              "factor": 0.4,
+              "below": 0.27
+            },
+            "deforms": [
+              {
+                "kind": "push",
+                "axis": "x",
+                "amount": [
+                  [
+                    0.14,
+                    0.035
+                  ],
+                  [
+                    0.19,
+                    0.0
+                  ]
+                ],
+                "along": "x",
+                "ramp_from": 0.25,
+                "ramp_to": 0.185,
+                "ramp_max": 1.2
+              }
+            ],
+            "why": "The earlier hand-built version makes the arm (profile, round tip and mitten base, inner side squared at the shoulder, thumb bump, 3 smoothing passes below y 0.27). The current arm remaps each ring: half side a * fx(z), centre 0.185 + a * fx(z), half depth b * gy(z), depth centre -0.025 + (cy + 0.025) * gy(z). It adds 0.03 depth and pushes the hand out (the push deform). The bottom pole sits where the rings close, not at the earlier version's pb 0.06 to the side: an off-centre pole folds its fan's faces back over each other, a mark seen from below. The thumb is wider along the arm than the earlier version's (u_width 0.125, not 0.10), so its fold stays under 20 degrees and the outline draws no dash across it. The thumb height and lift are fitted to the replayed thumb at that width: height 0.03577 and lift 0.01023 (the earlier version used 0.036 and 0.012 before the remap stretched the arm by about 1.15 across and 1.12 deep); the fit leaves 4.80 mm at most and 2.39 mm rms over the 474 thumb vertices."
+          }
+        },
+        {
+          "name": "arm_R",
+          "listed": "arm",
+          "shape": "ring",
+          "on": "torso",
+          "group": "arms",
+          "role": "solid",
+          "form": {
+            "mirror_of": "arm_L",
+            "why": "The earlier hand-built version makes the right arm with s = -1: the left arm with x negated."
+          }
+        },
+        {
+          "name": "thigh_L",
+          "listed": "thigh",
+          "shape": "ring",
+          "on": "shin_L",
+          "group": "legs",
+          "role": "solid",
+          "form": {
+            "top": [
+              0.105,
+              0.27,
+              0.004
+            ],
+            "bottom": [
+              0.105,
+              0.052,
+              0.006
+            ],
+            "rings": 36,
+            "segments": 28,
+            "blend": "linear",
+            "stations": [
+              {
+                "u": 0.0,
+                "half_side": 0.075,
+                "half_depth": 0.0564,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              },
+              {
+                "u": 1.0,
+                "half_side": 0.075,
+                "half_depth": 0.0564,
+                "off_side": 0.0,
+                "off_depth": 0.0,
+                "inner_power": 1.0
+              }
+            ],
+            "caps": {
+              "top": {
+                "kind": "round",
+                "length": 0.06
+              },
+              "bottom": {
+                "kind": "round",
+                "length": 0.06
+              }
+            },
+            "why": "The earlier hand-built version: a capsule from y 0.27 to 0.052, radius 0.06, depth flattened to 0.94, round caps 0.06. The current thigh scales x by 1.25 about the leg's x, so the half side is 0.075 and the half depth is 0.06 * 0.94."
+          }
+        },
+        {
+          "name": "thigh_R",
+          "listed": "thigh",
+          "shape": "ring",
+          "on": "shin_R",
+          "group": "legs",
+          "role": "solid",
+          "form": {
+            "mirror_of": "thigh_L",
+            "why": "The earlier hand-built version makes the right thigh with x = -0.105: the left thigh with x negated."
+          }
+        },
+        {
+          "name": "shin_L",
+          "listed": "shin_foot",
+          "shape": "meta",
+          "on": null,
+          "group": "legs",
+          "role": "solid",
+          "form": {
+            "elements": [
+              {
+                "kind": "ellipsoid",
+                "centre": [
+                  0.105,
+                  0.107,
+                  0.006
+                ],
+                "half": [
+                  0.0725,
+                  0.058,
+                  0.058
+                ]
+              },
+              {
+                "kind": "ellipsoid",
+                "centre": [
+                  0.105,
+                  0.085,
+                  0.008
+                ],
+                "half": [
+                  0.07,
+                  0.056,
+                  0.056
+                ]
+              },
+              {
+                "kind": "ellipsoid",
+                "centre": [
+                  0.105,
+                  0.046,
+                  0.038
+                ],
+                "half": [
+                  0.09,
+                  0.044,
+                  0.084
+                ]
+              }
+            ],
+            "resolution": 0.006,
+            "threshold": 0.6,
+            "smooth": {
+              "passes": 5,
+              "factor": 0.5
+            },
+            "decimate": 0.4,
+            "deforms": [
+              {
+                "kind": "flatten",
+                "axis": "-z",
+                "start": 0.03,
+                "end": 0.05
+              }
+            ],
+            "why": "The earlier hand-built version, a meta shape: two balls (r 0.058 at y 0.107, r 0.056 at y 0.085) and an ellipsoid (half 0.072, 0.044, 0.084 at y 0.046). The current shin scales x by 1.25, so each element's half x grows by 1.25, and flattens the heel: the back side from 0.03 to 0.05."
+          }
+        },
+        {
+          "name": "shin_R",
+          "listed": "shin_foot",
+          "shape": "meta",
+          "on": null,
+          "group": "legs",
+          "role": "solid",
+          "form": {
+            "mirror_of": "shin_L",
+            "why": "The earlier hand-built version makes the right shin and foot at x = -0.105: the left piece with x negated."
+          }
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "A 1.0-unit-tall chibi whose head spans 0.42 to 1.0 of its height. Its 10 closed parts overlap at the joints instead of welding, so a runtime outline draws the creases. Every clip of the earlier hand-built rig plays on it unchanged. At the page camera it matches that version within the acceptance of the comparison in `bars/03-chibi/COMPARE.md`.",
+      "size_class": "hero",
+      "measured": {
+        "kind": "character",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 0.7,
+          "d": 0.62
+        },
+        "bounds": {
+          "X0": -0.35,
+          "X1": 0.35,
+          "Z0": -0.355,
+          "Z1": 0.265
+        },
+        "heights": {
+          "top": 1.0
+        },
+        "surfaces": [],
+        "slots": [
+          "Fill",
+          "Ink"
+        ],
+        "tris": 33492,
+        "export": {
+          "position_bits": null
+        }
+      },
+      "rig": {
+        "armature": "chibi_rig",
+        "bones": [
+          {
+            "name": "root",
+            "parent": null,
+            "length": 0.1,
+            "rest": {
+              "head": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tail": [
+                0.0,
+                0.1,
+                0.0
+              ],
+              "roll": 0.0,
+              "deform": false,
+              "why": "The earlier hand-built version: the root, which does not deform."
+            }
+          },
+          {
+            "name": "body",
+            "parent": "root",
+            "length": 0.3,
+            "rest": {
+              "head": [
+                0.0,
+                0.11,
+                0.0
+              ],
+              "tail": [
+                0.0,
+                0.41,
+                0.0
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "head",
+            "parent": "body",
+            "length": 0.45,
+            "rest": {
+              "head": [
+                0.0,
+                0.42,
+                0.0
+              ],
+              "tail": [
+                0.0,
+                0.87,
+                0.0
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "arm.L",
+            "parent": "body",
+            "length": 0.06,
+            "rest": {
+              "head": [
+                0.195,
+                0.372,
+                0.05296
+              ],
+              "tail": [
+                0.195,
+                0.432,
+                0.05296
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the arm profile with Z_BOT 0.150, not the mesh's 0.140), then the current build (y -0.03; the shoulder at x +-0.195, z 0.372)."
+            }
+          },
+          {
+            "name": "forearm.L",
+            "parent": "arm.L",
+            "length": 0.06,
+            "rest": {
+              "head": [
+                0.2420969483,
+                0.2928,
+                0.0568
+              ],
+              "tail": [
+                0.2420969483,
+                0.3528,
+                0.0568
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the arm profile with Z_BOT 0.150), then the current build (y -0.03)."
+            }
+          },
+          {
+            "name": "hand.L",
+            "parent": "forearm.L",
+            "length": 0.06,
+            "rest": {
+              "head": [
+                0.2514658976,
+                0.2333,
+                0.0598
+              ],
+              "tail": [
+                0.2514658976,
+                0.2933,
+                0.0598
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the arm profile with Z_BOT 0.150), then the current build (y -0.03)."
+            }
+          },
+          {
+            "name": "arm.R",
+            "parent": "body",
+            "length": 0.06,
+            "rest": {
+              "head": [
+                -0.195,
+                0.372,
+                0.05296
+              ],
+              "tail": [
+                -0.195,
+                0.432,
+                0.05296
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the arm profile with Z_BOT 0.150, not the mesh's 0.140), then the current build (y -0.03; the shoulder at x +-0.195, z 0.372)."
+            }
+          },
+          {
+            "name": "forearm.R",
+            "parent": "arm.R",
+            "length": 0.06,
+            "rest": {
+              "head": [
+                -0.2420969483,
+                0.2928,
+                0.0568
+              ],
+              "tail": [
+                -0.2420969483,
+                0.3528,
+                0.0568
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the arm profile with Z_BOT 0.150), then the current build (y -0.03)."
+            }
+          },
+          {
+            "name": "hand.R",
+            "parent": "forearm.R",
+            "length": 0.06,
+            "rest": {
+              "head": [
+                -0.2514658976,
+                0.2333,
+                0.0598
+              ],
+              "tail": [
+                -0.2514658976,
+                0.2933,
+                0.0598
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the arm profile with Z_BOT 0.150), then the current build (y -0.03)."
+            }
+          },
+          {
+            "name": "prop.R",
+            "parent": "hand.R",
+            "length": 0.04999999999999999,
+            "rest": {
+              "head": [
+                -0.2674658976,
+                0.198,
+                0.1073
+              ],
+              "tail": [
+                -0.2674658976,
+                0.248,
+                0.1073
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version (the grip, and it follows hand.R), then the current build (y -0.03)."
+            }
+          },
+          {
+            "name": "leg.L",
+            "parent": "root",
+            "length": 0.04000000000000001,
+            "rest": {
+              "head": [
+                0.105,
+                0.175,
+                0.006
+              ],
+              "tail": [
+                0.105,
+                0.215,
+                0.006
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "knee.L",
+            "parent": "leg.L",
+            "length": 0.04000000000000001,
+            "rest": {
+              "head": [
+                0.105,
+                0.15,
+                0.006
+              ],
+              "tail": [
+                0.105,
+                0.19,
+                0.006
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "ankle.L",
+            "parent": "knee.L",
+            "length": 0.039999999999999994,
+            "rest": {
+              "head": [
+                0.105,
+                0.112,
+                0.006
+              ],
+              "tail": [
+                0.105,
+                0.152,
+                0.006
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "leg.R",
+            "parent": "root",
+            "length": 0.04000000000000001,
+            "rest": {
+              "head": [
+                -0.105,
+                0.175,
+                0.006
+              ],
+              "tail": [
+                -0.105,
+                0.215,
+                0.006
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "knee.R",
+            "parent": "leg.R",
+            "length": 0.04000000000000001,
+            "rest": {
+              "head": [
+                -0.105,
+                0.15,
+                0.006
+              ],
+              "tail": [
+                -0.105,
+                0.19,
+                0.006
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          },
+          {
+            "name": "ankle.R",
+            "parent": "knee.R",
+            "length": 0.039999999999999994,
+            "rest": {
+              "head": [
+                -0.105,
+                0.112,
+                0.006
+              ],
+              "tail": [
+                -0.105,
+                0.152,
+                0.006
+              ],
+              "roll": 0.0,
+              "deform": true,
+              "why": "The earlier hand-built version."
+            }
+          }
+        ],
+        "bind": {
+          "head": {
+            "bones": [
+              "head"
+            ],
+            "mode": "rigid"
+          },
+          "eye_L": {
+            "bones": [
+              "head"
+            ],
+            "mode": "rigid"
+          },
+          "eye_R": {
+            "bones": [
+              "head"
+            ],
+            "mode": "rigid"
+          },
+          "torso": {
+            "bones": [
+              "body"
+            ],
+            "mode": "rigid"
+          },
+          "arm_L": {
+            "bones": [
+              "arm.L",
+              "forearm.L",
+              "hand.L"
+            ],
+            "mode": "chain",
+            "falloff": {
+              "along": "y",
+              "start": 0.388,
+              "end": 0.14,
+              "bands": [
+                [
+                  0.3,
+                  0.45
+                ],
+                [
+                  0.55,
+                  0.7
+                ]
+              ]
+            }
+          },
+          "arm_R": {
+            "bones": [
+              "arm.R",
+              "forearm.R",
+              "hand.R"
+            ],
+            "mode": "chain",
+            "falloff": {
+              "along": "y",
+              "start": 0.388,
+              "end": 0.14,
+              "bands": [
+                [
+                  0.3,
+                  0.45
+                ],
+                [
+                  0.55,
+                  0.7
+                ]
+              ]
+            }
+          },
+          "thigh_L": {
+            "bones": [
+              "knee.L"
+            ],
+            "mode": "rigid"
+          },
+          "thigh_R": {
+            "bones": [
+              "knee.R"
+            ],
+            "mode": "rigid"
+          },
+          "shin_L": {
+            "bones": [
+              "ankle.L"
+            ],
+            "mode": "rigid"
+          },
+          "shin_R": {
+            "bones": [
+              "ankle.R"
+            ],
+            "mode": "rigid"
+          }
+        },
+        "contact_groups": {
+          "hand.L": [
+            "hand.L"
+          ],
+          "hand.R": [
+            "hand.R"
+          ],
+          "ankle.L": [
+            "ankle.L"
+          ],
+          "ankle.R": [
+            "ankle.R"
+          ]
+        },
+        "chains": {
+          "arm.L": {
+            "root": "body",
+            "bones": [
+              "arm.L",
+              "forearm.L",
+              "hand.L"
+            ],
+            "effector": "hand.L",
+            "effector_radius": 0.058622018819173366,
+            "dofs": {
+              "arm.L": "xyz",
+              "forearm.L": "x",
+              "hand.L": "xyz"
+            },
+            "limits": {
+              "forearm.L:x": [
+                -3.1416,
+                0.05
+              ],
+              "arm.L:y": [
+                -1.3,
+                1.3
+              ]
+            },
+            "effector_group": "hand.L"
+          },
+          "arm.R": {
+            "root": "body",
+            "bones": [
+              "arm.R",
+              "forearm.R",
+              "hand.R"
+            ],
+            "effector": "hand.R",
+            "effector_radius": 0.058622018819173366,
+            "dofs": {
+              "arm.R": "xyz",
+              "forearm.R": "x",
+              "hand.R": "xyz"
+            },
+            "limits": {
+              "forearm.R:x": [
+                -3.1416,
+                0.05
+              ],
+              "arm.R:y": [
+                -1.3,
+                1.3
+              ]
+            },
+            "effector_group": "hand.R"
+          },
+          "leg.L": {
+            "root": "root",
+            "bones": [
+              "leg.L",
+              "knee.L",
+              "ankle.L"
+            ],
+            "effector": "ankle.L",
+            "effector_radius": 0.08921307264715571,
+            "dofs": {
+              "leg.L": "xyz",
+              "knee.L": "x",
+              "ankle.L": "xyz"
+            },
+            "limits": {},
+            "effector_group": "ankle.L"
+          },
+          "leg.R": {
+            "root": "root",
+            "bones": [
+              "leg.R",
+              "knee.R",
+              "ankle.R"
+            ],
+            "effector": "ankle.R",
+            "effector_radius": 0.08921307264715571,
+            "dofs": {
+              "leg.R": "xyz",
+              "knee.R": "x",
+              "ankle.R": "xyz"
+            },
+            "limits": {},
+            "effector_group": "ankle.R"
+          }
+        },
+        "sit": {
+          "below_seat": 0.103,
+          "forward": 0.03
+        },
+        "mirror": {
+          "pairs": [
+            [
+              "arm.L",
+              "arm.R"
+            ],
+            [
+              "forearm.L",
+              "forearm.R"
+            ],
+            [
+              "hand.L",
+              "hand.R"
+            ],
+            [
+              "leg.L",
+              "leg.R"
+            ],
+            [
+              "knee.L",
+              "knee.R"
+            ],
+            [
+              "ankle.L",
+              "ankle.R"
+            ]
+          ],
+          "axis": "x"
+        },
+        "outline_modifiers": []
+      },
+      "view": {
+        "nearest_m": 1.3,
+        "why": "a figure about 1.34 m tall, seen whole by a person standing about one figure height away",
+        "farthest_m": 6.0,
+        "farthest_why": "an estimate from how it is used, to be confirmed: the figure is a character a player follows through a room-sized scene, the camera stays inside the room, and the farthest the player sees it from is taken as the room's length, about 6 m; no document read gives a room size"
+      }
+    }
+  }
+}

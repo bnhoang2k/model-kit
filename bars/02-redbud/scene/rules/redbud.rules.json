@@ -1,0 +1,464 @@
+{
+  "species": "eastern-redbud",
+  "sources": [
+    {
+      "key": "W",
+      "url": "https://en.wikipedia.org/wiki/Cercis_canadensis",
+      "gives": "6-9 m tall, 8-10 m spread; \"A 10-year-old tree will generally be around 5 m (16 ft) tall\"; leaves alternate, heart-shaped, 7-12 cm; twigs \"slender and zigzag, nearly black\"; bark dark"
+    },
+    {
+      "key": "NC",
+      "url": "https://plants.ces.ncsu.edu/plants/cercis-canadensis/",
+      "gives": "20-30 ft tall, 25-35 ft wide; \"Multi-stemmed\", \"Multi-trunked\", \"trunk usually divided close to ground\"; stems \"zig-zag, spreading and ascending\"; bark dark brown to black"
+    },
+    {
+      "key": "UF",
+      "url": "https://ask.ifas.ufl.edu/publication/ST145",
+      "gives": "leaves \"alternate\", \"light green on top, paler green underneath\""
+    },
+    {
+      "key": "NRC",
+      "url": "https://tidcf.nrcan.gc.ca/en/trees/factsheet/415",
+      "gives": "eastern redbud: \"Terminal bud absent\"; twigs \"Slender, zigzag\""
+    },
+    {
+      "key": "OE",
+      "url": "https://doi.org/10.1139/b91-245",
+      "gives": "Owens & Ewers 1991, Can. J. Bot. 69: 1956-1963: vegetative buds are orthodistichous, each leaf about 180 degrees from the one below (also Owens 1990, MSc thesis, Michigan State)"
+    },
+    {
+      "key": "CH",
+      "url": "https://doi.org/10.1007/s13595-018-0730-x",
+      "gives": "leaf blade inclination, Cercis siliquastrum: mean 44.1 deg, SD 19.2, n 101 (Chianucci et al. 2018 data; beta fitted by the method of moments in a reference sweep of the data)"
+    },
+    {
+      "key": "WK",
+      "url": "https://patents.google.com/patent/USPP35080P2/en",
+      "gives": "Werner & Kenealy, USPP35080, Cercis canadensis 'NC2014-10' (a semi-compact cultivar), about 4 years old: height about 7.5 ft, width about 5 ft; internode 2.0 cm on average"
+    },
+    {
+      "key": "DM",
+      "url": "https://doi.org/10.5281/zenodo.4557401",
+      "gives": "Demol et al. lidar QSMs of beech and ash: first-order branches leave the stem at a median 44 to 54 degrees, and point 40 to 56 degrees from the zenith (other species, as read from the published data)"
+    },
+    {
+      "key": "P3",
+      "url": "https://commons.wikimedia.org/wiki/File:2022-08-01_15_10_51_An_Eastern_Redbud_along_Terrace_Boulevard_in_the_Parkway_Village_section_of_Ewing_Township,_Mercer_County,_New_Jersey.jpg",
+      "gives": "summer: one leaning trunk about 15 cm across on a 5 m tree, forking low, flaring at the soil"
+    },
+    {
+      "key": "P5",
+      "url": "https://commons.wikimedia.org/wiki/File:Starr-110920-8438-Cercis_canadensis-habit-Shibuya_Farm_Kula-Maui_(25113195475).jpg",
+      "gives": "heart leaves hanging on petioles about a third of the blade long, from zigzag twigs"
+    }
+  ],
+  "rows": [
+    {
+      "id": "trunk.chain",
+      "level": "trunk",
+      "rule": "trunk",
+      "value": "the continuation chain from the seedling: at each fork it runs on through the thickest child",
+      "source": "the kit's limb definition; [NC] \"trunk usually divided close to ground\""
+    },
+    {
+      "id": "leaders.chain",
+      "level": "leaders",
+      "rule": "leaders",
+      "value": "chains seated on the trunk chain; a low fork gives several stems",
+      "source": "[NC] \"Multi-stemmed\", \"Multi-trunked\""
+    },
+    {
+      "id": "branches.chain",
+      "level": "branches",
+      "rule": "branches",
+      "value": "chains seated on a leader",
+      "source": "the kit's limb definition"
+    },
+    {
+      "id": "twigs.chain",
+      "level": "twigs",
+      "rule": "twigs",
+      "value": "chains seated on a branch; slender and zigzag, from the relay of a side bud each year",
+      "source": "[W] twigs \"slender and zigzag\"; [NRC] \"Slender, zigzag\""
+    },
+    {
+      "id": "shoots.chain",
+      "level": "shoots",
+      "rule": "shoots",
+      "value": "every chain of a higher order: the youngest shoots, which carry most leaves",
+      "source": "the kit's limb definition"
+    },
+    {
+      "id": "leaves.arrangement",
+      "level": "leaves",
+      "rule": "arrangement",
+      "value": "two-ranked (orthodistichous), 180 degrees from one leaf to the next",
+      "source": "[OE]"
+    },
+    {
+      "id": "leaves.per-node",
+      "level": "leaves",
+      "rule": "leaves at a node",
+      "value": "1 (alternate)",
+      "source": "[W][UF] \"alternate\""
+    },
+    {
+      "id": "buds.terminal",
+      "level": "buds",
+      "rule": "terminal bud",
+      "value": "absent: each year the top side bud carries the shoot on (the relay that makes the zigzag)",
+      "source": "[NRC] \"Terminal bud absent\""
+    },
+    {
+      "id": "internode.length",
+      "level": "internode",
+      "rule": "length",
+      "value": "0.04 m, an assumed value. The one measured value, 2.0 cm on average on a semi-compact cultivar about 4 years old [WK], grows the tree only 2.5 m in 10 years with the kit's model constants, half the cited 5 m [W]; so twice that is used",
+      "source": "page budget, not a species fact: [WK] measured 2.0 cm on one cultivar"
+    },
+    {
+      "id": "branch.angle",
+      "level": "branch",
+      "rule": "angle from the parent",
+      "value": "44 to 54 degrees. A stand-in: no redbud value was found, so the medians measured on beech and ash are used",
+      "source": "[DM] (other species)"
+    },
+    {
+      "id": "gsa.by-order",
+      "level": "gsa",
+      "rule": "gravity set-point angle",
+      "value": "180 degrees from gravity (straight up) for the trunk chain, 115 for chains on it, 100 for the rest: the redbud's spreading crown (NC State: wide, spreading). Flattened from the beech and ash stand-in (135, 125; branch zeniths 40 to 56 degrees) after the steep set-points stood the top shoots up as spikes, a look choice for scenery",
+      "source": "[DM] (other species)"
+    },
+    {
+      "id": "age.height",
+      "level": "age",
+      "rule": "height at age",
+      "value": "about 2.3 m at 4 years (a semi-compact cultivar), about 5 m at 10 years",
+      "source": "[WK]; [W] \"A 10-year-old tree will generally be around 5 m\""
+    },
+    {
+      "id": "twig.tip",
+      "level": "twig",
+      "rule": "tip radius",
+      "value": "0.001 m. No redbud shoot-tip radius was found. With it the pipe model gives a trunk about 15 cm across at 5 m, as photo [P3] shows; the 0.004 m of the test fixtures gave a trunk 60 cm across whose ring dipped into the soil",
+      "source": "page budget, not a species fact; trunk width photo [P3]"
+    },
+    {
+      "id": "apical.control",
+      "level": "apical",
+      "rule": "apical control (lambda of the extended Borchert-Honda model)",
+      "value": "0.49: no source gives it; fitted to the spread range on seeds 1 to 4 (scanned 0.44 to 0.56; 0.54 and up grow past the height guard; at 0.49 seeds 1 to 4 measure 0.75, 0.86, 0.94 and 0.90). An earlier fit gave 0.485 with a different resource constant",
+      "source": "fitted"
+    },
+    {
+      "id": "size.spread",
+      "level": "size",
+      "rule": "spread / height",
+      "value": "0.67 to 1.67. The low end is the one young tree measured, about 5 ft wide and 7.5 ft tall at about 4 years [WK] (a semi-compact cultivar); the high end is the widest mature ratio, 10 m over 6 m [W] (25-35 ft over 20-30 ft [NC] agrees). A 10-year tree lies between the two ages. No wild 10-year tree was found",
+      "source": "[WK][W][NC]"
+    },
+    {
+      "id": "leaves.blade-angle",
+      "level": "leaves",
+      "rule": "blade angle beta",
+      "value": "a=2.1984, b=2.2862 on t = 2 theta / pi (numpy order): Cercis siliquastrum, a same-genus stand-in (no Cercis canadensis value was found)",
+      "source": "[CH]"
+    },
+    {
+      "id": "leaves.blade",
+      "level": "leaves",
+      "rule": "blade outline and length",
+      "value": "heart-shaped, as wide as long; 0.07 to 0.12 m long",
+      "source": "[W] \"heart shaped\", 7-12 cm"
+    },
+    {
+      "id": "leaves.petiole",
+      "level": "leaves",
+      "rule": "petiole length",
+      "value": "0.35 of the blade length",
+      "source": "photo [P5]"
+    },
+    {
+      "id": "roots.flares",
+      "level": "roots",
+      "rule": "structural roots at the trunk base",
+      "value": "5, flaring into the soil",
+      "source": "photo [P3]"
+    },
+    {
+      "id": "lite.leaves",
+      "level": "lite",
+      "rule": "lite leaf thinning and outline",
+      "value": "keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+      "source": "page budget, not a species fact"
+    },
+    {
+      "id": "levels.names",
+      "level": "levels",
+      "rule": "part names",
+      "value": "Trunk_Roots, Leaders, Branches, Twigs, Shoots",
+      "source": "page budget, not a species fact"
+    },
+    {
+      "id": "leaves.colour",
+      "level": "leaves",
+      "rule": "colour",
+      "value": "green, one shade (the bud grower draws one leaf part); both faces lit",
+      "source": "[UF] \"light green on top, paler green underneath\""
+    },
+    {
+      "id": "bark.colour",
+      "level": "bark",
+      "rule": "colour",
+      "value": "dark brown on trunk and limbs, nearly black on twigs",
+      "source": "[W] bark \"dark\", twigs \"nearly black\"; [NC] \"dark brown to black\""
+    }
+  ],
+  "notes": [
+    "leaves.colour",
+    "bark.colour"
+  ],
+  "ranges": {
+    "spread_of_height": {
+      "lo": 0.67,
+      "hi": 1.67,
+      "rows": [
+        "size.spread"
+      ]
+    }
+  },
+  "params": {
+    "leaves.divergence_deg": {
+      "value": 180,
+      "rows": [
+        "leaves.arrangement"
+      ],
+      "tag": "measured"
+    },
+    "leaves.per_node": {
+      "value": 1,
+      "rows": [
+        "leaves.per-node"
+      ],
+      "tag": "measured"
+    },
+    "buds.terminal": {
+      "value": [
+        "absent"
+      ],
+      "rows": [
+        "buds.terminal"
+      ],
+      "tag": "measured"
+    },
+    "internode.length_m": {
+      "value": 0.04,
+      "rows": [
+        "internode.length"
+      ],
+      "tag": "budget"
+    },
+    "branch.angle_deg": {
+      "value": [
+        44,
+        54
+      ],
+      "rows": [
+        "branch.angle"
+      ],
+      "tag": "measured"
+    },
+    "gsa.by_order_deg": {
+      "value": [
+        180,
+        115,
+        100
+      ],
+      "rows": [
+        "gsa.by-order"
+      ],
+      "tag": "measured"
+    },
+    "age.height_points": {
+      "value": [
+        [
+          2.3,
+          4
+        ],
+        [
+          5.0,
+          10
+        ]
+      ],
+      "rows": [
+        "age.height"
+      ],
+      "tag": "measured"
+    },
+    "twig.tip_radius_m": {
+      "value": 0.001,
+      "rows": [
+        "twig.tip"
+      ],
+      "tag": "budget"
+    },
+    "levels.names": {
+      "value": [
+        "Trunk_Roots",
+        "Leaders",
+        "Branches",
+        "Twigs",
+        "Shoots"
+      ],
+      "rows": [
+        "trunk.chain",
+        "leaders.chain",
+        "branches.chain",
+        "twigs.chain",
+        "shoots.chain",
+        "levels.names"
+      ],
+      "tag": "budget"
+    },
+    "apical.control": {
+      "value": 0.49,
+      "rows": [
+        "apical.control"
+      ],
+      "tag": "fitted",
+      "fit": {
+        "ranges": [
+          "spread_of_height"
+        ],
+        "seeds": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "leaves.angle_beta": {
+      "value": [
+        2.1984,
+        2.2862
+      ],
+      "rows": [
+        "leaves.blade-angle"
+      ],
+      "tag": "measured"
+    },
+    "leaves.outline": {
+      "value": [
+        [
+          0.0,
+          0.07
+        ],
+        [
+          0.2,
+          -0.03
+        ],
+        [
+          0.44,
+          0.1
+        ],
+        [
+          0.47,
+          0.4
+        ],
+        [
+          0.31,
+          0.71
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          -0.31,
+          0.71
+        ],
+        [
+          -0.47,
+          0.4
+        ],
+        [
+          -0.44,
+          0.1
+        ],
+        [
+          -0.2,
+          -0.03
+        ]
+      ],
+      "rows": [
+        "leaves.blade"
+      ],
+      "tag": "measured"
+    },
+    "leaves.length_m": {
+      "value": [
+        0.07,
+        0.12
+      ],
+      "rows": [
+        "leaves.blade"
+      ],
+      "tag": "measured"
+    },
+    "leaves.petiole_of_blade": {
+      "value": 0.35,
+      "rows": [
+        "leaves.petiole"
+      ],
+      "tag": "measured"
+    },
+    "roots.count": {
+      "value": 5,
+      "rows": [
+        "roots.flares"
+      ],
+      "tag": "measured"
+    },
+    "lite.leaf_thin": {
+      "value": 2,
+      "rows": [
+        "lite.leaves"
+      ],
+      "tag": "budget"
+    },
+    "lite.leaf_outline": {
+      "value": [
+        [
+          0.0,
+          0.07
+        ],
+        [
+          0.44,
+          0.08
+        ],
+        [
+          0.42,
+          0.52
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          -0.42,
+          0.52
+        ],
+        [
+          -0.44,
+          0.08
+        ]
+      ],
+      "rows": [
+        "lite.leaves"
+      ],
+      "tag": "budget"
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "nodes": [
+    {
+      "name": "Sweetgum/Branches",
+      "parent": "Sweetgum",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum/Branches"
+    },
+    {
+      "name": "Sweetgum/Leaders",
+      "parent": "Sweetgum",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum/Leaders"
+    },
+    {
+      "name": "Sweetgum/Leaves_Leaf",
+      "parent": "Sweetgum",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum/Leaves_Leaf"
+    },
+    {
+      "name": "Sweetgum/Shoots",
+      "parent": "Sweetgum",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum/Shoots"
+    },
+    {
+      "name": "Sweetgum/Trunk_Roots",
+      "parent": "Sweetgum",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum/Trunk_Roots"
+    },
+    {
+      "name": "Sweetgum/Twigs",
+      "parent": "Sweetgum",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum/Twigs"
+    },
+    {
+      "name": "Sweetgum",
+      "parent": null,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "Sweetgum_Lite/Branches",
+      "parent": "Sweetgum_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum_Lite/Branches"
+    },
+    {
+      "name": "Sweetgum_Lite/Leaders",
+      "parent": "Sweetgum_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum_Lite/Leaders"
+    },
+    {
+      "name": "Sweetgum_Lite/Leaves_Leaf",
+      "parent": "Sweetgum_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum_Lite/Leaves_Leaf"
+    },
+    {
+      "name": "Sweetgum_Lite/Shoots",
+      "parent": "Sweetgum_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum_Lite/Shoots"
+    },
+    {
+      "name": "Sweetgum_Lite/Trunk_Roots",
+      "parent": "Sweetgum_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum_Lite/Trunk_Roots"
+    },
+    {
+      "name": "Sweetgum_Lite/Twigs",
+      "parent": "Sweetgum_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Sweetgum_Lite/Twigs"
+    },
+    {
+      "name": "Sweetgum_Lite",
+      "parent": null,
+      "translation": [
+        5.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    }
+  ]
+}

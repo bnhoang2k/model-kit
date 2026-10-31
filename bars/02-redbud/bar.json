@@ -1,0 +1,69 @@
+{
+  "slug": "02-redbud",
+  "title": "Redbud, grown from buds",
+  "class": "branching",
+  "default": true,
+  "piece": "redbud:Redbud",
+  "reads": "At the page camera (ortho, turn 14, tilt 52): a loose, irregular dome of leaf clusters, a little taller than wide, on a short trunk that forks low and flares into the soil. Gaps between the clusters show dark limbs.",
+  "fits": "Grown pieces: trees, shrubs and other branching plants whose limbs fork from a parent and whose leaves sit on shoots.",
+  "wrong_for": "Hard-surface props, rigged characters, and anything whose shape is not a branching tree.",
+  "references": [
+    {
+      "key": "W",
+      "url": "https://en.wikipedia.org/wiki/Cercis_canadensis",
+      "gives": "6-9 m tall, 8-10 m spread; \"A 10-year-old tree will generally be around 5 m (16 ft) tall\"; leaves alternate, heart-shaped, 7-12 cm; twigs \"slender and zigzag, nearly black\"; bark dark"
+    },
+    {
+      "key": "NC",
+      "url": "https://plants.ces.ncsu.edu/plants/cercis-canadensis/",
+      "gives": "20-30 ft tall, 25-35 ft wide; \"Multi-stemmed\", \"Multi-trunked\", \"trunk usually divided close to ground\"; stems \"zig-zag, spreading and ascending\"; bark dark brown to black"
+    },
+    {
+      "key": "UF",
+      "url": "https://ask.ifas.ufl.edu/publication/ST145",
+      "gives": "leaves \"alternate\", \"light green on top, paler green underneath\""
+    },
+    {
+      "key": "NRC",
+      "url": "https://tidcf.nrcan.gc.ca/en/trees/factsheet/415",
+      "gives": "eastern redbud: \"Terminal bud absent\"; twigs \"Slender, zigzag\""
+    },
+    {
+      "key": "OE",
+      "url": "https://doi.org/10.1139/b91-245",
+      "gives": "Owens & Ewers 1991, Can. J. Bot. 69: 1956-1963: vegetative buds are orthodistichous, each leaf about 180 degrees from the one below (also Owens 1990, MSc thesis, Michigan State)"
+    },
+    {
+      "key": "CH",
+      "url": "https://doi.org/10.1007/s13595-018-0730-x",
+      "gives": "leaf blade inclination, Cercis siliquastrum: mean 44.1 deg, SD 19.2, n 101 (Chianucci et al. 2018 data; beta fitted by the method of moments in a reference sweep)"
+    },
+    {
+      "key": "WK",
+      "url": "https://patents.google.com/patent/USPP35080P2/en",
+      "gives": "Werner & Kenealy, USPP35080, Cercis canadensis 'NC2014-10' (a semi-compact cultivar), about 4 years old: height about 7.5 ft, width about 5 ft; internode 2.0 cm on average"
+    },
+    {
+      "key": "DM",
+      "url": "https://doi.org/10.5281/zenodo.4557401",
+      "gives": "Demol et al. lidar QSMs of beech and ash: first-order branches leave the stem at a median 44 to 54 degrees, and point 40 to 56 degrees from the zenith (other species, as read in a botany note)"
+    },
+    {
+      "key": "P3",
+      "url": "https://commons.wikimedia.org/wiki/File:2022-08-01_15_10_51_An_Eastern_Redbud_along_Terrace_Boulevard_in_the_Parkway_Village_section_of_Ewing_Township,_Mercer_County,_New_Jersey.jpg",
+      "gives": "summer: one leaning trunk about 15 cm across on a 5 m tree, forking low, flaring at the soil"
+    },
+    {
+      "key": "P5",
+      "url": "https://commons.wikimedia.org/wiki/File:Starr-110920-8438-Cercis_canadensis-habit-Shibuya_Farm_Kula-Maui_(25113195475).jpg",
+      "gives": "heart leaves hanging on petioles about a third of the blade long, from zigzag twigs"
+    }
+  ],
+  "files": {
+    "style": "style.json",
+    "pack": "redbud.pack.json",
+    "glb": "redbud.glb",
+    "scene": "scene",
+    "sheet": "sheet.png"
+  }
+}

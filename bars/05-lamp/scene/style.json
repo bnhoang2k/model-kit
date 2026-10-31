@@ -1,0 +1,26 @@
+{
+  "units_per_metre": 1.0,
+  "page_camera": {
+    "projection": "ortho",
+    "turn_deg": 14,
+    "tilt_deg": 52,
+    "px_per_unit": null,
+    "depth_projection": "perspective",
+    "near_m": 0.1,
+    "far_m": 2000,
+    "depth_bits": 24,
+    "depth_why": "The reference target the kit is proved on, not a shipping game: a three.js PerspectiveCamera with its documented constructor defaults, near 0.1 and far 2000 (fov 50, aspect 1; https://threejs.org/docs/pages/PerspectiveCamera.html), one scene unit taken as one metre. The 24-bit integer depth buffer is to confirm (UNVERIFIED): WebGL's depth context attribute (https://registry.khronos.org/webgl/specs/latest/1.0/) and three.js WebGLRenderer's depth option promise only a depth buffer of at least 16 bits."
+  },
+  "dials": {
+    "proportion": 0,
+    "detail_floor_px": null,
+    "min_thickness": 0.0003,
+    "edges": {
+      "bevel": 0,
+      "outline": "runtime",
+      "crease_deg": 35,
+      "crease_why": "the kit's shading angle, 35 degrees, the same as the other bars"
+    },
+    "shading": "hairline"
+  }
+}

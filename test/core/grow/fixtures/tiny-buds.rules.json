@@ -1,0 +1,434 @@
+{
+  "species": "tiny-buds",
+  "sources": [
+    {
+      "key": "A",
+      "url": "https://example.org/field-notes",
+      "gives": "leaf and bud habit, internode length, ranges"
+    },
+    {
+      "key": "B",
+      "url": "https://example.org/stand-survey",
+      "gives": "crown and fork proportions of open-grown trees"
+    },
+    {
+      "key": "C",
+      "url": "https://doi.org/10.1007/s13595-018-0730-x",
+      "gives": "leaf blade inclination, Cercis siliquastrum: mean 44.1 deg, SD 19.2, n 101 (Chianucci et al. 2018 data, beta fitted by the method of moments)"
+    }
+  ],
+  "rows": [
+    {
+      "id": "leaves.arrangement",
+      "level": "leaves",
+      "rule": "arrangement",
+      "value": "two-ranked, 180 degrees from one leaf to the next",
+      "source": "field notes [A]: table 1"
+    },
+    {
+      "id": "leaves.per-node",
+      "level": "leaves",
+      "rule": "leaves at a node",
+      "value": "1",
+      "source": "field notes [A]: table 1"
+    },
+    {
+      "id": "buds.terminal",
+      "level": "buds",
+      "rule": "terminal bud",
+      "value": "absent",
+      "source": "field notes [A]: fig 2"
+    },
+    {
+      "id": "internode.length",
+      "level": "internode",
+      "rule": "length",
+      "value": "0.05 m",
+      "source": "field notes [A]: table 3"
+    },
+    {
+      "id": "branch.angle",
+      "level": "branch",
+      "rule": "angle from the parent",
+      "value": "70 to 85 degrees",
+      "source": "field notes [A]: fig 4"
+    },
+    {
+      "id": "gsa.by-order",
+      "level": "gsa",
+      "rule": "set-point angle",
+      "value": "180 degrees from gravity (straight up) for the trunk, 135 for branches, 125 for the rest. These are fixture values: guesses, not measured. The param is tagged measured only because neither fitted (it needs a fit range) nor budget (a page cost) fits a guess, and this fixture's source is a placeholder.",
+      "source": "none: a placeholder, not from field notes"
+    },
+    {
+      "id": "age.height",
+      "level": "age",
+      "rule": "age at height",
+      "value": "1 year at 0.5 m, 3 years at 1.5 m",
+      "source": "field notes [A]: table 5"
+    },
+    {
+      "id": "twig.tip",
+      "level": "twig",
+      "rule": "tip radius",
+      "value": "0.004 m",
+      "source": "field notes [A]: table 6"
+    },
+    {
+      "id": "levels.names",
+      "level": "levels",
+      "rule": "part names",
+      "value": "Trunk_Roots, Leaders, Branches, Twigs, Shoots",
+      "source": "page budget, not a species fact"
+    },
+    {
+      "id": "tubes.sides",
+      "level": "tubes",
+      "rule": "tube sides per level",
+      "value": "12, 9, 7, 5, 4",
+      "source": "page budget, not a species fact"
+    },
+    {
+      "id": "lite.tree-line",
+      "level": "lite",
+      "rule": "lite tube sides per level",
+      "value": "8, 6, 5, 3, 3",
+      "source": "page budget, not a species fact"
+    },
+    {
+      "id": "apical.control",
+      "level": "apical",
+      "rule": "control",
+      "value": "no source gives it; fitted to the spread and crown-base ranges",
+      "source": "fitted"
+    },
+    {
+      "id": "size.spread",
+      "level": "size",
+      "rule": "spread / height",
+      "value": "0.5 to 0.9",
+      "source": "stand survey [B]: fig 4"
+    },
+    {
+      "id": "size.crown-base",
+      "level": "size",
+      "rule": "crown base / height",
+      "value": "0 to 0.4. A fixture value: widened from 0.2 to 0.4, because the tiny trees seat leafy branches at the soil",
+      "source": "stand survey [B]: fig 5"
+    },
+    {
+      "id": "leaves.blade-angle",
+      "level": "leaves",
+      "rule": "blade angle beta",
+      "value": "a=2.1984, b=2.2862 on t = 2 theta / pi (numpy order); the published values for Cercis siliquastrum. This fixture borrows them for its tiny species",
+      "source": "leaf inclination data [C], beta fitted by the method of moments"
+    },
+    {
+      "id": "leaves.outline",
+      "level": "leaves",
+      "rule": "blade outline",
+      "value": "ten points in blade lengths (a rounded heart); full and lite. A fixture value",
+      "source": "none: a fixture value for the grower tests, not from field notes"
+    },
+    {
+      "id": "leaves.size",
+      "level": "leaves",
+      "rule": "blade length",
+      "value": "0.08 to 0.13 m. A fixture value",
+      "source": "none: a fixture value for the grower tests, not from field notes"
+    },
+    {
+      "id": "leaves.petiole",
+      "level": "leaves",
+      "rule": "petiole length",
+      "value": "0.35 of the blade length. A fixture value",
+      "source": "none: a fixture value for the grower tests, not from field notes"
+    },
+    {
+      "id": "roots.count",
+      "level": "roots",
+      "rule": "structural roots at the trunk base",
+      "value": "5. A fixture value",
+      "source": "none: a fixture value for the grower tests, not from field notes"
+    },
+    {
+      "id": "lite.leaves",
+      "level": "lite",
+      "rule": "lite leaf thinning and outline",
+      "value": "keep every 2nd leaf of a shoot, with the same area per shoot; a six-point outline. A page budget, a fixture value",
+      "source": "page budget, not a species fact"
+    }
+  ],
+  "notes": [],
+  "ranges": {
+    "spread_of_height": {
+      "lo": 0.5,
+      "hi": 0.9,
+      "rows": [
+        "size.spread"
+      ]
+    },
+    "crown_base_of_height": {
+      "lo": 0.0,
+      "hi": 0.4,
+      "rows": [
+        "size.crown-base"
+      ]
+    }
+  },
+  "params": {
+    "leaves.divergence_deg": {
+      "value": 180,
+      "rows": [
+        "leaves.arrangement"
+      ],
+      "tag": "measured"
+    },
+    "leaves.per_node": {
+      "value": 1,
+      "rows": [
+        "leaves.per-node"
+      ],
+      "tag": "measured"
+    },
+    "buds.terminal": {
+      "value": [
+        "absent"
+      ],
+      "rows": [
+        "buds.terminal"
+      ],
+      "tag": "measured"
+    },
+    "internode.length_m": {
+      "value": 0.05,
+      "rows": [
+        "internode.length"
+      ],
+      "tag": "measured"
+    },
+    "branch.angle_deg": {
+      "value": [
+        70,
+        85
+      ],
+      "rows": [
+        "branch.angle"
+      ],
+      "tag": "measured"
+    },
+    "gsa.by_order_deg": {
+      "value": [
+        180,
+        135,
+        125
+      ],
+      "rows": [
+        "gsa.by-order"
+      ],
+      "tag": "model"
+    },
+    "age.height_points": {
+      "value": [
+        [
+          0.5,
+          1
+        ],
+        [
+          1.5,
+          3
+        ]
+      ],
+      "rows": [
+        "age.height"
+      ],
+      "tag": "measured"
+    },
+    "twig.tip_radius_m": {
+      "value": 0.004,
+      "rows": [
+        "twig.tip"
+      ],
+      "tag": "measured"
+    },
+    "levels.names": {
+      "value": [
+        "Trunk_Roots",
+        "Leaders",
+        "Branches",
+        "Twigs",
+        "Shoots"
+      ],
+      "rows": [
+        "levels.names"
+      ],
+      "tag": "budget"
+    },
+    "tubes.sides": {
+      "value": [
+        12,
+        9,
+        7,
+        5,
+        4
+      ],
+      "rows": [
+        "tubes.sides"
+      ],
+      "tag": "budget"
+    },
+    "lite.tube_sides": {
+      "value": [
+        8,
+        6,
+        5,
+        3,
+        3
+      ],
+      "rows": [
+        "lite.tree-line"
+      ],
+      "tag": "budget"
+    },
+    "apical.control": {
+      "value": 0.5,
+      "rows": [
+        "apical.control"
+      ],
+      "tag": "fitted",
+      "fit": {
+        "ranges": [
+          "spread_of_height",
+          "crown_base_of_height"
+        ],
+        "seeds": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "leaves.angle_beta": {
+      "value": [
+        2.1984,
+        2.2862
+      ],
+      "rows": [
+        "leaves.blade-angle"
+      ],
+      "tag": "measured"
+    },
+    "leaves.outline": {
+      "value": [
+        [
+          0.0,
+          0.07
+        ],
+        [
+          0.2,
+          -0.03
+        ],
+        [
+          0.44,
+          0.1
+        ],
+        [
+          0.47,
+          0.4
+        ],
+        [
+          0.31,
+          0.71
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          -0.31,
+          0.71
+        ],
+        [
+          -0.47,
+          0.4
+        ],
+        [
+          -0.44,
+          0.1
+        ],
+        [
+          -0.2,
+          -0.03
+        ]
+      ],
+      "rows": [
+        "leaves.outline"
+      ],
+      "tag": "model"
+    },
+    "leaves.length_m": {
+      "value": [
+        0.08,
+        0.13
+      ],
+      "rows": [
+        "leaves.size"
+      ],
+      "tag": "model"
+    },
+    "leaves.petiole_of_blade": {
+      "value": 0.35,
+      "rows": [
+        "leaves.petiole"
+      ],
+      "tag": "model"
+    },
+    "roots.count": {
+      "value": 5,
+      "rows": [
+        "roots.count"
+      ],
+      "tag": "model"
+    },
+    "lite.leaf_thin": {
+      "value": 2,
+      "rows": [
+        "lite.leaves"
+      ],
+      "tag": "budget"
+    },
+    "lite.leaf_outline": {
+      "value": [
+        [
+          0.0,
+          0.07
+        ],
+        [
+          0.44,
+          0.08
+        ],
+        [
+          0.42,
+          0.52
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          -0.42,
+          0.52
+        ],
+        [
+          -0.44,
+          0.08
+        ]
+      ],
+      "rows": [
+        "lite.leaves"
+      ],
+      "tag": "budget"
+    }
+  }
+}

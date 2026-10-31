@@ -1,0 +1,484 @@
+{"curves": [
+  {"bone": "ankle.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "ankle.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "ankle.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "ankle.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "ankle.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "ankle.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "ankle.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "ankle.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "ankle.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "ankle.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "ankle.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "ankle.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "arm.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "arm.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "arm.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "arm.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "arm.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "arm.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.05000000074505806, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.05000000074505806, "AUTO_CLAMPED", 49.0, 0.05000000074505806],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "arm.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "arm.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "arm.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "arm.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "arm.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "arm.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, -0.05000000074505806, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, -0.05000000074505806, "AUTO_CLAMPED", 49.0, -0.05000000074505806],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "body", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "body", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.006000000052154064, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.006000000052154064, "AUTO_CLAMPED", 49.0, 0.006000000052154064],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "body", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "body", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "body", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "body", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.009999999776482582, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.009999999776482582, "AUTO_CLAMPED", 49.0, 0.009999999776482582],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "forearm.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "forearm.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "forearm.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "forearm.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, -0.05999999865889549, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, -0.05999999865889549, "AUTO_CLAMPED", 49.0, -0.05999999865889549],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "forearm.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "forearm.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "forearm.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "forearm.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "forearm.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "forearm.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, -0.05999999865889549, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, -0.05999999865889549, "AUTO_CLAMPED", 49.0, -0.05999999865889549],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "forearm.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "forearm.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "hand.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "hand.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "hand.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "hand.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "hand.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "hand.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "hand.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "hand.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "hand.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "hand.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "hand.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "hand.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "head", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "head", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "head", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "head", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, -0.019999999552965164, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, -0.019999999552965164, "AUTO_CLAMPED", 49.0, -0.019999999552965164],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "head", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.029999999329447746, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.029999999329447746, "AUTO_CLAMPED", 49.0, 0.029999999329447746],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "head", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.03999999910593033, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.03999999910593033, "AUTO_CLAMPED", 49.0, 0.03999999910593033],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "knee.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "knee.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "knee.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "knee.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "knee.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "knee.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "knee.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "knee.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "knee.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "knee.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "knee.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "knee.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "leg.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "leg.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "leg.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "leg.L", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "leg.L", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "leg.L", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "leg.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "leg.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "leg.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "leg.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "leg.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "leg.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "prop.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "prop.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "prop.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "prop.R", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "prop.R", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "prop.R", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "root", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "root", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "root", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "location"},
+  {"bone": "root", "index": 0, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "root", "index": 1, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"},
+  {"bone": "root", "index": 2, "keys": [
+    [1, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", -11.0, 0.0, "AUTO_CLAMPED", 13.0, 0.0],
+    [37, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 25.0, 0.0, "AUTO_CLAMPED", 49.0, 0.0],
+    [73, 0.0, "BEZIER", "AUTO", "AUTO_CLAMPED", 61.0, 0.0, "AUTO_CLAMPED", 85.0, 0.0]
+  ], "path": "rotation_euler"}
+],
+"fps": 30,
+"frames": [1, 73]}

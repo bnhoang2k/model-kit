@@ -1,0 +1,287 @@
+{
+  "pack": "redbud",
+  "units_per_metre": 0.5,
+  "spacing": 5.0,
+  "pieces": {
+    "Redbud": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the base"
+      },
+      "recipe": {
+        "kind": "branching",
+        "source": "redbud.rules.json, seed 6, 5.0 m"
+      },
+      "listed": [
+        {
+          "id": "trunk_roots",
+          "text": "Trunk and Roots: trunk: the continuation chain from the seedling: at each fork it runs on through the thickest child; structural roots at the trunk base: 5, flaring into the soil",
+          "source": "redbud.rules.json: trunk.chain, roots.flares",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "leaders",
+          "text": "Leaders: leaders: chains seated on the trunk chain; a low fork gives several stems",
+          "source": "redbud.rules.json: leaders.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "branches",
+          "text": "Branches: branches: chains seated on a leader",
+          "source": "redbud.rules.json: branches.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "twigs",
+          "text": "Twigs: twigs: chains seated on a branch; slender and zigzag, from the relay of a side bud each year",
+          "source": "redbud.rules.json: twigs.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "shoots",
+          "text": "Shoots: shoots: every chain of a higher order: the youngest shoots, which carry most leaves",
+          "source": "redbud.rules.json: shoots.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "leaves_leaf",
+          "text": "leaves, shade Leaf: leaves on the current year: 1: a deciduous tree carries leaves only on the current year's shoots; arrangement: two-ranked (orthodistichous), 180 degrees from one leaf to the next; leaves at a node: 1 (alternate); blade angle beta: a=2.1984, b=2.2862 on t = 2 theta / pi (numpy order): Cercis siliquastrum, a same-genus stand-in (no Cercis canadensis value was found); blade outline and length: heart-shaped, as wide as long; 0.07 to 0.12 m long; petiole length: 0.35 of the blade length",
+          "source": "redbud.rules.json: leaves.season, leaves.arrangement, leaves.per-node, leaves.blade-angle, leaves.blade, leaves.petiole",
+          "min_thickness": 0.0
+        }
+      ],
+      "parts": [
+        {
+          "name": "Trunk_Roots",
+          "listed": "trunk_roots",
+          "shape": "tube",
+          "on": null,
+          "group": "Trunk_Roots",
+          "role": "solid"
+        },
+        {
+          "name": "Leaders",
+          "listed": "leaders",
+          "shape": "tube",
+          "on": "Trunk_Roots",
+          "group": "Leaders",
+          "role": "solid"
+        },
+        {
+          "name": "Branches",
+          "listed": "branches",
+          "shape": "tube",
+          "on": "Leaders",
+          "group": "Branches",
+          "role": "solid"
+        },
+        {
+          "name": "Twigs",
+          "listed": "twigs",
+          "shape": "tube",
+          "on": "Branches",
+          "group": "Twigs",
+          "role": "skip_outline"
+        },
+        {
+          "name": "Shoots",
+          "listed": "shoots",
+          "shape": "tube",
+          "on": "Twigs",
+          "group": "Shoots",
+          "role": "skip_outline"
+        },
+        {
+          "name": "Leaves_Leaf",
+          "listed": "leaves_leaf",
+          "shape": "leaf",
+          "on": "Trunk_Roots",
+          "group": "Leaves_Leaf",
+          "role": "skip_outline"
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "At the page camera the crown reads as a loose, irregular dome of leaf clusters, a little taller than wide, on a short trunk that forks low and flares into the soil. Gaps between the clusters show dark limbs. Every limb sits on its parent and every leaf on its shoot.",
+      "size_class": "hero",
+      "measured": {
+        "kind": "tree",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 3.5068,
+          "d": 2.9367
+        },
+        "bounds": {
+          "X0": -1.6841,
+          "X1": 1.8227,
+          "Z0": -1.5326,
+          "Z1": 1.4041
+        },
+        "heights": {
+          "top": 2.5019
+        },
+        "surfaces": [],
+        "slots": [
+          "Bark",
+          "Leaf",
+          "Twig"
+        ],
+        "tris": 349392,
+        "export": {
+          "position_bits": 14
+        }
+      },
+      "view": {
+        "nearest_m": 5.0,
+        "why": "the bar scene frames the whole 5 m tree, and a person stands back about one tree height to see a small tree whole",
+        "farthest_m": 20.0,
+        "farthest_why": "the full tree hands over to Redbud_Lite at about four tree heights, 20 m (the README's Nearest view), so it is not seen from farther"
+      }
+    },
+    "Redbud_Lite": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the base"
+      },
+      "recipe": {
+        "kind": "branching",
+        "source": "redbud.rules.json, seed 7, 5.0 m, lite"
+      },
+      "listed": [
+        {
+          "id": "trunk_roots",
+          "text": "Trunk and Roots: trunk: the continuation chain from the seedling: at each fork it runs on through the thickest child; structural roots at the trunk base: 5, flaring into the soil; lite leaf thinning and outline: keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+          "source": "redbud.rules.json: trunk.chain, roots.flares, lite.leaves",
+          "min_thickness": 0.0017775004808540616
+        },
+        {
+          "id": "leaders",
+          "text": "Leaders: leaders: chains seated on the trunk chain; a low fork gives several stems; lite leaf thinning and outline: keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+          "source": "redbud.rules.json: leaders.chain, lite.leaves",
+          "min_thickness": 0.0017775004808540616
+        },
+        {
+          "id": "branches",
+          "text": "Branches: branches: chains seated on a leader; lite leaf thinning and outline: keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+          "source": "redbud.rules.json: branches.chain, lite.leaves",
+          "min_thickness": 0.0017775004808540616
+        },
+        {
+          "id": "twigs",
+          "text": "Twigs: twigs: chains seated on a branch; slender and zigzag, from the relay of a side bud each year; lite leaf thinning and outline: keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+          "source": "redbud.rules.json: twigs.chain, lite.leaves",
+          "min_thickness": 0.0017775004808540616
+        },
+        {
+          "id": "shoots",
+          "text": "Shoots: shoots: every chain of a higher order: the youngest shoots, which carry most leaves; lite leaf thinning and outline: keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+          "source": "redbud.rules.json: shoots.chain, lite.leaves",
+          "min_thickness": 0.0017775004808540616
+        },
+        {
+          "id": "leaves_leaf",
+          "text": "leaves, shade Leaf: leaves on the current year: 1: a deciduous tree carries leaves only on the current year's shoots; arrangement: two-ranked (orthodistichous), 180 degrees from one leaf to the next; leaves at a node: 1 (alternate); blade angle beta: a=2.1984, b=2.2862 on t = 2 theta / pi (numpy order): Cercis siliquastrum, a same-genus stand-in (no Cercis canadensis value was found); blade outline and length: heart-shaped, as wide as long; 0.07 to 0.12 m long; petiole length: 0.35 of the blade length; lite leaf thinning and outline: keep every 2nd leaf of a shoot, with the same area per shoot; a six-point heart with no petiole",
+          "source": "redbud.rules.json: leaves.season, leaves.arrangement, leaves.per-node, leaves.blade-angle, leaves.blade, leaves.petiole, lite.leaves",
+          "min_thickness": 0.0
+        }
+      ],
+      "parts": [
+        {
+          "name": "Trunk_Roots",
+          "listed": "trunk_roots",
+          "shape": "tube",
+          "on": null,
+          "group": "Trunk_Roots",
+          "role": "solid"
+        },
+        {
+          "name": "Leaders",
+          "listed": "leaders",
+          "shape": "tube",
+          "on": "Trunk_Roots",
+          "group": "Leaders",
+          "role": "solid"
+        },
+        {
+          "name": "Branches",
+          "listed": "branches",
+          "shape": "tube",
+          "on": "Leaders",
+          "group": "Branches",
+          "role": "solid"
+        },
+        {
+          "name": "Twigs",
+          "listed": "twigs",
+          "shape": "tube",
+          "on": "Branches",
+          "group": "Twigs",
+          "role": "skip_outline"
+        },
+        {
+          "name": "Shoots",
+          "listed": "shoots",
+          "shape": "tube",
+          "on": "Twigs",
+          "group": "Shoots",
+          "role": "skip_outline"
+        },
+        {
+          "name": "Leaves_Leaf",
+          "listed": "leaves_leaf",
+          "shape": "leaf",
+          "on": "Trunk_Roots",
+          "group": "Leaves_Leaf",
+          "role": "skip_outline"
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "At the page camera the same loose, irregular dome of leaf clusters on a short, low-forking trunk. Its leaves are fewer and plainer, so many copies stay cheap. Every limb sits on its parent and every leaf on its shoot.",
+      "size_class": "piece",
+      "measured": {
+        "kind": "tree",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 3.1057,
+          "d": 2.9868
+        },
+        "bounds": {
+          "X0": -1.5492,
+          "X1": 1.5566,
+          "Z0": -1.5811,
+          "Z1": 1.4057
+        },
+        "heights": {
+          "top": 2.5013
+        },
+        "surfaces": [],
+        "slots": [
+          "Bark",
+          "Leaf",
+          "Twig"
+        ],
+        "tris": 128322,
+        "export": {
+          "position_bits": 14
+        }
+      },
+      "view": {
+        "nearest_m": 20.0,
+        "why": "the copy for scenes that repeat many trees, seen as a backdrop from about four tree heights, where single leaves no longer read",
+        "farthest_m": 50.0,
+        "farthest_why": "an estimate from how it is used, to be confirmed: the far end of the backdrop of many trees seen from the scene's camera; the README says only where the backdrop begins"
+      }
+    }
+  }
+}

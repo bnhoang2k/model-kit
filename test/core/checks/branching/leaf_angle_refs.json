@@ -1,0 +1,692 @@
+{
+ "Acacia dealbata": {
+  "mean_deg": 40.9,
+  "n": 283,
+  "sd_deg": 24.53
+ },
+ "Acer burgerianum": {
+  "mean_deg": 63.72,
+  "n": 115,
+  "sd_deg": 13.67
+ },
+ "Acer campestre": {
+  "mean_deg": 50.07,
+  "n": 75,
+  "sd_deg": 14.98
+ },
+ "Acer griseum": {
+  "mean_deg": 33.56,
+  "n": 80,
+  "sd_deg": 20.92
+ },
+ "Acer miyabei": {
+  "mean_deg": 44.9,
+  "n": 80,
+  "sd_deg": 15.5
+ },
+ "Acer monspessulanum": {
+  "mean_deg": 20.11,
+  "n": 105,
+  "sd_deg": 14.8
+ },
+ "Acer negundo": {
+  "mean_deg": 59.41,
+  "n": 114,
+  "sd_deg": 17.49
+ },
+ "Acer platanoides": {
+  "mean_deg": 26.85,
+  "n": 1254,
+  "sd_deg": 16.71
+ },
+ "Acer pseudoplatanus": {
+  "mean_deg": 33.81,
+  "n": 102,
+  "sd_deg": 17.09
+ },
+ "Acer rubrum": {
+  "mean_deg": 30.35,
+  "n": 1001,
+  "sd_deg": 16.07
+ },
+ "Acer truncatum": {
+  "mean_deg": 18.52,
+  "n": 138,
+  "sd_deg": 14.44
+ },
+ "Aesculus hippocastanum": {
+  "mean_deg": 35.67,
+  "n": 1200,
+  "sd_deg": 16.46
+ },
+ "Ailanthus altissima": {
+  "mean_deg": 20.01,
+  "n": 110,
+  "sd_deg": 14.86
+ },
+ "Alnus cordata": {
+  "mean_deg": 34.09,
+  "n": 168,
+  "sd_deg": 21.86
+ },
+ "Alnus glutinosa": {
+  "mean_deg": 51.26,
+  "n": 80,
+  "sd_deg": 20.6
+ },
+ "Alnus incana": {
+  "mean_deg": 28.72,
+  "n": 1269,
+  "sd_deg": 19.79
+ },
+ "Alnus viridis": {
+  "mean_deg": 28.4,
+  "n": 81,
+  "sd_deg": 17.85
+ },
+ "Alnus viridis subsp. sinuata": {
+  "mean_deg": 29.23,
+  "n": 80,
+  "sd_deg": 17.19
+ },
+ "Amorpha fruticosa": {
+  "mean_deg": 32.99,
+  "n": 199,
+  "sd_deg": 25.81
+ },
+ "Arbutus unedo": {
+  "mean_deg": 24.57,
+  "n": 138,
+  "sd_deg": 16.96
+ },
+ "Arundo donax": {
+  "mean_deg": 45.68,
+  "n": 102,
+  "sd_deg": 25.74
+ },
+ "Berberis aristata": {
+  "mean_deg": 43.46,
+  "n": 85,
+  "sd_deg": 20.96
+ },
+ "Betula alleghaniensis": {
+  "mean_deg": 23.37,
+  "n": 1000,
+  "sd_deg": 13.57
+ },
+ "Betula pendula": {
+  "mean_deg": 55.62,
+  "n": 1685,
+  "sd_deg": 19.98
+ },
+ "Buxus sempervirens": {
+  "mean_deg": 38.27,
+  "n": 120,
+  "sd_deg": 25.27
+ },
+ "Campsis radicans": {
+  "mean_deg": 25.8,
+  "n": 102,
+  "sd_deg": 17.87
+ },
+ "Capparis spinosa": {
+  "mean_deg": 57.0,
+  "n": 93,
+  "sd_deg": 22.41
+ },
+ "Carpinus betulus": {
+  "mean_deg": 12.9,
+  "n": 100,
+  "sd_deg": 9.69
+ },
+ "Castanea sativa": {
+  "mean_deg": 34.4,
+  "n": 75,
+  "sd_deg": 20.59
+ },
+ "Cercidiphyllum magnificum": {
+  "mean_deg": 31.31,
+  "n": 80,
+  "sd_deg": 15.84
+ },
+ "Cercis siliquastrum": {
+  "mean_deg": 44.12,
+  "n": 101,
+  "sd_deg": 19.21
+ },
+ "Citrus limon": {
+  "mean_deg": 29.75,
+  "n": 107,
+  "sd_deg": 20.47
+ },
+ "Clematis vitalba": {
+  "mean_deg": 23.1,
+  "n": 123,
+  "sd_deg": 14.64
+ },
+ "Cornus mas": {
+  "mean_deg": 31.64,
+  "n": 109,
+  "sd_deg": 20.77
+ },
+ "Cornus officinalis": {
+  "mean_deg": 36.72,
+  "n": 85,
+  "sd_deg": 21.25
+ },
+ "Cornus sanguinea": {
+  "mean_deg": 33.44,
+  "n": 109,
+  "sd_deg": 19.67
+ },
+ "Corylus avellana": {
+  "mean_deg": 25.46,
+  "n": 100,
+  "sd_deg": 16.93
+ },
+ "Cotoneaster lacteus": {
+  "mean_deg": 43.14,
+  "n": 178,
+  "sd_deg": 25.98
+ },
+ "Crataegus monogyna": {
+  "mean_deg": 27.13,
+  "n": 146,
+  "sd_deg": 16.21
+ },
+ "Crataegus rhiphidophylla": {
+  "mean_deg": 41.81,
+  "n": 81,
+  "sd_deg": 18.74
+ },
+ "Diospyros kaki": {
+  "mean_deg": 21.6,
+  "n": 123,
+  "sd_deg": 14.37
+ },
+ "Diospyros lotus": {
+  "mean_deg": 47.67,
+  "n": 154,
+  "sd_deg": 16.93
+ },
+ "Elaeagnus rhamnoides": {
+  "mean_deg": 31.69,
+  "n": 199,
+  "sd_deg": 20.82
+ },
+ "Elaeagnus umbellata": {
+  "mean_deg": 28.13,
+  "n": 138,
+  "sd_deg": 17.46
+ },
+ "Eleutherococcus sessiliflorus": {
+  "mean_deg": 36.77,
+  "n": 83,
+  "sd_deg": 19.84
+ },
+ "Escallonia rubra": {
+  "mean_deg": 49.42,
+  "n": 129,
+  "sd_deg": 21.38
+ },
+ "Euonymus europaeus": {
+  "mean_deg": 27.35,
+  "n": 106,
+  "sd_deg": 19.95
+ },
+ "Euonymus nikoensis": {
+  "mean_deg": 26.8,
+  "n": 81,
+  "sd_deg": 18.71
+ },
+ "Fagus sylvatica": {
+  "mean_deg": 18.08,
+  "n": 101,
+  "sd_deg": 15.09
+ },
+ "Ficus carica": {
+  "mean_deg": 35.4,
+  "n": 123,
+  "sd_deg": 22.21
+ },
+ "Fraxinus angustifolia": {
+  "mean_deg": 35.55,
+  "n": 214,
+  "sd_deg": 21.34
+ },
+ "Fraxinus ornus": {
+  "mean_deg": 21.69,
+  "n": 111,
+  "sd_deg": 14.22
+ },
+ "Ginkgo biloba": {
+  "mean_deg": 48.98,
+  "n": 80,
+  "sd_deg": 18.37
+ },
+ "Gymnocladus dioicus": {
+  "mean_deg": 54.14,
+  "n": 80,
+  "sd_deg": 18.42
+ },
+ "Hamamelis virginiana": {
+  "mean_deg": 45.32,
+  "n": 82,
+  "sd_deg": 21.16
+ },
+ "Hedera helix": {
+  "mean_deg": 57.67,
+  "n": 111,
+  "sd_deg": 18.65
+ },
+ "Hibiscus moscheutos subsp. palustris": {
+  "mean_deg": 22.72,
+  "n": 77,
+  "sd_deg": 19.19
+ },
+ "Ilex aquifolium": {
+  "mean_deg": 36.35,
+  "n": 113,
+  "sd_deg": 25.46
+ },
+ "Juglans nigra": {
+  "mean_deg": 50.14,
+  "n": 154,
+  "sd_deg": 18.78
+ },
+ "Juglans regia": {
+  "mean_deg": 30.08,
+  "n": 90,
+  "sd_deg": 16.71
+ },
+ "Laburnum alpinum": {
+  "mean_deg": 39.93,
+  "n": 85,
+  "sd_deg": 21.93
+ },
+ "Laurus nobilis": {
+  "mean_deg": 34.2,
+  "n": 104,
+  "sd_deg": 18.68
+ },
+ "Ligustrum vulgare": {
+  "mean_deg": 30.59,
+  "n": 102,
+  "sd_deg": 20.72
+ },
+ "Liquidambar styraciflua": {
+  "mean_deg": 69.43,
+  "n": 91,
+  "sd_deg": 12.58
+ },
+ "Lonicera maackii": {
+  "mean_deg": 28.11,
+  "n": 80,
+  "sd_deg": 22.85
+ },
+ "Mahonia aquifolium": {
+  "mean_deg": 29.0,
+  "n": 100,
+  "sd_deg": 15.8
+ },
+ "Malus domestica": {
+  "mean_deg": 29.04,
+  "n": 102,
+  "sd_deg": 14.88
+ },
+ "Malus sylvestris": {
+  "mean_deg": 36.17,
+  "n": 90,
+  "sd_deg": 20.2
+ },
+ "Malus yunnanensis var. veitchii": {
+  "mean_deg": 60.6,
+  "n": 80,
+  "sd_deg": 15.05
+ },
+ "Mespilus germanica": {
+  "mean_deg": 28.12,
+  "n": 102,
+  "sd_deg": 18.23
+ },
+ "Morus alba": {
+  "mean_deg": 30.87,
+  "n": 93,
+  "sd_deg": 19.44
+ },
+ "Morus australis": {
+  "mean_deg": 49.72,
+  "n": 80,
+  "sd_deg": 15.47
+ },
+ "Morus nigra": {
+  "mean_deg": 50.26,
+  "n": 103,
+  "sd_deg": 20.06
+ },
+ "Myrtus communis": {
+  "mean_deg": 35.64,
+  "n": 167,
+  "sd_deg": 21.66
+ },
+ "Nerium oleander": {
+  "mean_deg": 43.55,
+  "n": 112,
+  "sd_deg": 25.85
+ },
+ "Olea europaea var. frantoio": {
+  "mean_deg": 53.88,
+  "n": 117,
+  "sd_deg": 23.98
+ },
+ "Osmanthus fragans": {
+  "mean_deg": 36.37,
+  "n": 138,
+  "sd_deg": 23.57
+ },
+ "Ostrya carpinifolia": {
+  "mean_deg": 27.27,
+  "n": 104,
+  "sd_deg": 16.59
+ },
+ "Parthenocissus quinquefolia": {
+  "mean_deg": 35.72,
+  "n": 101,
+  "sd_deg": 12.26
+ },
+ "Paulownia tomentosa": {
+  "mean_deg": 45.32,
+  "n": 101,
+  "sd_deg": 19.16
+ },
+ "Philadelphus sericanthus": {
+  "mean_deg": 45.61,
+  "n": 80,
+  "sd_deg": 20.28
+ },
+ "Phillyrea angustifolia": {
+  "mean_deg": 41.52,
+  "n": 119,
+  "sd_deg": 22.26
+ },
+ "Phillyrea latifolia": {
+  "mean_deg": 35.15,
+  "n": 106,
+  "sd_deg": 18.87
+ },
+ "Photinia serrulata": {
+  "mean_deg": 49.74,
+  "n": 117,
+  "sd_deg": 22.86
+ },
+ "Phyllostachys bambusoides": {
+  "mean_deg": 34.6,
+  "n": 140,
+  "sd_deg": 20.65
+ },
+ "Pistacia lentiscus": {
+  "mean_deg": 23.82,
+  "n": 83,
+  "sd_deg": 19.96
+ },
+ "Pittosporum tobira": {
+  "mean_deg": 28.96,
+  "n": 81,
+  "sd_deg": 19.85
+ },
+ "Platanus acerifolia": {
+  "mean_deg": 44.21,
+  "n": 101,
+  "sd_deg": 16.19
+ },
+ "Populus alba": {
+  "mean_deg": 38.6,
+  "n": 109,
+  "sd_deg": 24.08
+ },
+ "Populus nigra": {
+  "mean_deg": 43.75,
+  "n": 87,
+  "sd_deg": 19.6
+ },
+ "Populus tremula": {
+  "mean_deg": 36.8,
+  "n": 1293,
+  "sd_deg": 21.95
+ },
+ "Prunus armeniaca": {
+  "mean_deg": 51.55,
+  "n": 104,
+  "sd_deg": 17.28
+ },
+ "Prunus avium var. plena ": {
+  "mean_deg": 50.1,
+  "n": 91,
+  "sd_deg": 12.54
+ },
+ "Prunus cerasifera var. pissardii": {
+  "mean_deg": 34.73,
+  "n": 119,
+  "sd_deg": 23.44
+ },
+ "Prunus cocomilia": {
+  "mean_deg": 29.54,
+  "n": 81,
+  "sd_deg": 19.38
+ },
+ "Prunus domestica": {
+  "mean_deg": 34.3,
+  "n": 96,
+  "sd_deg": 17.83
+ },
+ "Prunus laurocerasus": {
+  "mean_deg": 21.2,
+  "n": 161,
+  "sd_deg": 16.73
+ },
+ "Prunus serotina": {
+  "mean_deg": 44.31,
+  "n": 80,
+  "sd_deg": 17.19
+ },
+ "Prunus serrula": {
+  "mean_deg": 64.41,
+  "n": 75,
+  "sd_deg": 16.35
+ },
+ "Prunus spinosa": {
+  "mean_deg": 30.76,
+  "n": 101,
+  "sd_deg": 18.91
+ },
+ "Prunus subhirtella": {
+  "mean_deg": 24.72,
+  "n": 100,
+  "sd_deg": 19.22
+ },
+ "Pteridium aquilinum": {
+  "mean_deg": 19.43,
+  "n": 77,
+  "sd_deg": 14.51
+ },
+ "Pterocarya fraxinifolia": {
+  "mean_deg": 33.34,
+  "n": 100,
+  "sd_deg": 14.17
+ },
+ "Punica granatum": {
+  "mean_deg": 39.85,
+  "n": 106,
+  "sd_deg": 19.38
+ },
+ "Pyracantha coccinea": {
+  "mean_deg": 28.16,
+  "n": 79,
+  "sd_deg": 22.41
+ },
+ "Pyrus communis": {
+  "mean_deg": 22.55,
+  "n": 101,
+  "sd_deg": 14.65
+ },
+ "Quercus cerris": {
+  "mean_deg": 25.68,
+  "n": 86,
+  "sd_deg": 18.13
+ },
+ "Quercus ilex": {
+  "mean_deg": 36.01,
+  "n": 85,
+  "sd_deg": 20.16
+ },
+ "Quercus petraea": {
+  "mean_deg": 28.46,
+  "n": 84,
+  "sd_deg": 19.63
+ },
+ "Quercus pubescens": {
+  "mean_deg": 31.09,
+  "n": 101,
+  "sd_deg": 21.34
+ },
+ "Quercus robur": {
+  "mean_deg": 34.79,
+  "n": 115,
+  "sd_deg": 19.29
+ },
+ "Quercus rubra": {
+  "mean_deg": 27.44,
+  "n": 1199,
+  "sd_deg": 17.26
+ },
+ "Quercus suber": {
+  "mean_deg": 31.42,
+  "n": 106,
+  "sd_deg": 22.01
+ },
+ "Rhamnus alaternus": {
+  "mean_deg": 32.97,
+  "n": 206,
+  "sd_deg": 20.3
+ },
+ "Rhamnus parviflora": {
+  "mean_deg": 38.18,
+  "n": 80,
+  "sd_deg": 19.41
+ },
+ "Robinia pseudoacacia": {
+  "mean_deg": 15.49,
+  "n": 83,
+  "sd_deg": 10.99
+ },
+ "Rosa canina": {
+  "mean_deg": 30.13,
+  "n": 80,
+  "sd_deg": 13.82
+ },
+ "Salix acutifolia": {
+  "mean_deg": 39.27,
+  "n": 150,
+  "sd_deg": 18.45
+ },
+ "Salix alba": {
+  "mean_deg": 31.3,
+  "n": 150,
+  "sd_deg": 19.35
+ },
+ "Salix caprea": {
+  "mean_deg": 32.01,
+  "n": 80,
+  "sd_deg": 17.65
+ },
+ "Sambucus nigra": {
+  "mean_deg": 27.0,
+  "n": 80,
+  "sd_deg": 19.22
+ },
+ "Sorbus aria": {
+  "mean_deg": 30.64,
+  "n": 140,
+  "sd_deg": 18.99
+ },
+ "Sorbus domestica": {
+  "mean_deg": 27.96,
+  "n": 93,
+  "sd_deg": 18.98
+ },
+ "Sorbus hybrida": {
+  "mean_deg": 40.69,
+  "n": 80,
+  "sd_deg": 19.77
+ },
+ "Sorbus rufoferruginea": {
+  "mean_deg": 30.09,
+  "n": 81,
+  "sd_deg": 18.14
+ },
+ "Sorbus subarranensis": {
+  "mean_deg": 34.59,
+  "n": 83,
+  "sd_deg": 22.47
+ },
+ "Sorbus subsimilis": {
+  "mean_deg": 34.85,
+  "n": 82,
+  "sd_deg": 21.06
+ },
+ "Sorbus torminalis": {
+  "mean_deg": 37.94,
+  "n": 105,
+  "sd_deg": 19.22
+ },
+ "Syringa oblata": {
+  "mean_deg": 53.52,
+  "n": 80,
+  "sd_deg": 19.87
+ },
+ "Syringa tomentella subsp. yunnanensis": {
+  "mean_deg": 23.25,
+  "n": 100,
+  "sd_deg": 11.55
+ },
+ "Syringa villosa subsp. wolfii": {
+  "mean_deg": 48.19,
+  "n": 86,
+  "sd_deg": 23.69
+ },
+ "Syringa vulgaris": {
+  "mean_deg": 50.28,
+  "n": 80,
+  "sd_deg": 22.76
+ },
+ "Trachelospermum jasminoides": {
+  "mean_deg": 39.59,
+  "n": 92,
+  "sd_deg": 19.72
+ },
+ "Ulmus minor": {
+  "mean_deg": 34.31,
+  "n": 102,
+  "sd_deg": 18.0
+ },
+ "Viburnum lantana": {
+  "mean_deg": 28.71,
+  "n": 80,
+  "sd_deg": 18.27
+ },
+ "Viburnum tinus": {
+  "mean_deg": 28.99,
+  "n": 101,
+  "sd_deg": 21.74
+ },
+ "Zelkova serrata": {
+  "mean_deg": 31.1,
+  "n": 101,
+  "sd_deg": 13.4
+ },
+ "Ziziphus jujuba": {
+  "mean_deg": 46.27,
+  "n": 270,
+  "sd_deg": 24.82
+ }
+}

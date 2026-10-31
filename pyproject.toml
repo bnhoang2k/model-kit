@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "model-kit"
+version = "0.1.0"
+description = "Build 3D models for games in Blender, and check them against real-world rules."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "test/fixtures/qsm/CREDITS.md"]
+requires-python = ">=3.12"
+dependencies = ["numpy>=2.3"]
+
+[project.urls]
+Repository = "https://github.com/bnhoang2k/model-kit"
+
+[project.scripts]
+model-kit = "model_kit.cli:main"
+
+[project.optional-dependencies]
+sheet = ["pillow>=11"]
+
+[dependency-groups]
+dev = [
+    "pillow",
+    "pytest>=9",
+    "pytest-randomly>=5.0.0",
+    "pytest-xdist>=3.8.0",
+    "ruff",
+]
+# Converts TreeQSM scans into the measured-tree skeletons (tools/qsm_to_skeleton.py); never imported by src/.
+qsm = ["scipy"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/model_kit"]
+
+# The bars ship inside the package as model_kit/_bars. hatch_build.py picks the files, because
+# force-include would copy scene folders and .blend files too.
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+pythonpath = ["src"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "blender: needs Blender; skipped unless MODEL_KIT_BLENDER is set",
+    "held(*paths): needs files that not every copy of this repository has; skipped where one is missing",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100

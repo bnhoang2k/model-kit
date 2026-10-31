@@ -1,0 +1,448 @@
+{
+  "species": "sweetgum",
+  "sources": [
+    {
+      "key": "KJ",
+      "url": "https://rngr.net/publications/tpn/36-3/eighteen-year-development-of-sweetgum-liquidambar-styraciflua-l.-plantings-on-two-sites/at_download/file",
+      "gives": "Krinard & Johnson 1985, Tree Planters' Notes 36(3): 6-8: planted sweetgum (10 x 10 ft) on the DEF site was 1.5, 5.8 and 12.7 ft tall after 1, 3 and 6 years (27.1 ft at 6 years on the better HP site)"
+    },
+    {
+      "key": "NC",
+      "url": "https://plants.ces.ncsu.edu/plants/liquidambar-styraciflua/",
+      "gives": "NC State Extension: 60-100 ft tall, 40-50 ft spread; pyramidal, spreading; rapid growth"
+    },
+    {
+      "key": "UF",
+      "url": "https://ask.ifas.ufl.edu/publication/ST358",
+      "gives": "Gilman et al., UF/IFAS ST358: 60-75 ft tall, 35-50 ft spread; crown pyramidal, oval; grows in a narrow pyramid; typically one trunk"
+    },
+    {
+      "key": "VT",
+      "url": "https://dendro.cnre.vt.edu/dendrology/syllabus/factsheet.cfm?ID=53",
+      "gives": "Virginia Tech dendrology: the terminal bud is large; leaves 4 to 6 inches across with 5 to 7 lobes, star-like; crown pyramidal, especially when young"
+    },
+    {
+      "key": "OR",
+      "url": "Orwa et al. 2009, Agroforestree Database 4.0 (World Agroforestry Centre)",
+      "gives": "leaves spirally arranged"
+    },
+    {
+      "key": "OK",
+      "url": "https://doi.org/10.5586/asbp.3527",
+      "gives": "Okabe 2016: spiral leaf arrangements sit near the golden angle, 137.5 deg"
+    },
+    {
+      "key": "CH",
+      "url": "https://doi.org/10.1007/s13595-018-0730-x",
+      "gives": "Chianucci et al. 2018 leaf inclination data: Liquidambar styraciflua blade angle mean 69.43 deg, SD 12.58, n 91; beta on t = 2 theta / pi by the method of moments a 6.1932, b 1.8352 (a reference sweep of the data)"
+    },
+    {
+      "key": "DM",
+      "url": "https://doi.org/10.5281/zenodo.4557401",
+      "gives": "Demol et al. QSM trees (beech and ash): branch angles from the parent with medians of 44 to 54 deg; other species, a stand-in"
+    }
+  ],
+  "rows": [
+    {
+      "id": "trunk.part",
+      "level": "trunk",
+      "rule": "part",
+      "value": "the first axis: the seedling's shoot, grown on each year from its terminal bud",
+      "source": "page part, not a species fact"
+    },
+    {
+      "id": "trunk.age-height",
+      "level": "trunk",
+      "rule": "age at height",
+      "value": "1 year at 0.46 m, 3 years at 1.77 m, 6 years at 3.87 m (planted trees, DEF site, 10 x 10 ft spacing, not open-grown)",
+      "source": "[KJ] 1.5, 5.8 and 12.7 ft at 1, 3 and 6 years"
+    },
+    {
+      "id": "roots.part",
+      "level": "roots",
+      "rule": "part",
+      "value": "the structural roots that flare from the trunk base into the soil",
+      "source": "page part, not a species fact"
+    },
+    {
+      "id": "roots.count",
+      "level": "roots",
+      "rule": "structural roots at the trunk base",
+      "value": "4",
+      "source": "page budget: how many root flares the page draws; no source opened"
+    },
+    {
+      "id": "leaders.part",
+      "level": "leaders",
+      "rule": "part",
+      "value": "the axes of order 1, which carry the crown's main limbs",
+      "source": "page part, not a species fact"
+    },
+    {
+      "id": "leaders.terminal-bud",
+      "level": "leaders",
+      "rule": "terminal bud",
+      "value": "present: each axis grows on from its own top bud, so the tree keeps one central leader",
+      "source": "[VT] 'the terminal bud is large'; [UF] 'typically one trunk', 'grows in a narrow pyramid'"
+    },
+    {
+      "id": "leaders.apical-control",
+      "level": "leaders",
+      "rule": "apical control",
+      "value": "0.50: the share of the resource a main axis keeps over its side shoots (the lambda of the extended Borchert-Honda model). No source gives it; fitted to the spread range on seeds 1 to 4 at the kit's alpha. A value of 0.54, fitted with an alpha of 18, grows a tree too tall here",
+      "source": "fitted to the spread / height range below"
+    },
+    {
+      "id": "branches.part",
+      "level": "branches",
+      "rule": "part",
+      "value": "the axes of order 2",
+      "source": "page part, not a species fact"
+    },
+    {
+      "id": "branches.angle",
+      "level": "branches",
+      "rule": "angle from the parent",
+      "value": "40 to 50 degrees. an assumed value; no source opened for it: the beech and ash medians stand in",
+      "source": "[DM] other species, a stand-in"
+    },
+    {
+      "id": "branches.set-point",
+      "level": "branches",
+      "rule": "gravity set-point angle",
+      "value": "180 degrees from gravity (straight up) for the trunk, 135 for its branches, 125 for the rest. an assumed value; no source opened for it, 180 minus the beech and ash zenith angles",
+      "source": "[DM] other species, a stand-in"
+    },
+    {
+      "id": "twigs.part",
+      "level": "twigs",
+      "rule": "part",
+      "value": "the axes of order 3",
+      "source": "page part, not a species fact"
+    },
+    {
+      "id": "twigs.tip",
+      "level": "twigs",
+      "rule": "tip radius",
+      "value": "0.004 m at every shoot tip; the pipe model sums the tips down to the trunk",
+      "source": "page budget: the thinnest tube the page draws; no source opened"
+    },
+    {
+      "id": "shoots.part",
+      "level": "shoots",
+      "rule": "part",
+      "value": "the axes of order 4 and over",
+      "source": "page part, not a species fact"
+    },
+    {
+      "id": "shoots.internode",
+      "level": "shoots",
+      "rule": "internode length",
+      "value": "0.05 m. an assumed value; no source opened for it",
+      "source": "none: an assumed value"
+    },
+    {
+      "id": "leaves.arrangement",
+      "level": "leaves",
+      "rule": "arrangement",
+      "value": "spiral, 137.5 degrees from one leaf to the next",
+      "source": "[OR] spirally arranged; [OK] the golden angle"
+    },
+    {
+      "id": "leaves.per-node",
+      "level": "leaves",
+      "rule": "leaves at a node",
+      "value": "1",
+      "source": "[OR] spirally arranged: one leaf per node"
+    },
+    {
+      "id": "leaves.blade-angle",
+      "level": "leaves",
+      "rule": "blade angle beta",
+      "value": "a=6.1932, b=1.8352 on t = 2 theta / pi (numpy order): a mean of 69.4 deg from horizontal, SD 12.6",
+      "source": "[CH] Liquidambar styraciflua, n 91"
+    },
+    {
+      "id": "leaves.outline",
+      "level": "leaves",
+      "rule": "blade outline",
+      "value": "a five-pointed star in blade lengths, the lobes as long as the blade is wide; drawn for this bar",
+      "source": "[VT] 5 to 7 lobes, star-like; the exact points are drawn, not measured"
+    },
+    {
+      "id": "leaves.size",
+      "level": "leaves",
+      "rule": "blade length",
+      "value": "0.10 to 0.15 m. The source gives the width; the length is taken equal to it (a star leaf is about as long as wide)",
+      "source": "[VT] 4 to 6 inches across"
+    },
+    {
+      "id": "leaves.petiole",
+      "level": "leaves",
+      "rule": "petiole length",
+      "value": "0.6 of the blade length (sweetgum petioles are long). an assumed value; no source opened for it",
+      "source": "none: an assumed value"
+    },
+    {
+      "id": "lite.leaves",
+      "level": "lite",
+      "rule": "lite leaf thinning and outline",
+      "value": "keep every 2nd leaf of a shoot, with the same area per shoot; a five-point star outline",
+      "source": "page budget, not a species fact"
+    },
+    {
+      "id": "size.spread",
+      "level": "size",
+      "rule": "spread / height",
+      "value": "0.47 to 0.83. Mature trees: the intersection of the two sources' extreme ratios. A young tree grows in a narrow pyramid, so it may sit low in the band",
+      "source": "[NC] 40-50 ft over 60-100 ft; [UF] 35-50 ft over 60-75 ft"
+    }
+  ],
+  "notes": [],
+  "ranges": {
+    "spread_of_height": {
+      "lo": 0.47,
+      "hi": 0.83,
+      "rows": [
+        "size.spread"
+      ]
+    }
+  },
+  "params": {
+    "levels.names": {
+      "value": [
+        "Trunk_Roots",
+        "Leaders",
+        "Branches",
+        "Twigs",
+        "Shoots"
+      ],
+      "rows": [
+        "trunk.part",
+        "roots.part",
+        "leaders.part",
+        "branches.part",
+        "twigs.part",
+        "shoots.part"
+      ],
+      "tag": "budget"
+    },
+    "age.height_points": {
+      "value": [
+        [
+          0.46,
+          1
+        ],
+        [
+          1.77,
+          3
+        ],
+        [
+          3.87,
+          6
+        ]
+      ],
+      "rows": [
+        "trunk.age-height"
+      ],
+      "tag": "measured"
+    },
+    "roots.count": {
+      "value": 4,
+      "rows": [
+        "roots.count"
+      ],
+      "tag": "budget"
+    },
+    "buds.terminal": {
+      "value": [
+        "present"
+      ],
+      "rows": [
+        "leaders.terminal-bud"
+      ],
+      "tag": "measured"
+    },
+    "apical.control": {
+      "value": 0.5,
+      "rows": [
+        "leaders.apical-control"
+      ],
+      "tag": "fitted",
+      "fit": {
+        "ranges": [
+          "spread_of_height"
+        ],
+        "seeds": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "branch.angle_deg": {
+      "value": [
+        40,
+        50
+      ],
+      "rows": [
+        "branches.angle"
+      ],
+      "tag": "measured"
+    },
+    "gsa.by_order_deg": {
+      "value": [
+        180,
+        135,
+        125
+      ],
+      "rows": [
+        "branches.set-point"
+      ],
+      "tag": "measured"
+    },
+    "twig.tip_radius_m": {
+      "value": 0.004,
+      "rows": [
+        "twigs.tip"
+      ],
+      "tag": "budget"
+    },
+    "internode.length_m": {
+      "value": 0.05,
+      "rows": [
+        "shoots.internode"
+      ],
+      "tag": "model"
+    },
+    "leaves.divergence_deg": {
+      "value": 137.5,
+      "rows": [
+        "leaves.arrangement"
+      ],
+      "tag": "measured"
+    },
+    "leaves.per_node": {
+      "value": 1,
+      "rows": [
+        "leaves.per-node"
+      ],
+      "tag": "measured"
+    },
+    "leaves.angle_beta": {
+      "value": [
+        6.1932,
+        1.8352
+      ],
+      "rows": [
+        "leaves.blade-angle"
+      ],
+      "tag": "measured"
+    },
+    "leaves.outline": {
+      "value": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          -0.1293,
+          0.678
+        ],
+        [
+          -0.4755,
+          0.6545
+        ],
+        [
+          -0.2092,
+          0.432
+        ],
+        [
+          -0.2939,
+          0.0955
+        ],
+        [
+          0.0,
+          0.08
+        ],
+        [
+          0.2939,
+          0.0955
+        ],
+        [
+          0.2092,
+          0.432
+        ],
+        [
+          0.4755,
+          0.6545
+        ],
+        [
+          0.1293,
+          0.678
+        ]
+      ],
+      "rows": [
+        "leaves.outline"
+      ],
+      "tag": "measured"
+    },
+    "leaves.length_m": {
+      "value": [
+        0.1,
+        0.15
+      ],
+      "rows": [
+        "leaves.size"
+      ],
+      "tag": "measured"
+    },
+    "leaves.petiole_of_blade": {
+      "value": 0.6,
+      "rows": [
+        "leaves.petiole"
+      ],
+      "tag": "model"
+    },
+    "lite.leaf_thin": {
+      "value": 2,
+      "rows": [
+        "lite.leaves"
+      ],
+      "tag": "budget"
+    },
+    "lite.leaf_outline": {
+      "value": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          -0.4755,
+          0.6545
+        ],
+        [
+          -0.2939,
+          0.0955
+        ],
+        [
+          0.0,
+          0.08
+        ],
+        [
+          0.2939,
+          0.0955
+        ],
+        [
+          0.4755,
+          0.6545
+        ]
+      ],
+      "rows": [
+        "lite.leaves"
+      ],
+      "tag": "budget"
+    }
+  }
+}

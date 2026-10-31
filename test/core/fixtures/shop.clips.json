@@ -1,0 +1,74 @@
+{
+  "clips": {
+    "sit_reach": {
+      "frames": [1, 48],
+      "fps": 24,
+      "authoring": "solved",
+      "posture": "sit",
+      "seat": "shop:Bench_L.seat_1",
+      "floor_gear": {
+        "Bench_L": {
+          "piece": "Bench", "pack": "shop",
+          "position": [1.0, 0.0, 2.0],
+          "quaternion": [0.0, 0.7071067811865476, 0.0, 0.7071067811865476]
+        }
+      },
+      "props": {
+        "lamp": {
+          "piece": "Lamp", "pack": "shop", "bone": "hand.R",
+          "offset_position": [0.0, 0.02, 0.0], "offset_quaternion": [0.0, 0.0, 0.0, 1.0],
+          "show_frames": [[1, 48]]
+        }
+      },
+      "holds": [
+        { "ref": "shop:Bench_L.edge_R", "who": "hand.R", "when": [[10, 20]], "budget": 0.005 },
+        {
+          "ref": "shop:Bench_L.edge_R", "who": "lamp", "who_box": [[-0.01, 1.1, -0.01], [0.01, 1.2, 0.01]],
+          "when": [[30, 40]], "cross": { "why": "the carried lamp crosses the body to reach the bench" }
+        },
+        {
+          "ref": "shop:Bench_L.edge_R", "who": "foot.R", "when": [[1, 48]],
+          "dangle": { "budget": 0.2, "why": "the doll's feet do not reach the floor from the seat" }
+        },
+        { "ref": "shop:Lamp.switch_R", "who": "hand.R", "when": [[25, 48]] }
+      ],
+      "targets": [
+        {
+          "key": 15, "chain": "arm.R", "ref": "shop:Bench_L.edge_R",
+          "offset": [0.0, 0.01, 0.0], "why": "the hand rests on the board, not in it",
+          "baked": [1.2, 0.46, 1.8]
+        },
+        {
+          "key": 25, "chain": "arm.R", "ref": "rig:body",
+          "offset": [0.1, 0.2, 0.1], "why": "a wave in free air on beat 1"
+        },
+        { "key": 35, "chain": "arm.R", "ref": "shop:Bench_L.edge_R", "tool": "lamp" }
+      ]
+    },
+    "sit_idle": {
+      "frames": [1, 24],
+      "fps": 24,
+      "authoring": "keyed",
+      "posture": "sit",
+      "seat": "shop:Bench.seat_1",
+      "floor_gear": {
+        "Bench": { "piece": "Bench", "pack": "shop", "position": [0.0, 0.0, 0.0], "quaternion": [0.0, 0.0, 0.0, 1.0] }
+      },
+      "holds": [
+        { "ref": "shop:Bench.edge_R", "who": "hand.R", "when": [[1, 24]] }
+      ]
+    },
+    "sit_idle_L": {
+      "frames": [1, 24],
+      "fps": 24,
+      "authoring": "keyed",
+      "posture": "sit",
+      "seat": "shop:Bench.seat_1",
+      "floor_gear": {
+        "Bench": { "piece": "Bench", "pack": "shop", "position": [0.0, 0.0, 0.0], "quaternion": [0.0, 0.0, 0.0, 1.0] }
+      },
+      "holds": [],
+      "mirror_of": "sit_idle"
+    }
+  }
+}

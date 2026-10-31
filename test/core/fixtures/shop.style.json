@@ -1,0 +1,12 @@
+{
+  "units_per_metre": 0.5,
+  "page_camera": { "projection": "ortho", "turn_deg": 14, "tilt_deg": 52, "px_per_unit": null },
+  "dials": {
+    "proportion": 0,
+    "detail_floor_px": null,
+    "min_thickness": null,
+    "edges": { "bevel": 0, "outline": "runtime", "crease_deg": 35,
+               "crease_why": "the build's shading angle" },
+    "shading": "hairline"
+  }
+}

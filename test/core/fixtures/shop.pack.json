@@ -1,0 +1,149 @@
+{
+  "pack": "shop",
+  "units_per_metre": 0.5,
+  "spacing": 2.0,
+  "pieces": {
+    "Bench": {
+      "frame": { "axes": "gltf", "origin": "floor, under the seat centre" },
+      "recipe": { "kind": "assembly", "source": "build_shop.py" },
+      "listed": [
+        { "id": "seat_board", "text": "Pine seat board, 18 mm", "source": "shop catalogue p. 4", "min_thickness": 0.018 },
+        { "id": "leg", "text": "Pine leg, 40 mm square", "source": "shop catalogue p. 4", "min_thickness": 0.04, "owner": "Bench" }
+      ],
+      "parts": [
+        { "name": "leg_L", "listed": "leg", "shape": "box", "on": null, "group": "legs", "role": "solid" },
+        { "name": "leg_R", "listed": "leg", "shape": "box", "on": null, "group": "legs", "role": "solid" },
+        { "name": "seat_top", "listed": "seat_board", "shape": "box", "on": "leg_L", "group": "top", "role": "solid" }
+      ],
+      "uses": [
+        { "id": "front", "point": [0.0, 0.0, 0.4], "facing": [0.0, 0.0, -1.0], "posture": "sit" }
+      ],
+      "holds": [
+        {
+          "id": "edge_R", "use": "front", "side": "R", "surface": ["seat_top"],
+          "sub_box": [[0.1, 0.42, 0.1], [0.3, 0.46, 0.3]],
+          "point": [0.2, 0.45, 0.2], "off": [0.0, 1.0, 0.0], "grip": false
+        }
+      ],
+      "seats": [
+        { "id": "seat_1", "use": "front", "point": [0.1, 0.45, 0.2], "facing": [0.0, 0.0, 1.0], "surface": ["seat_top"] }
+      ],
+      "mounts": [
+        { "id": "socket", "kind": "power", "point": [0.25, 0.46, -0.1], "axis": [0.0, 1.0, 0.0], "takes": "lead" }
+      ],
+      "done": "A plain bench one sitter wide; the seat top is flat and the legs stand square.",
+      "size_class": "piece",
+      "measured": {
+        "kind": "furniture",
+        "bounds": [[-0.3, 0.0, -0.15], [0.3, 0.46, 0.15]],
+        "heights": { "seat": 0.45 },
+        "foot": [0.6, 0.3],
+        "tris": 48
+      }
+    },
+    "Lamp": {
+      "frame": { "axes": "gltf", "origin": "floor, under the stem" },
+      "recipe": { "kind": "assembly", "source": "build_shop.py" },
+      "listed": [
+        { "id": "stem", "text": "Steel tube, 12 mm", "source": "shop catalogue p. 9", "min_thickness": 0.0012 }
+      ],
+      "parts": [
+        { "name": "base", "listed": "stem", "shape": "lathe", "on": null, "group": "base", "role": "solid" },
+        { "name": "stem", "listed": "stem", "shape": "tube", "on": "base", "group": "stem", "role": "solid" },
+        { "name": "lead", "listed": "stem", "shape": "cable", "on": "base", "group": "lead", "role": "solid" }
+      ],
+      "uses": [
+        { "id": "side", "point": [0.3, 0.0, 0.0], "facing": [-1.0, 0.0, 0.0], "posture": "stand" }
+      ],
+      "holds": [
+        {
+          "id": "switch_R", "use": "side", "side": "both", "surface": ["stem"],
+          "point": [0.0, 0.8, 0.0], "off": [1.0, 0.0, 0.0], "grip": true
+        }
+      ],
+      "seats": [],
+      "mounts": [
+        { "id": "plug", "kind": "power", "point": [0.0, 0.01, -0.1], "axis": [0.0, 0.0, -1.0], "takes": "lead", "fits": ["socket"] }
+      ],
+      "done": "A floor lamp: a round base, one stem and a lead to the wall.",
+      "size_class": "prop",
+      "connectors": [
+        {
+          "id": "lead_run", "part": "lead",
+          "ends": [
+            { "point": [0.0, 0.01, -0.1], "host": "self.plug" },
+            { "point": [0.25, 0.46, -0.1], "layout": "shop", "host": "shop:Bench_1.socket" }
+          ],
+          "cap": 1.5, "why": "the lead runs from the lamp to the bench socket"
+        }
+      ],
+      "keep_off": [
+        { "id": "bulb", "point": [0.0, 1.1, 0.0], "radius": 0.08, "why": "a hot bulb: nothing mounts within reach of it" }
+      ],
+      "measured": { "kind": "light", "size": [0.2, 1.2, 0.2], "fill": 0.4, "tip_length": 0.3 }
+    },
+    "Doll": {
+      "frame": { "axes": "gltf", "origin": "floor, between the feet" },
+      "recipe": { "kind": "assembly", "source": "build_doll.py" },
+      "listed": [
+        { "id": "body", "text": "Soft body, one closed shell", "source": "reference drawing", "min_thickness": 0.01 }
+      ],
+      "parts": [
+        { "name": "torso", "listed": "body", "shape": "blob", "on": null, "group": "body", "role": "solid" },
+        { "name": "arm_R", "listed": "body", "shape": "ring", "on": "torso", "group": "arms", "role": "solid" },
+        { "name": "foot_R", "listed": "body", "shape": "meta", "on": "torso", "group": "feet", "role": "solid" }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "A doll one unit tall that sits on a bench seat and reaches its edge.",
+      "size_class": "hero",
+      "measured": { "kind": "figure", "size": [0.4, 1.0, 0.3], "skin": "white" },
+      "rig": {
+        "armature": "DollRig",
+        "bones": [
+          { "name": "root", "parent": null, "length": 0.1 },
+          { "name": "body", "parent": "root", "length": 0.3 },
+          { "name": "arm.R", "parent": "body", "length": 0.1 },
+          { "name": "forearm.R", "parent": "arm.R", "length": 0.1 },
+          { "name": "hand.R", "parent": "forearm.R", "length": 0.05 },
+          { "name": "arm.L", "parent": "body", "length": 0.1 },
+          { "name": "forearm.L", "parent": "arm.L", "length": 0.1 },
+          { "name": "hand.L", "parent": "forearm.L", "length": 0.05 },
+          { "name": "foot.R", "parent": "body", "length": 0.05 }
+        ],
+        "bind": {
+          "torso": { "bones": ["body"], "mode": "rigid" },
+          "arm_R": { "bones": ["arm.R", "forearm.R", "hand.R"], "mode": "chain" },
+          "foot_R": { "bones": ["foot.R"], "mode": "rigid" }
+        },
+        "contact_groups": { "hand.R": ["hand.R"], "foot.R": ["foot.R"] },
+        "chains": {
+          "arm.R": {
+            "root": "body",
+            "bones": ["arm.R", "forearm.R", "hand.R"],
+            "effector": "hand.R",
+            "effector_radius": 0.0586,
+            "dofs": { "arm.R": "xyz", "forearm.R": "x", "hand.R": "xyz" },
+            "limits": { "forearm.R:x": [-3.0, 0.05] },
+            "effector_group": "hand.R"
+          }
+        },
+        "sit": { "below_seat": 0.083, "forward": 0.03 },
+        "mirror": { "pairs": [["arm.R", "arm.L"], ["forearm.R", "forearm.L"], ["hand.R", "hand.L"]], "axis": "x" },
+        "supports": ["foot.R"],
+        "joints": {
+          "arm.R": { "range_deg": { "x": [-90, 90], "y": [-90, 90], "z": [-90, 90] }, "why": "test fixture: schema contract, not anatomy" },
+          "forearm.R": { "range_deg": { "x": [-175, 10] }, "why": "test fixture: schema contract, not anatomy" },
+          "hand.R": { "range_deg": { "x": [-60, 60], "y": [-60, 60], "z": [-60, 60] }, "why": "test fixture: schema contract, not anatomy" },
+          "foot.R": { "range_deg": { "x": [-45, 45] }, "why": "test fixture: schema contract, not anatomy" }
+        },
+        "avoid": [
+          { "id": "chest", "bone": "body", "kind": "ellipsoid", "centre": [0.0, 0.1, 0.0], "half": [0.12, 0.15, 0.08], "why": "the hand must not pass through the chest" },
+          { "id": "lap", "bone": "body", "kind": "box", "centre": [0.0, -0.05, 0.1], "half": [0.1, 0.05, 0.1], "why": "the arm keeps out of the lap" }
+        ]
+      }
+    }
+  }
+}

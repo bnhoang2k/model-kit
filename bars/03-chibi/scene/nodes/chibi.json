@@ -1,0 +1,592 @@
+{
+  "nodes": [
+    {
+      "name": "hand.L",
+      "parent": "forearm.L",
+      "translation": [
+        0.009368941187858582,
+        -0.05950000882148743,
+        0.00299999862909317
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "forearm.L",
+      "parent": "arm.L",
+      "translation": [
+        0.04709695279598236,
+        -0.07919999957084656,
+        0.0038399994373321533
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "arm.L",
+      "parent": "body",
+      "translation": [
+        0.19499999284744263,
+        0.26200002431869507,
+        0.052960000932216644
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "prop.R",
+      "parent": "hand.R",
+      "translation": [
+        -0.01600000262260437,
+        -0.03530000150203705,
+        0.04749999940395355
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "hand.R",
+      "parent": "forearm.R",
+      "translation": [
+        -0.009368941187858582,
+        -0.05950000882148743,
+        0.00299999862909317
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "forearm.R",
+      "parent": "arm.R",
+      "translation": [
+        -0.04709695279598236,
+        -0.07919999957084656,
+        0.0038399994373321533
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "arm.R",
+      "parent": "body",
+      "translation": [
+        -0.19499999284744263,
+        0.26200002431869507,
+        0.052960000932216644
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "translation": [
+        0.0,
+        0.3100000023841858,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "translation": [
+        0.0,
+        0.10999999940395355,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "ankle.L",
+      "parent": "knee.L",
+      "translation": [
+        0.0,
+        -0.03800000250339508,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "knee.L",
+      "parent": "leg.L",
+      "translation": [
+        0.0,
+        -0.024999991059303284,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "leg.L",
+      "parent": "root",
+      "translation": [
+        0.10499999672174454,
+        0.17499999701976776,
+        0.006000000052154064
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "ankle.R",
+      "parent": "knee.R",
+      "translation": [
+        0.0,
+        -0.03800000250339508,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "knee.R",
+      "parent": "leg.R",
+      "translation": [
+        0.0,
+        -0.024999991059303284,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "leg.R",
+      "parent": "root",
+      "translation": [
+        -0.10499999672174454,
+        0.17499999701976776,
+        0.006000000052154064
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "root",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "chibi/arm_L",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/arm_L"
+    },
+    {
+      "name": "chibi/arm_R",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/arm_R"
+    },
+    {
+      "name": "chibi/eye_L",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/eye_L"
+    },
+    {
+      "name": "chibi/eye_R",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/eye_R"
+    },
+    {
+      "name": "chibi/head",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/head"
+    },
+    {
+      "name": "chibi/shin_L",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/shin_L"
+    },
+    {
+      "name": "chibi/shin_R",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/shin_R"
+    },
+    {
+      "name": "chibi/thigh_L",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/thigh_L"
+    },
+    {
+      "name": "chibi/thigh_R",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/thigh_R"
+    },
+    {
+      "name": "chibi/torso",
+      "parent": "chibi_rig",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "chibi/torso"
+    },
+    {
+      "name": "chibi_rig",
+      "parent": "chibi",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "chibi",
+      "parent": null,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    }
+  ]
+}

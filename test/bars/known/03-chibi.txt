@@ -1,0 +1,81 @@
+# Pinned gate output of bar 03-chibi: the verdict it reads today, not a pass.
+# Why: partial: the rig has no supports and no joint ranges; also the limbs' designed joins (crossings), detail and near-crease findings.
+# Issue: https://github.com/bnhoang2k/model-kit/issues
+# test_gate_verdict fails when the output changes: fix the bar, then delete this file.
+crossings | chibi:chibi thigh_L x torso | surfaces share 0.164 of depth (limit 0.0568, 0.5 x the thinner part's thickness 0.114)
+crossings | chibi:chibi thigh_R x torso | surfaces share 0.164 of depth (limit 0.0568, 0.5 x the thinner part's thickness 0.114)
+crossings | chibi:chibi shin_L x thigh_L | surfaces share 0.112 of depth (limit 0.0564, 0.5 x the thinner part's thickness 0.113)
+crossings | chibi:chibi shin_R x thigh_R | surfaces share 0.112 of depth (limit 0.0564, 0.5 x the thinner part's thickness 0.113)
+crossings | chibi:chibi shin_L x torso | surfaces share 0.0599 of depth (limit 0.0537, 0.5 x the thinner part's thickness 0.107)
+crossings | chibi:chibi shin_R x torso | surfaces share 0.0599 of depth (limit 0.0537, 0.5 x the thinner part's thickness 0.107)
+near-crease | chibi:chibi arm_L line end 1997 | a drawn line stops at [0.2204, 0.1403, 0.0669], where one edge over 35 deg meets none; it dashes across a smooth surface
+near-crease | chibi:chibi arm_L line end 2000 | a drawn line stops at [0.2205, 0.1402, 0.0634], where one edge over 35 deg meets none; it dashes across a smooth surface
+near-crease | chibi:chibi arm_R line end 1977 | a drawn line stops at [-0.2205, 0.1402, 0.0634], where one edge over 35 deg meets none; it dashes across a smooth surface
+near-crease | chibi:chibi arm_R line end 1980 | a drawn line stops at [-0.2204, 0.1403, 0.0669], where one edge over 35 deg meets none; it dashes across a smooth surface
+detail | chibi:chibi arm_L blocky at 1.3 m | edge 4581: a gap of 0.420 mm between its facets and the curve they stand for, over a turn of 13.83 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi arm_R blocky at 1.3 m | edge 7599: a gap of 0.420 mm between its facets and the curve they stand for, over a turn of 13.83 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi head blocky at 1.3 m | edge 86: a gap of 1.523 mm between its facets and the curve they stand for, over a turn of 11.99 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi shin_L blocky at 1.3 m | edge 3994: a gap of 0.690 mm between its facets and the curve they stand for, over a turn of 22.53 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi shin_R blocky at 1.3 m | edge 907: a gap of 0.690 mm between its facets and the curve they stand for, over a turn of 22.53 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi thigh_L blocky at 1.3 m | edge 2934: a gap of 0.633 mm between its facets and the curve they stand for, over a turn of 17.04 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi thigh_R blocky at 1.3 m | edge 21: a gap of 0.633 mm between its facets and the curve they stand for, over a turn of 17.04 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi torso blocky at 1.3 m | edge 2231: a gap of 1.324 mm between its facets and the curve they stand for, over a turn of 21.28 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+coverage: must-touch: not applicable (no holds): idle
+coverage: reach: not applicable (keyed): idle
+coverage: trace: not applicable (keyed targets): idle
+coverage: crossings: not applicable (eyes part, printed on a surface): chibi:chibi eye_L
+coverage: crossings: not applicable (eyes part, printed on a surface): chibi:chibi eye_R
+coverage: take-apart: not applicable (eyes part, printed on a surface): chibi:chibi eye_L
+coverage: take-apart: not applicable (eyes part, printed on a surface): chibi:chibi eye_R
+coverage: topology: not applicable (decal part): chibi:chibi eye_L
+coverage: topology: not applicable (decal part): chibi:chibi eye_R
+coverage: frames: no clip or layout places a piece: the frame match is not measured
+coverage: sides: not applicable (no piece hold, clip hold or use station with holds to judge)
+coverage: mirror-pair: not applicable (no clip has mirror_of): scene
+coverage: overlap: not applicable (no placed or carried piece): idle A
+coverage: overlap: not applicable (no placed or carried piece): idle B
+coverage: overlap: not applicable (needs a carried prop and a placed piece): idle D
+coverage: solver-error: not applicable (keyed clip, no key targets): idle
+coverage: clip-hygiene: not applicable (the rig names no supports): idle slide
+coverage: clip-hygiene: skipped (the rig names no supports): idle stand
+coverage: clip-hygiene: not applicable (no props): idle prop
+coverage: clip-hygiene: 0 under 1 arcmin at 1.3 m: chibi:chibi
+coverage: limb-seat: not applicable (assembly piece): chibi:chibi
+coverage: floor-organic: not applicable (assembly piece): chibi:chibi
+coverage: crossing-organic: not applicable (assembly piece): chibi:chibi
+coverage: near-miss-organic: not applicable (assembly piece): chibi:chibi
+coverage: skeleton-match: not applicable (assembly piece): chibi:chibi
+coverage: reference-range: not applicable (assembly piece): chibi:chibi
+coverage: taper: not applicable (assembly piece): chibi:chibi
+coverage: leaf-angle: not applicable (assembly piece): chibi:chibi
+coverage: receiver: no placement sits on a mount: nothing to receive
+coverage: keep-off: no mounts and no keep-off points: chibi:chibi
+coverage: connectors: no piece has a connector: nothing to measure
+coverage: seat-fit: not applicable (stand clip: only a sit clip rests on a seat): idle behind the edge
+coverage: clearance: not applicable (no layout): nothing to measure
+coverage: stress-poses: skipped (no range for the joint(s) body, head, arm.L, forearm.L, hand.L, arm.R, forearm.R, hand.R, leg.L, knee.L, ankle.L, leg.R, knee.R, ankle.R): chibi:chibi
+coverage: stress-poses: skipped (no joint has a range, so there is no pose to take): chibi:chibi
+coverage: near-crease: not applicable (decal part): chibi:chibi eye_L
+coverage: near-crease: not applicable (decal part): chibi:chibi eye_R
+coverage: near-crease: 0 under 1 arcmin at 1.3 m: chibi:chibi
+coverage: bend-quality: not applicable (the part is bound to one bone and does not bend): chibi:chibi head
+coverage: bend-quality: not applicable (the part is bound to one bone and does not bend): chibi:chibi shin_L
+coverage: bend-quality: not applicable (the part is bound to one bone and does not bend): chibi:chibi shin_R
+coverage: bend-quality: not applicable (the part is bound to one bone and does not bend): chibi:chibi thigh_L
+coverage: bend-quality: not applicable (the part is bound to one bone and does not bend): chibi:chibi thigh_R
+coverage: bend-quality: not applicable (the part is bound to one bone and does not bend): chibi:chibi torso
+coverage: bend-quality: measured 4 joint(s), 4060 rings; shape ratio 4 pi A / P^2 from 0.96 to 1.00, reported and not judged: chibi:chibi
+coverage: bearing: not applicable (eyes part, printed on a surface): chibi:chibi eye_L
+coverage: bearing: not applicable (eyes part, printed on a surface): chibi:chibi eye_R
+coverage: bearing: not applicable (its piece is rigged: a joint carries each part, not gravity; rest rule): chibi:chibi arm_L, arm_R, head, thigh_L, thigh_R, torso
+coverage: bearing: not applicable (a joint carries it: its bones differ from its host's; seat rule): chibi:chibi arm_L, arm_R, head, thigh_L, thigh_R, torso
+coverage: bearing: not applicable (a joint carries it: its bones differ from its host's; sink rule): chibi:chibi arm_L, arm_R, head, thigh_L, thigh_R, torso
+coverage: bearing: not applicable (no part is a fastener; fastener rule): chibi:chibi
+coverage: bearing: not applicable (no part retains another; retainer rule): chibi:chibi
+coverage: detail: not applicable (decal part): chibi:chibi eye_L
+coverage: detail: not applicable (decal part): chibi:chibi eye_R
+coverage: detail: rule 2 not applicable to 5 of 8 parts with a smooth edge (halving their segments would turn an edge past the crease angle 35): chibi:chibi
+coverage: markings-flush: not applicable (a decal, a marked row, a part with no on host or an empty part) to 4 of 10 parts: chibi:chibi
+coverage: coplanar: not applicable (no layout): nothing to compare placements
+coverage: coverage: not applicable (no placed or carried piece): idle
+partial

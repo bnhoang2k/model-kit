@@ -1,0 +1,18 @@
+{
+  "slug": "03-chibi",
+  "title": "Chibi, rigged with one idle clip",
+  "class": "rigged",
+  "default": true,
+  "piece": "chibi:chibi",
+  "reads": "A 1.0-unit-tall chibi (about 1.34 m at 0.747 units per metre). The head is the widest part and takes the top 0.58 of the height. The body is soft and rounded. The eyes are two ink ovals printed on the head. The limbs end in mittens and rounded feet. Eight closed parts overlap at the joints, so a runtime outline draws the creases; the eyes are open patches with no outline of their own. The design follows a reference drawing.",
+  "fits": "A comparison bar for rigged pieces: a character, a creature, or any figure with a bone chain, a skin and a clip. Compare a new piece's sheet, rig and clips with this one.",
+  "wrong_for": "Assemblies with no rig, such as furniture and props. Branching pieces, such as plants and trees. Realistic proportions. This figure is a chibi: a big head, short limbs.",
+  "references": [],
+  "files": {
+    "style": "style.json",
+    "pack": "chibi.pack.json",
+    "glb": "chibi.glb",
+    "scene": "scene",
+    "sheet": "sheet.png"
+  }
+}

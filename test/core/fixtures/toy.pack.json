@@ -1,0 +1,91 @@
+{
+  "pack": "toy",
+  "units_per_metre": 0.5,
+  "pieces": {
+    "toy": {
+      "frame": { "axes": "gltf", "origin": "floor, between the feet" },
+      "recipe": { "kind": "assembly", "source": "build_toy.py" },
+      "listed": [
+        { "id": "soft", "text": "Soft felt, one closed shell per part", "source": "toy drawing", "min_thickness": 0.01 }
+      ],
+      "parts": [
+        {
+          "name": "body", "listed": "soft", "shape": "blob", "on": null, "group": "body", "role": "solid",
+          "form": {
+            "half": [0.15, 0.2, 0.1], "centre": [0.0, 0.5, 0.0],
+            "power_side": 1.0, "power_up": 1.0, "power_down": 1.0,
+            "segments": 16, "rings": 8,
+            "why": "a plain rounded trunk"
+          }
+        },
+        {
+          "name": "arm_L", "listed": "soft", "shape": "ring", "on": "body", "group": "arms", "role": "solid",
+          "form": {
+            "top": [0.2, 0.6, 0.0], "bottom": [0.2, 0.3, 0.02],
+            "rings": 8, "segments": 12,
+            "stations": [
+              { "u": 0.0, "half_side": 0.05, "half_depth": 0.05 },
+              { "u": 1.0, "half_side": 0.04, "half_depth": 0.04 }
+            ],
+            "why": "an arm that hangs from the shoulder"
+          }
+        },
+        {
+          "name": "arm_R", "listed": "soft", "shape": "ring", "on": "body", "group": "arms", "role": "solid",
+          "form": { "mirror_of": "arm_L" }
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "A small figure: a round body and two arms that bend at the hand.",
+      "size_class": "piece",
+      "measured": {},
+      "rig": {
+        "armature": "toy_rig",
+        "bones": [
+          { "name": "root", "parent": null, "length": 0.2,
+            "rest": { "head": [0.0, 0.0, 0.0], "tail": [0.0, 0.2, 0.0], "roll": 0.0, "deform": false } },
+          { "name": "body", "parent": "root", "length": 0.5,
+            "rest": { "head": [0.0, 0.2, 0.0], "tail": [0.0, 0.7, 0.0], "roll": 0.0, "deform": true } },
+          { "name": "arm.L", "parent": "body", "length": 0.15,
+            "rest": { "head": [0.2, 0.6, 0.0], "tail": [0.2, 0.45, 0.0], "roll": 0.0, "deform": true } },
+          { "name": "hand.L", "parent": "arm.L", "length": 0.15,
+            "rest": { "head": [0.2, 0.45, 0.0], "tail": [0.2, 0.3, 0.0], "roll": 0.0, "deform": true,
+                      "why": "the hand bone ends at the fingertips" } },
+          { "name": "arm.R", "parent": "body", "length": 0.15,
+            "rest": { "head": [-0.2, 0.6, 0.0], "tail": [-0.2, 0.45, 0.0], "roll": 0.0, "deform": true } },
+          { "name": "hand.R", "parent": "arm.R", "length": 0.15,
+            "rest": { "head": [-0.2, 0.45, 0.0], "tail": [-0.2, 0.3, 0.0], "roll": 0.0, "deform": true } }
+        ],
+        "bind": {
+          "body": { "bones": ["body"], "mode": "rigid" },
+          "arm_L": { "bones": ["arm.L", "hand.L"], "mode": "chain",
+                     "falloff": { "along": "y", "start": 0.6, "end": 0.3, "bands": [[0.4, 0.6]] } },
+          "arm_R": { "bones": ["arm.R", "hand.R"], "mode": "chain",
+                     "falloff": { "along": "y", "start": 0.6, "end": 0.3, "bands": [[0.4, 0.6]] } }
+        },
+        "contact_groups": { "hand.L": ["hand.L"], "hand.R": ["hand.R"] },
+        "chains": {
+          "arm.L": {
+            "root": "body", "bones": ["arm.L", "hand.L"], "effector": "hand.L",
+            "effector_radius": 0.05,
+            "dofs": { "arm.L": "xyz", "hand.L": "x" },
+            "limits": { "hand.L:x": [-1.0, 1.0] },
+            "effector_group": "hand.L"
+          },
+          "arm.R": {
+            "root": "body", "bones": ["arm.R", "hand.R"], "effector": "hand.R",
+            "effector_radius": 0.05,
+            "dofs": { "arm.R": "xyz", "hand.R": "x" },
+            "limits": { "hand.R:x": [-1.0, 1.0] },
+            "effector_group": "hand.R"
+          }
+        },
+        "sit": { "below_seat": 0.05, "forward": 0.02 },
+        "mirror": { "pairs": [["arm.L", "arm.R"], ["hand.L", "hand.R"]], "axis": "x" }
+      }
+    }
+  }
+}

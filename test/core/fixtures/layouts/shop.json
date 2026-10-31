@@ -1,0 +1,24 @@
+{
+  "layout": "shop",
+  "frame": "gltf",
+  "placements": {
+    "Bench_1": {
+      "pack": "shop", "piece": "Bench",
+      "position": [0.0, 0.0, 0.0], "quaternion": [0.0, 0.0, 0.0, 1.0]
+    },
+    "Lamp_1": {
+      "pack": "shop", "piece": "Lamp",
+      "position": [0.25, 0.46, -0.1], "quaternion": [0.0, 0.0, 0.0, 1.0],
+      "on": "shop:Bench_1.socket"
+    },
+    "Lamp_2": {
+      "pack": "shop", "piece": "Lamp",
+      "position": [3.0, 0.0, 0.0], "quaternion": [0.0, 0.0, 0.0, 1.0]
+    }
+  },
+  "stands": {
+    "bench": {
+      "position": [0.0, 0.0, 0.5], "facing": [0.0, 0.0, -1.0], "posture": "sit", "clip": "sit_reach"
+    }
+  }
+}

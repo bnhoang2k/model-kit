@@ -1,0 +1,525 @@
+{
+  "pack": "lamp",
+  "units_per_metre": 1.0,
+  "spacing": 1.0,
+  "pieces": {
+    "Lamp": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the base underside, on the desk (y 0)"
+      },
+      "recipe": {
+        "kind": "assembly",
+        "source": "bars/05-lamp/lamp_build.py, from https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf, with the plug blades from https://en.wikipedia.org/wiki/NEMA_connector"
+      },
+      "listed": [
+        {
+          "id": "l01",
+          "text": "Cone-shaped cast iron base, 170.2 mm across",
+          "source": "Anglepoise Type 75 Mini technical sheet (US - V2), https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf: base diameter 6.7 in, cast iron base. The height, rim and top flat are modelling choices. min_thickness is the height.",
+          "min_thickness": 0.03
+        },
+        {
+          "id": "l02",
+          "text": "Lower arm, a round aluminium tube standing on the base",
+          "source": "Anglepoise Type 75 Mini technical sheet (US - V2), https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf: aluminum arms. The 16 mm diameter, the 240 mm length and the lean are modelling choices. The lamp is spring-balanced and the arm is held by its pivot, not by its weight on the base, so the row is bonded. min_thickness is the diameter.",
+          "min_thickness": 0.016,
+          "held": "bonded"
+        },
+        {
+          "id": "l03",
+          "text": "Upper arm, a round aluminium tube meeting the lower arm",
+          "source": "Anglepoise Type 75 Mini technical sheet (US - V2), https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf: aluminum arms. The sizes and the rise are modelling choices. A spring and friction joint holds it, not its weight, so the row is bonded. min_thickness is the diameter.",
+          "min_thickness": 0.016,
+          "held": "bonded"
+        },
+        {
+          "id": "l04",
+          "text": "Bell shade with a neck, on the end of the upper arm",
+          "source": "Anglepoise Type 75 Mini technical sheet (US - V2), https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf: shade diameter 5.1 in, shade height 5.9 in, aluminum shade. The profile, the neck and the 1 mm wall are modelling choices. The arm's joint holds it, so the row is bonded. min_thickness is the wall.",
+          "min_thickness": 0.001,
+          "held": "bonded"
+        },
+        {
+          "id": "l05",
+          "text": "Cable, from the base to the plug",
+          "source": "Anglepoise Type 75 Mini technical sheet (US - V2), https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf: cable length 70.9 in. The 5 mm diameter and the route are modelling choices; only part of the 70.9 in is drawn, the rest is slack off the desk. It is moulded into the base and the plug, so the row is bonded. min_thickness is the diameter.",
+          "min_thickness": 0.005,
+          "held": "bonded"
+        },
+        {
+          "id": "l06",
+          "text": "Plug body, standing on the strip's outlet face",
+          "source": "Anglepoise Type 75 Mini technical sheet (US - V2), https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf: plug 2-blade US plug to NEMA 1-15. The body size is a modelling choice (no source publishes a moulded plug body). min_thickness is its smallest side.",
+          "min_thickness": 0.019
+        },
+        {
+          "id": "l07",
+          "text": "Two plug blades, hanging from the plug body",
+          "source": "https://en.wikipedia.org/wiki/NEMA_connector (secondary; the primary ANSI/NEMA WD 6 is paywalled): NEMA 1-15P blades 1/4 in wide (5/16 in for the neutral), 0.06 in thick, 15.9 to 18.3 mm long, 1/2 in apart. The length is the middle of that range. They are moulded into the plug body, so the row is bonded. min_thickness is the blade thickness.",
+          "min_thickness": 0.001524,
+          "held": "bonded"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "listed": "l01",
+          "shape": "lathe",
+          "on": null,
+          "group": "l01",
+          "role": "solid"
+        },
+        {
+          "name": "arm_lower",
+          "listed": "l02",
+          "shape": "extrude",
+          "on": "base",
+          "group": "l02",
+          "role": "solid"
+        },
+        {
+          "name": "arm_upper",
+          "listed": "l03",
+          "shape": "extrude",
+          "on": "arm_lower",
+          "group": "l03",
+          "role": "solid"
+        },
+        {
+          "name": "shade",
+          "listed": "l04",
+          "shape": "lathe",
+          "on": "arm_upper",
+          "group": "l04",
+          "role": "solid"
+        },
+        {
+          "name": "cable",
+          "listed": "l05",
+          "shape": "cable",
+          "on": "base",
+          "group": "l05",
+          "role": "solid"
+        },
+        {
+          "name": "plug",
+          "listed": "l06",
+          "shape": "box",
+          "on": null,
+          "group": "l06",
+          "role": "solid"
+        },
+        {
+          "name": "blade_hot",
+          "listed": "l07",
+          "shape": "box",
+          "on": "plug",
+          "group": "l07",
+          "role": "solid"
+        },
+        {
+          "name": "blade_neutral",
+          "listed": "l07",
+          "shape": "box",
+          "on": "plug",
+          "group": "l07",
+          "role": "solid"
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [
+        {
+          "id": "cord_exit",
+          "kind": "power",
+          "point": [
+            0.0,
+            0.0024999999441206455,
+            -0.08508999645709991
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "takes": "cable",
+          "part": "base"
+        }
+      ],
+      "done": "An Anglepoise Type 75 Mini desk lamp in one reading pose: a cone-shaped base, two round arms, a bell shade, and a cable from the base to a 2-blade plug.",
+      "size_class": "prop",
+      "measured": {
+        "kind": "lamp",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 0.5634,
+          "d": 0.6946
+        },
+        "bounds": {
+          "X0": -0.0851,
+          "X1": 0.4783,
+          "Z0": -0.6095,
+          "Z1": 0.0851
+        },
+        "heights": {
+          "top": 0.3063
+        },
+        "surfaces": [],
+        "slots": [
+          "Brass",
+          "Cord",
+          "Iron",
+          "Paint"
+        ],
+        "tris": 8088,
+        "export": {
+          "position_bits": null
+        },
+        "hosts": [
+          "base",
+          "plug"
+        ]
+      },
+      "connectors": [
+        {
+          "id": "mains",
+          "part": "cable",
+          "ends": [
+            {
+              "point": [
+                0.0,
+                0.0024999999441206455,
+                -0.08508999645709991
+              ],
+              "host": "self.cord_exit"
+            },
+            {
+              "point": [
+                0.30000001192092896,
+                0.031241999939084053,
+                -0.6000000238418579
+              ],
+              "layout": "desk",
+              "host": "lamp:strip.socket_3",
+              "plug": "plug"
+            }
+          ],
+          "cap": 1.8008600000000001,
+          "why": "the lamp's own cable is 70.9 in (1.80 m) long (maker's sheet); it runs from the cord exit on the base to the plug standing in an outlet of the strip"
+        }
+      ],
+      "view": {
+        "nearest_m": 0.5,
+        "why": "A desk lamp, seen from the chair. The person's eyes are about an arm's length, 0.5 m, from the shade they reach for and move, and nobody looks at it from nearer in use. This is an estimate from that use, not a measured study.",
+        "hidden": [
+          "bottom"
+        ],
+        "hidden_why": "the base stands on the desk, so its underside is never seen",
+        "farthest_m": 1.3,
+        "farthest_why": "Everything on the desk lies within its far edge: the chair puts the eyes about 0.5 m from the desk's near edge and the slab is 0.8 m deep, so 1.3 m. This is an estimate from that use, to be confirmed."
+      }
+    },
+    "Strip": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the back face (z 0), outlet face toward +z"
+      },
+      "recipe": {
+        "kind": "assembly",
+        "source": "bars/05-lamp/lamp_build.py, from https://assets.testequity.com/te1/Documents/pdf/tripplite/Tripp-Lite_PS615_Datasheet.pdf, with the outlet bores from https://en.wikipedia.org/wiki/NEMA_connector"
+      },
+      "listed": [
+        {
+          "id": "s01",
+          "text": "Housing with six NEMA 5-15R outlets cut in as bores",
+          "source": "Tripp Lite PS615 datasheet, https://assets.testequity.com/te1/Documents/pdf/tripplite/Tripp-Lite_PS615_Datasheet.pdf: 10.8 x 1.85 x 1.23 in read as length x width x height, six outlets 28.5 mm apart in a single row, plastic, light gray. The bores are modelling choices: the slots are the NEMA 5-15 blade and ground-pin sizes from https://en.wikipedia.org/wiki/NEMA_connector (secondary) with 0.3 mm clearance a side, 20 mm deep. min_thickness is the height.",
+          "min_thickness": 0.031242
+        },
+        {
+          "id": "s02",
+          "text": "Illuminated switch, on the outlet face near the cord end",
+          "source": "Tripp Lite PS615 datasheet, https://assets.testequity.com/te1/Documents/pdf/tripplite/Tripp-Lite_PS615_Datasheet.pdf: illuminated on/off switch. Its size and place are modelling choices (not published). min_thickness is its smallest side.",
+          "min_thickness": 0.004
+        },
+        {
+          "id": "s03",
+          "text": "Printed TRIPP-LITE logo, on the outlet face",
+          "source": "Tripp Lite PS615 datasheet, https://assets.testequity.com/te1/Documents/pdf/tripplite/Tripp-Lite_PS615_Datasheet.pdf, product photograph: the logo is printed on the top face at the cord end. Its size is a modelling choice; an oval stands for the lettering. min_thickness is a 4 micron pad-print ink film (Inkcups ICN-B150 manual).",
+          "min_thickness": 4e-06,
+          "finish": "print"
+        }
+      ],
+      "parts": [
+        {
+          "name": "body",
+          "listed": "s01",
+          "shape": "box",
+          "on": null,
+          "group": "s01",
+          "role": "solid"
+        },
+        {
+          "name": "switch",
+          "listed": "s02",
+          "shape": "box",
+          "on": "body",
+          "group": "s02",
+          "role": "solid"
+        },
+        {
+          "name": "logo",
+          "listed": "s03",
+          "shape": "decal",
+          "on": "body",
+          "group": "s03",
+          "role": "decal",
+          "form": {
+            "half": [
+              0.016,
+              0.0045000000000000005
+            ],
+            "segments": 32,
+            "rings": 3,
+            "at": [
+              -0.065,
+              0.0,
+              0.031242
+            ],
+            "along": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "why": "an oval the size of the logo's box stands for the wordmark"
+          }
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [
+        {
+          "id": "socket_0",
+          "kind": "power",
+          "point": [
+            -0.027340000000000003,
+            0.0,
+            0.031242
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "takes": "plug",
+          "part": "body"
+        },
+        {
+          "id": "socket_1",
+          "kind": "power",
+          "point": [
+            0.0011600000000000082,
+            0.0,
+            0.031242
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "takes": "plug",
+          "part": "body"
+        },
+        {
+          "id": "socket_2",
+          "kind": "power",
+          "point": [
+            0.029660000000000006,
+            0.0,
+            0.031242
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "takes": "plug",
+          "part": "body"
+        },
+        {
+          "id": "socket_3",
+          "kind": "power",
+          "point": [
+            0.05816000000000001,
+            0.0,
+            0.031242
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "takes": "plug",
+          "part": "body"
+        },
+        {
+          "id": "socket_4",
+          "kind": "power",
+          "point": [
+            0.08666000000000001,
+            0.0,
+            0.031242
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "takes": "plug",
+          "part": "body"
+        },
+        {
+          "id": "socket_5",
+          "kind": "power",
+          "point": [
+            0.11516000000000001,
+            0.0,
+            0.031242
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "takes": "plug",
+          "part": "body"
+        }
+      ],
+      "done": "A Tripp Lite PS615 six-outlet power strip lying flat: a housing with six outlets cut in as bores, a switch and the printed logo on the outlet face.",
+      "size_class": "prop",
+      "measured": {
+        "kind": "power strip",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 0.2743,
+          "d": 0.0352
+        },
+        "bounds": {
+          "X0": -0.1372,
+          "X1": 0.1372,
+          "Z0": 0.0,
+          "Z1": 0.0352
+        },
+        "heights": {
+          "top": 0.0235
+        },
+        "surfaces": [],
+        "slots": [
+          "Ink",
+          "Plastic",
+          "Red"
+        ],
+        "tris": 712,
+        "export": {
+          "position_bits": null
+        },
+        "hosts": [
+          "body"
+        ]
+      },
+      "view": {
+        "nearest_m": 0.5,
+        "why": "A power strip lying on the desk. The nearest anyone looks at it is when they plug something in, leaning over the outlets with the eyes about 0.5 m away. This is an estimate from that use, not a measured study.",
+        "hidden": [
+          "back"
+        ],
+        "hidden_why": "the back lies flat on the desk (the layout turns it down), so it is never seen",
+        "farthest_m": 1.3,
+        "farthest_why": "Everything on the desk lies within its far edge: the chair puts the eyes about 0.5 m from the desk's near edge and the slab is 0.8 m deep, so 1.3 m. This is an estimate from that use, to be confirmed."
+      }
+    },
+    "Desk": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the top face, on the desk top (y 0)"
+      },
+      "recipe": {
+        "kind": "assembly",
+        "source": "bars/05-lamp/lamp_build.py: a plain slab, no product"
+      },
+      "listed": [
+        {
+          "id": "d01",
+          "text": "Desk top, a plain slab, with the lamp and the strip resting on it",
+          "source": "No source: a modelling choice. A slab 1.2 m by 0.8 m and 30 mm thick, large enough for the lamp's pose, the cable and the strip, so the two pieces have a top to rest on. min_thickness is the slab's thickness.",
+          "min_thickness": 0.03
+        }
+      ],
+      "parts": [
+        {
+          "name": "top",
+          "listed": "d01",
+          "shape": "box",
+          "on": null,
+          "group": "d01",
+          "role": "solid"
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "A plain desk top, a slab 1.2 m by 0.8 m and 30 mm thick, for the lamp and the strip.",
+      "size_class": "piece",
+      "measured": {
+        "kind": "desk",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 1.2,
+          "d": 0.8
+        },
+        "bounds": {
+          "X0": -0.6,
+          "X1": 0.6,
+          "Z0": -0.4,
+          "Z1": 0.4
+        },
+        "heights": {
+          "top": 0.0
+        },
+        "surfaces": [],
+        "slots": [
+          "Wood"
+        ],
+        "tris": 12,
+        "export": {
+          "position_bits": null
+        },
+        "hosts": [
+          "top"
+        ]
+      },
+      "view": {
+        "nearest_m": 0.5,
+        "why": "A desk top seen from the chair. The person sits at it, and the nearest part of it, the surface under their forearms, is about 0.5 m from their eyes. This is an estimate from that use, not a measured study.",
+        "hidden": [
+          "bottom"
+        ],
+        "hidden_why": "the underside is hidden by the top itself from the chair",
+        "farthest_m": 1.3,
+        "farthest_why": "Everything on the desk lies within its far edge: the chair puts the eyes about 0.5 m from the desk's near edge and the slab is 0.8 m deep, so 1.3 m. This is an estimate from that use, to be confirmed."
+      }
+    }
+  }
+}

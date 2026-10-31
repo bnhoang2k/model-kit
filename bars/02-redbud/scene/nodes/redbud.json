@@ -1,0 +1,298 @@
+{
+  "nodes": [
+    {
+      "name": "Redbud/Branches",
+      "parent": "Redbud",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud/Branches"
+    },
+    {
+      "name": "Redbud/Leaders",
+      "parent": "Redbud",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud/Leaders"
+    },
+    {
+      "name": "Redbud/Leaves_Leaf",
+      "parent": "Redbud",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud/Leaves_Leaf"
+    },
+    {
+      "name": "Redbud/Shoots",
+      "parent": "Redbud",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud/Shoots"
+    },
+    {
+      "name": "Redbud/Trunk_Roots",
+      "parent": "Redbud",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud/Trunk_Roots"
+    },
+    {
+      "name": "Redbud/Twigs",
+      "parent": "Redbud",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud/Twigs"
+    },
+    {
+      "name": "Redbud",
+      "parent": null,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
+      "name": "Redbud_Lite/Branches",
+      "parent": "Redbud_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Lite/Branches"
+    },
+    {
+      "name": "Redbud_Lite/Leaders",
+      "parent": "Redbud_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Lite/Leaders"
+    },
+    {
+      "name": "Redbud_Lite/Leaves_Leaf",
+      "parent": "Redbud_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Lite/Leaves_Leaf"
+    },
+    {
+      "name": "Redbud_Lite/Shoots",
+      "parent": "Redbud_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Lite/Shoots"
+    },
+    {
+      "name": "Redbud_Lite/Trunk_Roots",
+      "parent": "Redbud_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Lite/Trunk_Roots"
+    },
+    {
+      "name": "Redbud_Lite/Twigs",
+      "parent": "Redbud_Lite",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Lite/Twigs"
+    },
+    {
+      "name": "Redbud_Lite",
+      "parent": null,
+      "translation": [
+        5.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    }
+  ]
+}

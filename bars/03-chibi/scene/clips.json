@@ -1,0 +1,12 @@
+{
+  "clips": {
+    "idle": {
+      "frames": [1, 73],
+      "fps": 30,
+      "authoring": "keyed",
+      "posture": "stand",
+      "holds": [],
+      "loop": true
+    }
+  }
+}

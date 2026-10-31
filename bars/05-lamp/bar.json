@@ -1,0 +1,39 @@
+{
+  "slug": "05-lamp",
+  "title": "Desk lamp plugged into a power strip",
+  "class": "assembly",
+  "default": true,
+  "piece": "lamp:Lamp",
+  "reads": "A black desk lamp standing on a round, shallow cone base, 0.31 m tall in one reading pose: a lower arm leaning back, an upper arm reaching forward, and a bell shade tilted down over the desk. A thin cable leaves the back of the base, bends once across the desk, rises, and ends in a small plug whose two brass blades stand in one outlet of a light gray six-outlet power strip lying flat on the desk (the second piece, lamp:Strip, with a red switch and a printed logo oval on its outlet face). Both rest on a plain slab, lamp:Desk.",
+  "fits": "A comparison bar for hard-surface assemblies with a joint between two pieces: a cable and plug into a socket with real bores, pieces that rest on another, a printed label on a flat face, and pieces seen from a desk's distance.",
+  "wrong_for": "Rigged characters, branching plants, and soft or organic forms. The bar has no bulb, no lamp switch, no cord or switch housing on the strip and no real desk (a plain slab), and it is one pose of the lamp, not its range of motion.",
+  "references": [
+    {
+      "key": "A",
+      "url": "https://cdn11.bigcommerce.com/s-kvxianwgwu/content/product-files/type-75-mini-desk-lamp.pdf",
+      "gives": "Anglepoise Type 75 Mini technical sheet, US edition V2: shade diameter 5.1 in, shade height 5.9 in, max reach 21.6 in horizontal and 28.4 in vertical, base diameter 6.7 in, cable length 70.9 in, aluminum shade and arms, cast iron base, 2-blade US plug to NEMA 1-15."
+    },
+    {
+      "key": "T",
+      "url": "https://assets.testequity.com/te1/Documents/pdf/tripplite/Tripp-Lite_PS615_Datasheet.pdf",
+      "gives": "Tripp Lite PS615 datasheet: unit 10.8 x 1.85 x 1.23 in (read as length x width x height; the sheet's hwd label cannot be right for a strip that lies on a desk), 6 NEMA 5-15R outlets in a single row 28.5 mm apart, illuminated switch, plastic, light gray. The TRIPP-LITE logo on the top face is read from the datasheet photograph."
+    },
+    {
+      "key": "N",
+      "url": "https://en.wikipedia.org/wiki/NEMA_connector",
+      "gives": "NEMA 1-15P plug blades (secondary source; the primary ANSI/NEMA WD 6 is paywalled): 1/4 in wide, 0.06 in thick, 5/8 to 23/32 in long, 1/2 in apart, the polarized neutral blade 5/16 in wide; NEMA 5-15 ground pin 3/16 in round, 15/32 in from the blade line."
+    },
+    {
+      "key": "choices",
+      "file": "README.md",
+      "gives": "The modelling choices, each stated in the README's table with its value and reason. Neither sheet publishes them: arm segments 240 mm each (the sheet gives only the reach; two equal arms plus the 65 mm shade radius stay under the 548.6 mm reach); arm lean 20 degrees, arm rise 10 degrees and shade tilt 35 degrees (one reading pose, checked against the 21.6 x 28.4 in reach by the build); arm tube diameter 16 mm; base 30 mm tall with a 6 mm straight rim, the cone about 24 degrees (a low weight), its top edge an arc of 40 mm radius (a casting's edge is rounded); shade wall 1 mm, neck 14 mm across (check-driven: the shade's seat must lie on the arm's end), 20 mm long, ceiling 35 mm; cord exit at the back of the base; cable diameter 5 mm, entering the plug's side; plug body 38 x 22 x 19 mm; blade length 17.1 mm (the middle of the NEMA 15.9 to 18.3 mm); outlet bores 0.12 mm wider than their blade or pin on each side (check-driven, not true to the object: the joints check reads a clearance over the 0.145 mm contact length as no bore, so a real, looser slot would fail) and 20 mm deep; first outlet 22 mm from the plain end; switch 22 x 12 x 4 mm, 30 mm from the cord end, its raised housing left out; logo oval 32 x 9 mm; a plain desk slab 1.2 x 0.8 m x 30 mm; the plug stands 0.30 m right and 0.60 m behind the lamp base. Each piece's view.nearest_m is 0.5 m, an estimate from how it is used (a person at the desk reaching for the shade, leaning over to plug in, or looking at the top under their forearms), not a measured study; to be confirmed. Each piece's view.farthest_m is 1.3 m, an estimate from how it is used (the eyes about 0.5 m from the desk's near edge plus the desk's 0.8 m depth); to be confirmed."
+    }
+  ],
+  "files": {
+    "style": "style.json",
+    "pack": "lamp.pack.json",
+    "glb": "lamp.glb",
+    "scene": "scene",
+    "sheet": "sheet.png"
+  }
+}

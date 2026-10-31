@@ -1,0 +1,54 @@
+{
+  "slug": "04-sweetgum",
+  "title": "Sweetgum, grown from buds",
+  "class": "branching",
+  "default": false,
+  "piece": "sweetgum:Sweetgum",
+  "reads": "At the page camera (ortho, turn 14, tilt 52): a young tree taller than wide, an open crown of star leaves on upright limbs that rise from a low fork, over root flares into the soil.",
+  "fits": "Grown pieces: young broadleaf trees with spiral leaves and a terminal bud, as scenery.",
+  "wrong_for": "Hard-surface props, rigged characters, and anything whose shape is not a branching tree.",
+  "references": [
+    {
+      "key": "KJ",
+      "url": "https://rngr.net/publications/tpn/36-3/eighteen-year-development-of-sweetgum-liquidambar-styraciflua-l.-plantings-on-two-sites/at_download/file",
+      "gives": "Krinard & Johnson 1985, Tree Planters' Notes 36(3): 6-8: planted sweetgum (10 x 10 ft) on the DEF site was 1.5, 5.8 and 12.7 ft tall after 1, 3 and 6 years (27.1 ft at 6 years on the better HP site)"
+    },
+    {
+      "key": "NC",
+      "url": "https://plants.ces.ncsu.edu/plants/liquidambar-styraciflua/",
+      "gives": "NC State Extension: 60-100 ft tall, 40-50 ft spread; pyramidal, spreading; rapid growth"
+    },
+    {
+      "key": "UF",
+      "url": "https://ask.ifas.ufl.edu/publication/ST358",
+      "gives": "Gilman et al., UF/IFAS ST358: 60-75 ft tall, 35-50 ft spread; crown pyramidal, oval; grows in a narrow pyramid; typically one trunk"
+    },
+    {
+      "key": "VT",
+      "url": "https://dendro.cnre.vt.edu/dendrology/syllabus/factsheet.cfm?ID=53",
+      "gives": "Virginia Tech dendrology: the terminal bud is large; leaves 4 to 6 inches across with 5 to 7 lobes, star-like; crown pyramidal, especially when young"
+    },
+    {
+      "key": "OK",
+      "url": "https://doi.org/10.5586/asbp.3527",
+      "gives": "Okabe 2016: spiral leaf arrangements sit near the golden angle, 137.5 deg"
+    },
+    {
+      "key": "CH",
+      "url": "https://doi.org/10.1007/s13595-018-0730-x",
+      "gives": "Chianucci et al. 2018 leaf inclination data: Liquidambar styraciflua blade angle mean 69.43 deg, SD 12.58, n 91; beta on t = 2 theta / pi by the method of moments a 6.1932, b 1.8352 (a reference sweep)"
+    },
+    {
+      "key": "DM",
+      "url": "https://doi.org/10.5281/zenodo.4557401",
+      "gives": "Demol et al. QSM trees (beech and ash): branch angles from the parent with medians of 44 to 54 deg; other species, a stand-in"
+    }
+  ],
+  "files": {
+    "style": "style.json",
+    "pack": "sweetgum.pack.json",
+    "glb": "sweetgum.glb",
+    "scene": "scene",
+    "sheet": "sheet.png"
+  }
+}

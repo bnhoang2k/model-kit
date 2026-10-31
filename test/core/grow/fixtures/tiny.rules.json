@@ -1,0 +1,32 @@
+{
+  "species": "tuftbranch",
+  "sources": [
+    {"key": "A", "url": "https://example.org/field-notes", "gives": "heights, girths and limb counts"},
+    {"key": "B", "url": "https://example.org/leaf-plates", "gives": "leaf outlines and leaf kinds"}
+  ],
+  "rows": [
+    {"id": "trunk.size", "level": "trunk", "rule": "size",
+     "value": "1.6 to 2.4 m tall, 0.22 m round", "source": "field notes [A]: table 2"},
+    {"id": "crown.base", "level": "crown", "rule": "base",
+     "value": "0.42 of the height", "source": "field notes [A]: 0.3 to 0.45"},
+    {"id": "branch.count", "level": "branch", "rule": "count",
+     "value": "3, 4 or 5 limbs in 2 tiers", "source": "field notes [A], plates [B]"},
+    {"id": "branch.angle", "level": "branch", "rule": "angle",
+     "value": "35 to 55 degrees off the trunk", "source": "field notes [A]: fig 4"},
+    {"id": "leaf.shape", "level": "leaf", "rule": "tip / base shape",
+     "value": "a pointed oval, oval or lobed", "source": "plates [B]: plate 1"},
+    {"id": "bark.colour", "level": "bark", "rule": "colour",
+     "value": "grey-brown", "source": "plates [B]: plate 3"}
+  ],
+  "notes": ["bark.colour"],
+  "params": {
+    "trunk.height_m": {"value": [1.6, 2.4], "rows": ["trunk.size"], "tag": "measured"},
+    "trunk.girth_m": {"value": 0.22, "rows": ["trunk.size"], "tag": "measured"},
+    "crown.base_of_height": {"value": 0.42, "rows": ["crown.base"], "tag": "measured"},
+    "branch.count_choices": {"value": [3, 4, 5], "rows": ["branch.count"], "tag": "measured"},
+    "branch.tiers": {"value": 2, "rows": ["branch.count"], "tag": "measured"},
+    "branch.angle_deg": {"value": [35, 55], "rows": ["branch.angle"], "tag": "measured"},
+    "leaf.outline": {"value": [[0, 0], [0.5, 0.3], [1, 0], [0.5, -0.3]], "rows": ["leaf.shape"], "tag": "measured"},
+    "leaf.kinds": {"value": ["oval", "lobed"], "rows": ["leaf.shape"], "tag": "measured"}
+  }
+}
