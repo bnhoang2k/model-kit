@@ -603,6 +603,16 @@ SINK_PLANT_OF_CROSS = 0.9
 # CROSS_OF_PART_THICKNESS alone.
 CROSS_SAMPLE_OF_THICKNESS = 0.25
 
+# The most points `geom.surface_samples` may make for one surface: past it the lattice is never
+# built and `errors.TooManySamples` is raised. A memory bound, not a limit any piece is judged by:
+# a lattice point costs about 82 bytes at its peak (measured on the lamp bar's shade, 1.19e6
+# points in 97 MB) and the count compared is an upper bound about twice the points made, so the
+# cap keeps one surface's points near 400 MB, a twentieth of an 8 GB laptop. Source: a design call
+# of this kit. Without a cap, a part whose thickness at its centre reads 2e-5 (a shell sunk
+# 0.018 mm inside another shell of the same part) asks for about 2e10 points, over 100 GB.
+# The bars' largest surface asks for at most 2.8e6 (the lamp's shade).
+MAX_SURFACE_SAMPLES = 10_000_000
+
 
 # --- plant checks ------------------------------------------------------------------------------
 
@@ -666,3 +676,17 @@ LEAF_ANGLE_PLANT_STEEP_DEG = 85.0
 # loader refuses a rig whose two differ by more than this, in model units. Float rounding of the
 # file's own numbers, so it sits far under any real bone.
 REST_LENGTH_TOLERANCE = 1e-9
+
+# --- Light bake (core/checks/seam_jump.py, core/checks/lightmap_density.py) --------------------
+# How many standard deviations a step across a lightmap seam must exceed before `seam-jump`
+# reports it. The deviation adds the two sides' shipped noise (as extrapolated to the edge) and
+# each side's recorded resolution `error` in quadrature, `sqrt(5 (ns_a^2 + ns_b^2) + e_a^2 +
+# e_b^2)`: the picture cannot resolve a step finer than its own resolution error (derived in
+# `seam_jump.py`). Source: the general three-sigma rule of a normal error (99.7% of honest noise
+# lies inside it).
+SEAM_JUMP_SIGMAS = 3.0
+
+# The share of the bake's `noise` squared that a 2 x 2 average leaves in the grown-back picture of
+# pure noise: 1 - 1/4. `lightmap-density` takes it off the error before it judges what is left.
+# Source: the variance of a mean of four independent texels (derived in `lightmap_density.py`).
+DENSITY_PURE_NOISE_SHARE = 0.75

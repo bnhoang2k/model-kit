@@ -7,7 +7,8 @@
    (`KIT_RULES`), prints each grow time and saves both skeletons. Seeds 1 to 4 fitted
    `apical.control`; the bar's seeds are held out (5 and up).
 2. Runs `model_kit/blender/grow_build.py` in Blender: it makes the pack with Draco and writes
-   `redbud.pack.json` and `redbud.glb` here, then exports the pieces into a scene folder.
+   `redbud.pack.json` and `redbud.glb` here (a third piece, `Redbud_Cards`, is the card copy of
+   `Redbud`: leaf cards on light wood, from the same skeleton), then exports the pieces into a scene folder.
 3. `model_kit.bars_build.install_bar` stages the manifests (`style.json`, an empty `clips.json`,
    the pack), copies the skeletons, the rules file (into `rules/`, where `reference-range` reads
    its ranges) and this script into the scene folder, writes the node table of the .glb beside
@@ -55,12 +56,22 @@ DONE_LITE = ("At the page camera the same loose, irregular dome of leaf clusters
              "forking trunk. Its leaves are fewer and plainer, so many copies stay cheap. Every "
              "limb sits on its parent and every leaf on its shoot.")
 
+DONE_CARDS = ("At the page camera the same loose dome of leaf clusters, drawn as leaf cards "
+              "on the light wood of Redbud (seed 6): the crown reads as clumps with the dark "
+              "limbs showing between them. Every card sits on a leaf ball over its shoots.")
+
 # name, height in metres, seed, lite, size class, what done looks like. Seeds 5 to 8 all pass
 # reference-range (README); 6 and 5 are picked so the two pieces are different trees.
 PIECES = [
     ("Redbud", 5.0, 6, False, "hero", DONE_FULL),
     ("Redbud_Lite", 5.0, 7, True, "piece", DONE_LITE),
 ]
+# The card copy of Redbud: the game-weight piece (README "Redbud_Cards"). It has no skeleton of
+# its own; the build gives it the skeleton of the piece it copies.
+CARDS_OF = "Redbud"
+CARDS_NAME = "Redbud_Cards"
+OUTLINED_WHY = ("the shipping look draws it without lines: an outline on every leaf card turns "
+                "the crown solid ink, as for the full tree (README, Taste read)")
 ORIGIN = "centre of the base"
 
 # The nearest and farthest distances each piece is seen from, in metres, and why (the pack's `view`;
@@ -81,6 +92,12 @@ VIEWS = {
                                                         "of many trees seen from the scene's "
                                                         "camera; the README says only where the "
                                                         "backdrop begins"},
+    CARDS_NAME: {"nearest_m": 10.0, "why": "proposed from a scene's close-up on one building "
+                                           "with trees beside it, where a tree is seen from "
+                                           "about 10 m; not measured",
+                 "farthest_m": 70.0, "farthest_why": "proposed from the same scene's "
+                                                     "orthographic overview, where the trees "
+                                                     "are seen from about 70 m; not measured"},
 }
 
 
@@ -106,7 +123,10 @@ def build() -> None:
                 "out": str(out), "scene": str(scene), "colours": COLOURS,
                 "pieces": [{"skeleton": str(skeletons[name]), "size_class": size_class,
                             "done": done, "origin": ORIGIN, "view": VIEWS[name]}
-                           for name, _, _, _, size_class, done in PIECES],
+                           for name, _, _, _, size_class, done in PIECES]
+                          + [{"cards_of": CARDS_OF, "name": CARDS_NAME, "size_class": "piece",
+                              "done": DONE_CARDS, "origin": ORIGIN, "view": VIEWS[CARDS_NAME],
+                              "outlined_why": OUTLINED_WHY}],
             }
             (tmp / "spec.json").write_text(json.dumps(spec))
             return [str(tmp / "spec.json")]

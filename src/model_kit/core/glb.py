@@ -7,6 +7,9 @@ without a name, or a node that carries a `matrix` instead of a transform raises,
 checks that read the table compare names. Two nodes may share a name (a real glTF can give a
 bone and an object one name): the table keeps both, parents are resolved by index, and the
 export-hygiene check reports the duplicate.
+
+`glb_mesh_attributes` reads one node's mesh into numpy arrays: each vertex attribute under its
+glTF name (`POSITION`, `TEXCOORD_0`, ...) and the triangle `indices`.
 """
 
 from __future__ import annotations
@@ -17,12 +20,19 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from model_kit.core.errors import ManifestError
 
 _MAGIC = b"glTF"
 _JSON_CHUNK = b"JSON"
+_BIN_CHUNK = b"BIN\x00"
 _HEADER = 12
 _CHUNK_HEAD = 8
+# glTF accessor component types, and the number of components of each accessor type.
+_COMPONENT = {5120: np.int8, 5121: np.uint8, 5122: np.int16, 5123: np.uint16,
+              5125: np.uint32, 5126: np.float32}
+_WIDTH = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT2": 4, "MAT3": 9, "MAT4": 16}
 
 
 @dataclass(frozen=True)
@@ -154,4 +164,95 @@ def nodes_from_json(path: Path, raw: Any) -> list[GlbNode]:
         if n.parent is not None and n.parent not in names:
             raise ManifestError(f"{path}: node {n.name!r} has parent {n.parent!r}, "
                                 "which is no node of the table")
+    return out
+
+
+def _bin_chunk(path: Path) -> bytes:
+    data = path.read_bytes()
+    start = _HEADER
+    while start + _CHUNK_HEAD <= len(data):
+        length, kind = struct.unpack_from("<I4s", data, start)
+        body = start + _CHUNK_HEAD
+        if kind == _BIN_CHUNK:
+            return data[body:body + length]
+        start = body + length
+    raise ManifestError(f"{path}: the .glb has no binary chunk")
+
+
+def _accessor(path: Path, js: dict, blob: bytes, index: int) -> np.ndarray:
+    """One accessor as an array of shape (count,) for a scalar, else (count, width). A sparse
+    accessor, or a component type this reader does not know, raises."""
+    accessors = js.get("accessors", [])
+    if not isinstance(index, int) or not 0 <= index < len(accessors):
+        raise ManifestError(f"{path}: accessor {index!r} is not in the file")
+    acc = accessors[index]
+    if "sparse" in acc or "bufferView" not in acc:
+        raise ManifestError(f"{path}: accessor {index} is sparse or has no buffer view; this "
+                            "reader does not take it")
+    dtype = _COMPONENT.get(acc.get("componentType"))
+    width = _WIDTH.get(acc.get("type"))
+    if dtype is None or width is None:
+        raise ManifestError(f"{path}: accessor {index} has component type "
+                            f"{acc.get('componentType')!r} and type {acc.get('type')!r}, which "
+                            "this reader does not know")
+    views = js.get("bufferViews", [])
+    if not isinstance(acc["bufferView"], int) or not 0 <= acc["bufferView"] < len(views):
+        raise ManifestError(f"{path}: accessor {index} names buffer view {acc['bufferView']!r}, "
+                            "which is not in the file")
+    view = views[acc["bufferView"]]
+    count = acc["count"]
+    size = np.dtype(dtype).itemsize
+    stride = view.get("byteStride") or size * width
+    start = view.get("byteOffset", 0) + acc.get("byteOffset", 0)
+    # `as_strided` reads wherever it is told: a short or malformed file would read memory past
+    # the buffer, so the accessor must end inside its view, and the view inside the BIN chunk.
+    counted = isinstance(count, int) and count >= 0
+    end = (acc.get("byteOffset", 0) + (count - 1) * stride + size * width
+           if counted and count > 0 else 0)
+    view_end = view.get("byteOffset", 0) + view.get("byteLength", 0)
+    if (not counted or min(start, stride) < 0 or end > view.get("byteLength", 0)
+            or view_end > len(blob)):
+        raise ManifestError(f"{path}: accessor {index} ({count!r} x {stride} bytes from byte "
+                            f"{start}) runs past its buffer view or the file's {len(blob)} "
+                            "binary bytes")
+    flat = np.frombuffer(blob, dtype=np.uint8)
+    rows = np.lib.stride_tricks.as_strided(
+        flat[start:], shape=(count, size * width), strides=(stride, 1), writeable=False)
+    out = np.ascontiguousarray(rows).view(dtype).reshape(count, width)
+    return out[:, 0].copy() if width == 1 else out.copy()
+
+
+def glb_mesh_attributes(path, node: str) -> dict[str, np.ndarray]:
+    """The mesh of the node named `node`: each vertex attribute under its glTF name, and the
+    triangle `indices` (a flat array into the vertices; the vertices of every primitive are
+    joined, and each primitive's indices shifted to match). The name must belong to exactly one
+    node, which holds a mesh of triangle primitives that carry the same attributes. A miss
+    raises."""
+    path = Path(path)
+    js = read_glb_json(path)
+    named = [n for n in js.get("nodes", []) if n.get("name") == node]
+    if len(named) != 1 or "mesh" not in named[0]:
+        raise ManifestError(f"{path}: {len(named)} nodes named {node!r} (need exactly one), or "
+                            "it holds no mesh")
+    blob = _bin_chunk(path)
+    joined: dict[str, list[np.ndarray]] = {}
+    indices: list[np.ndarray] = []
+    base = 0
+    for prim in js["meshes"][named[0]["mesh"]]["primitives"]:
+        if prim.get("mode", 4) != 4:
+            raise ManifestError(f"{path}: node {node!r} has a primitive that is not triangles")
+        attrs = {k: _accessor(path, js, blob, v) for k, v in prim["attributes"].items()}
+        if joined and set(attrs) != set(joined):
+            raise ManifestError(f"{path}: node {node!r}: its primitives carry different "
+                                f"attributes ({sorted(joined)} and {sorted(attrs)})")
+        if "indices" in prim:
+            local = _accessor(path, js, blob, prim["indices"]).astype(np.int64)
+        else:
+            local = np.arange(len(attrs["POSITION"]), dtype=np.int64)
+        indices.append(local + base)
+        for key, value in attrs.items():
+            joined.setdefault(key, []).append(value)
+        base += len(attrs["POSITION"])
+    out = {key: np.concatenate(value) for key, value in joined.items()}
+    out["indices"] = np.concatenate(indices)
     return out

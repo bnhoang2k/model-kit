@@ -15,7 +15,7 @@ from model_kit.core.glb import read_glb_json
 from model_kit.core.grow.buds import grow_buds
 from model_kit.core.grow.rules import KIT_RULES, load_rules
 from model_kit.core.grow.skeleton import load_skeleton, same_skeleton
-from model_kit.core.scene import SKELETON_SUFFIX
+from model_kit.core.scene import SKELETON_SUFFIX, load_scene, piece_key
 
 BARS = Path(__file__).resolve().parents[2] / "bars"
 
@@ -68,23 +68,57 @@ def test_bar_json_loads(folder):
 KNOWN = Path(__file__).resolve().parent / "known"
 
 
+def _pinned(folder: Path) -> tuple[Path, list[str], list[str]] | None:
+    """The pin of a bar: its file, its `# ` note lines and its pinned output lines; None when the
+    bar has no pin."""
+    pinned = KNOWN / f"{folder.name}.txt"
+    if not pinned.exists():
+        return None
+    text = pinned.read_text().splitlines()
+    return (pinned, [line for line in text if line.startswith("# ")],
+            [line for line in text if not line.startswith("# ")])
+
+
 @_params(_folders(_gated))
 def test_gate_verdict(folder, capsys):
-    scene = folder / load_bar(folder).files.scene
-    code = gate.main([str(scene)])
+    code = gate.main(load_bar(folder).gate_args())  # with --allow when the bar has an allowlist
     out = capsys.readouterr()
-    pinned = KNOWN / f"{folder.name}.txt"
-    if pinned.exists():
-        text = pinned.read_text().splitlines()
-        notes = [line for line in text if line.startswith("# ")]
+    pin = _pinned(folder)
+    if pin is not None:
+        pinned, notes, expected = pin
         assert any(line.startswith("# Why: ") for line in notes), pinned
         assert any(line.startswith("# Issue: https://") for line in notes), pinned
-        expected = [line for line in text if not line.startswith("# ")]
-        assert code == 1 and (out.err + out.out).splitlines() == expected, out.err + out.out
+        shown = [line for line in (out.err + out.out).splitlines()
+                 if not line.startswith("time: ")]  # the seconds differ on every run
+        assert code == 1 and shown == expected, out.err + out.out
         return
     assert code == 0
     lines = out.out.strip().splitlines()
     assert lines and lines[-1] == "passed", out.err
+
+
+def _findings(err: str) -> list[str]:
+    """The failure lines of a gate run: stderr without coverage, time and allowed lines."""
+    return [line for line in err.splitlines()
+            if line and not line.startswith(("coverage: ", "time: ", "allowed: "))]
+
+
+@_params(_folders(_gated))
+def test_scoped_to_every_piece_the_findings_are_the_full_runs(folder, capsys):
+    """The findings the bar's pin (or, with no pin, none) holds, which `test_gate_verdict` pins
+    for the full run."""
+    scene = folder / load_bar(folder).files.scene
+    pin = _pinned(folder)
+    expected = [] if pin is None else _findings("\n".join(pin[2]))
+    if expected and (expected[-1] == "partial" or expected[-1].startswith("failed:")):
+        expected = expected[:-1]
+    keys = [piece_key(name, piece) for name, pack in load_scene(scene).packs.items()
+            for piece in pack.pieces]
+    code = gate.main([*load_bar(folder).gate_args(), "--pieces", ",".join(keys)])
+    scoped = capsys.readouterr()
+    lines = scoped.out.strip().splitlines()
+    assert code == 1 and lines and lines[-1] == "partial", scoped.err
+    assert _findings(scoped.err) == expected
 
 
 @_params(_folders(_has_scene))

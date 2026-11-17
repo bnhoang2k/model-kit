@@ -157,6 +157,7 @@ def _unit(label: str, view: PieceView, tail: str, part: str, ctx: SceneCtx) -> P
 class Markings:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

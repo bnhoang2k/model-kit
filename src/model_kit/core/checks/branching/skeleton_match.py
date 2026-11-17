@@ -13,6 +13,11 @@ sight)`, with `tol` = `SKELETON_MATCH_OF_THICKNESS` x the piece's tube thickness
   the skeleton's), or the reverse (missing from the shipped mesh).
 A branching piece with a skeleton but no geometry in the scene is `Unmeasured`.
 
+A card piece (`Piece.cards_of`) is compared with `card_parts(skeleton, sight, dials.cards, ...)`
+in place of `grown_parts`: its wood levels and its `Cards_<shade>` part, whose triangles are the
+leaf cards. It needs a view, a crease angle and the style's `dials.cards` and `dials.leaves`;
+without one it is `Unmeasured`.
+
 A buds-v2 skeleton takes its tube sides from the piece's view, so it is re-meshed with the same
 sight the build meshed it with (`sight.sight_for`: the seen floor of the piece's `view` and the
 style's crease angle). Without a view, or a crease angle, there is nothing to re-mesh with, and
@@ -26,7 +31,9 @@ Plant, one unit per grown piece with geometry, built from the two meshes' vertic
 nearest other vertex of the skeleton's part lies over `PLANT_CLEAR_OF_TOL` x the tolerance away,
 moved `CALIBRATION_FAIL` x the tolerance along +Y (every copy of it in that part). If no vertex
 of that part is so far from the skeleton's, a second candidate moves the part's first vertex
-along +Y by the part's bounding box diagonal, which no skeleton vertex lies within.
+along +Y by the part's bounding box diagonal, which no skeleton vertex lies within. A card piece
+is planted the same way on the first part both its card copy and the scene hold, and again on its
+first `Cards_<shade>` part (a second unit), so the leaf cards are planted too.
 """
 
 from __future__ import annotations
@@ -38,8 +45,10 @@ from collections.abc import Collection
 import numpy as np
 
 from model_kit.core.checks.branching._pieces import KINDS, Grown, coverage, grown, tube_base
+from model_kit.core.errors import ManifestError
 from model_kit.core.grow.buds import MESH_VERSION
-from model_kit.core.grow.mesh import grown_parts, needs_sight
+from model_kit.core.grow.cards import CARDS_PREFIX, card_dials, card_parts
+from model_kit.core.grow.mesh import grown_parts, leaf_lean, needs_sight
 from model_kit.core.metagate import Finding, Plant, PlantUnit, Unmeasured
 from model_kit.core.scene import PieceGeom, SceneCtx
 from model_kit.core.sight import Sight, sight_for
@@ -170,16 +179,36 @@ def _sight(ctx: SceneCtx, g: Grown) -> Sight | None:
     return sight_for(g.piece, ctx.style, ctx.packs[g.pack].units_per_metre)
 
 
+def _card_inputs(ctx: SceneCtx):
+    """The style's card dials and leaf lean, or None when it lacks either."""
+    try:
+        return card_dials(ctx.style), leaf_lean(ctx.style)
+    except ManifestError:
+        return None
+
+
 def _meshable(ctx: SceneCtx, g: Grown) -> bool:
-    """Whether the skeleton can be re-meshed: it needs no sight, or the piece has one."""
+    """Whether the skeleton can be re-meshed: it needs no sight, or the piece has one. A card
+    copy always needs a sight and the style's card dials and leaf lean."""
+    if g.card:
+        return _sight(ctx, g) is not None and _card_inputs(ctx) is not None
     return not needs_sight(g.skeleton) or _sight(ctx, g) is not None
+
+
+def _expected(ctx: SceneCtx, g: Grown) -> dict[str, np.ndarray]:
+    """The parts the skeleton makes for this piece: the card copy's for a card piece."""
+    if not g.card:
+        return grown_parts(g.skeleton, _sight(ctx, g))
+    dials, lean = _card_inputs(ctx)
+    return card_parts(g.skeleton, _sight(ctx, g), dials, ctx.packs[g.pack].units_per_metre,
+                      lean)[0]
 
 
 def _findings(ctx: SceneCtx, g: Grown, geom: PieceGeom, only) -> list[Finding]:
     tol = SKELETON_MATCH_OF_THICKNESS * tube_base(ctx, g.piece)
     if not _meshable(ctx, g):
         return []
-    expected = grown_parts(g.skeleton, _sight(ctx, g))
+    expected = _expected(ctx, g)
     found = []
     for part in sorted(set(expected) | set(geom.parts)):
         if g.wants(only, g.item(part)):
@@ -196,24 +225,38 @@ def _moved(ctx: SceneCtx, g: Grown, geom: PieceGeom, part: str, v: np.ndarray, b
     return dataclasses.replace(ctx, pieces={**ctx.pieces, g.key: moved})
 
 
+def _part_unit(ctx: SceneCtx, g: Grown, geom: PieceGeom, expected, tol: float, part: str
+               ) -> PlantUnit | None:
+    """The unit that moves one vertex of `part`, or None when the shipped part has no vertex."""
+    mine, theirs = _vertices(geom.parts[part]), _vertices(expected[part])
+    if not len(mine):
+        return None
+    item, plants = g.item(part), []
+    lonely = np.flatnonzero(neighbours(mine, theirs, PLANT_CLEAR_OF_TOL * tol) <= 1)
+    if len(lonely):
+        plants.append(Plant(f"vertex: {item}", item,
+                            _moved(ctx, g, geom, part, mine[lonely[0]], CALIBRATION_FAIL * tol)))
+    reach = float(np.linalg.norm(mine.max(axis=0) - mine.min(axis=0)))
+    plants.append(Plant(f"vertex far: {item}", item,
+                        _moved(ctx, g, geom, part, mine[0], reach + CALIBRATION_FAIL * tol)))
+    return PlantUnit(item, tuple(plants))
+
+
 def _units(ctx: SceneCtx, g: Grown, geom: PieceGeom) -> list[PlantUnit]:
-    """The first part both the skeleton and the scene hold, in name order, with a vertex moved."""
+    """The first part both the skeleton and the scene hold, in name order, with a vertex moved. A
+    card piece gets a second unit on its first `Cards_<shade>` part, so the leaf cards are
+    planted too."""
     tol = SKELETON_MATCH_OF_THICKNESS * tube_base(ctx, g.piece)
-    expected = grown_parts(g.skeleton, _sight(ctx, g))
-    for part in sorted(set(expected) & set(geom.parts)):
-        mine, theirs = _vertices(geom.parts[part]), _vertices(expected[part])
-        if not len(mine):
-            continue
-        item, plants = g.item(part), []
-        lonely = np.flatnonzero(neighbours(mine, theirs, PLANT_CLEAR_OF_TOL * tol) <= 1)
-        if len(lonely):
-            plants.append(Plant(f"vertex: {item}", item,
-                                _moved(ctx, g, geom, part, mine[lonely[0]],
-                                       CALIBRATION_FAIL * tol)))
-        reach = float(np.linalg.norm(mine.max(axis=0) - mine.min(axis=0)))
-        plants.append(Plant(f"vertex far: {item}", item,
-                            _moved(ctx, g, geom, part, mine[0], reach + CALIBRATION_FAIL * tol)))
-        return [PlantUnit(item, tuple(plants))]
+    expected = _expected(ctx, g)
+    held = sorted(set(expected) & set(geom.parts))
+    cards = [n for n in held if n.startswith(CARDS_PREFIX)] if g.card else []
+    units = []
+    for group in (cards, [n for n in held if n not in cards]):
+        unit = next((u for n in group if (u := _part_unit(ctx, g, geom, expected, tol, n))), None)
+        if unit is not None:
+            units.append(unit)
+    if units:
+        return units
     # Parts are judged but none is held by both: nothing to move a vertex of. No candidate, so the
     # gate stops unless the real run already reports the part.
     judged = sorted(set(expected) | set(geom.parts))
@@ -222,34 +265,47 @@ def _units(ctx: SceneCtx, g: Grown, geom: PieceGeom) -> list[PlantUnit]:
 
 def _comparable(ctx: SceneCtx) -> list[Grown]:
     """The grown pieces with geometry that can be re-meshed: each has a sight when it needs one."""
-    return [g for g in grown(ctx) if g.key in ctx.pieces and _meshable(ctx, g)]
+    return [g for g in grown(ctx, cards=True) if g.key in ctx.pieces and _meshable(ctx, g)]
 
 
 class SkeletonMatch:
     name = NAME
     kinds: frozenset[str] = KINDS
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         return [u for g in _comparable(ctx) for u in _units(ctx, g, ctx.pieces[g.key])]
 
     def measured(self, ctx: SceneCtx) -> set[str]:
-        """Every part the skeleton grows and every part shipped, for a piece that has both a
-        skeleton and geometry: each is compared with the skeleton's mesh."""
-        return {part for g in _comparable(ctx)
-                for part in g.limb_parts() | g.leaf_parts()
-                | {g.item(name) for name in ctx.pieces[g.key].parts}}
+        """Every part the skeleton grows (a card piece: its card copy makes) and every part
+        shipped, for a piece that has both a skeleton and geometry: each is compared with the
+        skeleton's mesh."""
+        out: set[str] = set()
+        for g in _comparable(ctx):
+            shipped = {g.item(name) for name in ctx.pieces[g.key].parts}
+            if g.card:
+                out |= shipped | {g.item(name) for name in _expected(ctx, g)}
+            else:
+                out |= g.limb_parts() | g.leaf_parts() | shipped
+        return out
 
     def run(self, ctx: SceneCtx, only: Collection[str] | None = None,
             samples: frozenset[int] = frozenset()) -> list[Finding]:
         # No per-sample work here: `samples` is accepted and ignored.
-        return [f for g in grown(ctx, only) if g.key in ctx.pieces
+        return [f for g in grown(ctx, only, cards=True) if g.key in ctx.pieces
                 for f in _findings(ctx, g, ctx.pieces[g.key], only)]
 
     def coverage(self, ctx: SceneCtx) -> list[str]:
-        return (coverage(ctx, NAME)
+        every = list(grown(ctx, cards=True))
+        return (coverage(ctx, NAME, judges_cards=True)
                 + [Unmeasured(f"{NAME}: skipped (no geometry): {g.key}")
-                   for g in grown(ctx) if g.key not in ctx.pieces]
+                   for g in every if g.key not in ctx.pieces]
                 + [Unmeasured(f"{NAME}: skipped (the {MESH_VERSION} mesh takes its tube sides from "
                               f"the piece's view and the style's crease angle, and one is "
                               f"missing): {g.key}")
-                   for g in grown(ctx) if g.key in ctx.pieces and not _meshable(ctx, g)])
+                   for g in every if g.key in ctx.pieces and not g.card
+                   and not _meshable(ctx, g)]
+                + [Unmeasured(f"{NAME}: skipped (a card copy needs the piece's view, the style's "
+                              f"crease angle and its dials.cards and dials.leaves, and one is "
+                              f"missing): {g.key}")
+                   for g in every if g.key in ctx.pieces and g.card and not _meshable(ctx, g)])

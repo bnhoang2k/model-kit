@@ -11,8 +11,13 @@ from typing import NamedTuple
 
 import numpy as np
 
-from model_kit.core.errors import Unmeasurable
-from model_kit.core.tolerances import CONE_AROUND, CONE_DEG, CONE_WEIGHT_DEG
+from model_kit.core.errors import TooManySamples, Unmeasurable
+from model_kit.core.tolerances import (
+    CONE_AROUND,
+    CONE_DEG,
+    CONE_WEIGHT_DEG,
+    MAX_SURFACE_SAMPLES,
+)
 
 # Most (point, triangle) pairs one dense step may hold. Bigger inputs run in point chunks.
 PAIR_BUDGET = 5_000_000
@@ -519,6 +524,13 @@ def signed_volume(tris) -> float:
     """Volume of a closed mesh; positive when the winding faces outward."""
     tris = _as_tris(tris)
     return float(np.einsum("nk,nk->", tris[:, 0], np.cross(tris[:, 1], tris[:, 2])) / 6.0)
+
+
+def surface_area(tris) -> float:
+    """Area of a mesh: the sum of its triangles' areas."""
+    tris = _as_tris(tris)
+    cross = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+    return float(0.5 * np.linalg.norm(cross, axis=1).sum())
 
 
 def is_closed(tris) -> bool:
@@ -1233,17 +1245,41 @@ def _lattice(tris: np.ndarray, spacing: float) -> np.ndarray:
     return np.concatenate(out)
 
 
+def lattice_bound(tris, spacing: float) -> float:
+    """The most points `_lattice` can make for these triangles at `spacing`, read from the edge
+    lengths alone, before any point is made: each triangle's full grid of steps along its two
+    shorter edges, which `_lattice` keeps the half of, plus the points on its longest edge (about
+    twice the points made; a float, so a sliver's count cannot overflow)."""
+    tris = _as_tris(tris)
+    if len(tris) == 0:
+        return 0.0
+    length = np.linalg.norm(np.roll(tris, -1, axis=1) - tris, axis=2)
+    steps = np.sort(np.maximum(1.0, np.ceil(length / spacing)), axis=1)
+    return float(((steps[:, 0] + 1.0) * (steps[:, 1] + 1.0) + steps[:, 2] + 1.0).sum())
+
+
+def check_sample_budget(tris, spacing: float, cap: float = MAX_SURFACE_SAMPLES) -> None:
+    """Raise `TooManySamples` when sampling the surface `spacing` apart could make more than `cap`
+    points (`lattice_bound`)."""
+    points = lattice_bound(tris, spacing)
+    if points > cap:
+        raise TooManySamples(points, spacing, cap)
+
+
 def surface_samples(tris, spacing: float) -> np.ndarray:
     """Points on the surface, neighbouring points at most `spacing` apart, each point once.
 
     A corner or an edge point that several triangles share is one point, so a fine mesh does not
-    count its vertices five times over. The order is sorted, so the answer repeats.
+    count its vertices five times over. The order is sorted, so the answer repeats. Raises
+    `TooManySamples`, before any point is made, when the points could pass the kit's cap
+    (`check_sample_budget`): a spacing read from a sliver would otherwise ask for billions.
     """
     tris = _as_tris(tris)
     if not spacing > 0:
         raise ValueError(f"spacing must be above 0, got {spacing!r}")
     if len(tris) == 0:
         return np.zeros((0, 3))
+    check_sample_budget(tris, spacing)
     return np.unique(_lattice(tris, spacing), axis=0)
 
 

@@ -599,8 +599,9 @@ def needs_sight(sk: Skeleton) -> bool:
 def tube_sides(radius: float, sight: Sight) -> int:
     """The corners per ring of a buds-v2 tube whose thickest ring is `radius`: the fewest whose gap
     to the circle is under `sight.gap` (`edges.segments_for`), and never fewer than make it round
-    (`round_sides`)."""
-    return max(round_sides(sight.crease_deg), edges.segments_for(radius, 360.0, sight.gap))
+    (`round_sides`) unless `sight.round` is False, which floors it at 3."""
+    floor = round_sides(sight.crease_deg) if sight.round else 3
+    return max(floor, edges.segments_for(radius, 360.0, sight.gap))
 
 
 def round_sides(crease_deg: float) -> int:

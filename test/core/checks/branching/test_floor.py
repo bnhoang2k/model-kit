@@ -1,11 +1,15 @@
 import dataclasses
 
 import numpy as np
+import pytest
 
+from model_kit.core.checks.branching._pieces import tube_base
 from model_kit.core.checks.branching.floor import FloorOrganic
 from model_kit.core.grow.mesh import leaf_tris
 from model_kit.core.grow.skeleton import ring_lows
 from model_kit.core.metagate import Unmeasured, run_gate
+from model_kit.core.scene import PieceGeom, piece_key
+from model_kit.core.scope import Scope
 from model_kit.core.tolerances import (
     CALIBRATION_FAIL,
     CALIBRATION_PASS,
@@ -15,8 +19,12 @@ from model_kit.core.tolerances import (
 
 from ..piece_scenes import caught
 from .branching_scene import (
+    CARD,
+    CARDS_PART,
     MIN_THICKNESS_M,
     UPM,
+    card_ctx,
+    card_item,
     grown_ctx,
     item,
     limb_index,
@@ -27,6 +35,7 @@ from .branching_scene import (
     small_tree,
     tiny_ctx,
 )
+from .tiny_trees import SPECIES, tiny_tree
 
 CHECK = FloorOrganic()
 # The small tree's tube thickness base: its twig row (twice a 0.0045 u radius: 0.018 m) meets the
@@ -178,3 +187,49 @@ def test_a_free_limb_hidden_in_its_seat_is_sunk_clear_of_it():
     unit = next(u for u in CHECK.plants(ctx) if "sink limb" in u.candidates[0].label)
     assert [caught(CHECK, p) for p in unit.candidates] == [False, True]
     assert run_gate([CHECK], ctx, None).status == "passed"
+
+
+# --- a card copy: its limbs from the skeleton, its leaves from the shipped cards -----------------
+
+CARD_PIECES = [pytest.param(path, id=path.name.split(".")[0]) for path in SPECIES]
+
+
+def _sunk_card(ctx, n, depth):
+    """The scene with card n of the shipped card part moved down until its lowest corner sits at
+    -depth."""
+    key = piece_key("grove", CARD)
+    geom = ctx.pieces[key]
+    tris = np.array(geom.parts[CARDS_PART], dtype=float)
+    low = float(tris[2 * n:2 * n + 2, :, 1].min())
+    tris[2 * n:2 * n + 2, :, 1] -= low + depth
+    return dataclasses.replace(
+        ctx, pieces={**ctx.pieces, key: PieceGeom(geom.name, {**geom.parts, CARDS_PART: tris})})
+
+
+@pytest.mark.parametrize("path", CARD_PIECES)
+def test_card_scene_quiet(path):
+    ctx = card_ctx(tiny_tree(path, 1))
+    assert CHECK.run(ctx) == []
+    assert not any("judged on its source" in line for line in CHECK.coverage(ctx))
+    assert card_item(CARDS_PART) in CHECK.measured(ctx)
+
+
+@pytest.mark.parametrize("path", CARD_PIECES)
+def test_sunk_card_corner_caught(path):
+    ctx = card_ctx(tiny_tree(path, 1))
+    tol = FLOOR_OF_THICKNESS * tube_base(ctx, ctx.packs["grove"].pieces[CARD])
+    assert CHECK.run(_sunk_card(ctx, 3, CALIBRATION_PASS * tol)) == []
+    found = CHECK.run(_sunk_card(ctx, 3, CALIBRATION_FAIL * tol))
+    assert [f.item for f in found] == [card_item("card.3")]
+    plants = {u.candidates[0].label.split(":")[0]: u for u in CHECK.plants(ctx)
+              if u.item.startswith(card_item(""))}
+    assert set(plants) == {"lift", "sunk", "sink card"}
+    assert all(any(caught(CHECK, p) for p in u.candidates) for u in plants.values())
+
+
+def test_scoped_card_piece():
+    ctx = card_ctx(tiny_tree(SPECIES[0], 1))
+    scope = Scope(frozenset({piece_key("grove", CARD)}))
+    verdict = run_gate([CHECK], ctx, None, scope=scope)
+    assert verdict.status == "partial" and verdict.failed == 0
+    assert card_item(CARDS_PART) in CHECK.measured(scope.scene(ctx))

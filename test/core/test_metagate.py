@@ -1,16 +1,20 @@
 import pytest
 
 from model_kit.core.allow import Allowlist
+from model_kit.core.checks.bake_files import BakeFiles
 from model_kit.core.checks.bearing import Bearing
 from model_kit.core.checks.bend_quality import BendQuality
 from model_kit.core.checks.clearance import Clearance
 from model_kit.core.checks.crossings import Crossings
 from model_kit.core.checks.detail import Detail
 from model_kit.core.checks.inset_seat import InsetSeat
+from model_kit.core.checks.lightmap_density import LightmapDensity
+from model_kit.core.checks.lightmap_overlap import LightmapOverlap
 from model_kit.core.checks.markings import Markings
 from model_kit.core.checks.markings_flush import MarkingsFlush
 from model_kit.core.checks.mirror_exact import MirrorExact
 from model_kit.core.checks.near_crease import NearCrease
+from model_kit.core.checks.seam_jump import SeamJump
 from model_kit.core.checks.seat_fit import SeatFit
 from model_kit.core.checks.stress_poses import StressPoses
 from model_kit.core.errors import AnchorMissing, BlindCheck, ManifestError
@@ -18,11 +22,17 @@ from model_kit.core.metagate import (
     Finding,
     Plant,
     PlantUnit,
+    Timing,
     Unmeasured,
+    Verdict,
     emit,
     exit_code_for,
     run_gate,
 )
+from model_kit.core.scope import Scope
+from model_kit.core.tolerances import CALIBRATION_FAIL
+
+from .checks.piece_scenes import CROSS, two_pieces
 
 # The checks that must cite a principle, as classes. Each new check adds its class here.
 CITED_CHECKS = (
@@ -38,6 +48,10 @@ CITED_CHECKS = (
     Detail,
     MarkingsFlush,
     Crossings,
+    BakeFiles,
+    LightmapOverlap,
+    LightmapDensity,
+    SeamJump,
 )
 
 
@@ -131,7 +145,7 @@ def test_clean_run_passes(capsys):
     assert emit(run_gate([Sees()], [], None)) == 0
     out = capsys.readouterr()
     assert out.out == "passed\n"
-    assert out.err == ""
+    assert [line for line in out.err.splitlines() if not line.startswith("time: ")] == []
 
 
 def test_coverage_goes_to_stderr_and_does_not_fail(capsys):
@@ -359,3 +373,94 @@ def test_not_applicable_unit_prints_one_coverage_line():
     assert verdict.status == "passed"
     assert verdict.coverage == ["units: not applicable (no contact): a"]
     assert len(check.measured) == 1  # no plant ran
+
+
+def test_each_check_is_timed_in_three_phases():
+    ticks = iter(range(100))
+    verdict = run_gate([Sees(), Skips()], [], None, clock=lambda: float(next(ticks)))
+    assert [(t.check, t.phase) for t in verdict.timings] == [
+        ("sees", "real"), ("skips", "real"),
+        ("sees", "coverage"), ("sees", "plants"),
+        ("skips", "coverage"), ("skips", "plants")]
+    assert all(t.seconds == 1.0 for t in verdict.timings)
+
+
+def test_a_run_with_no_checks_has_no_timings():
+    assert run_gate([], [], None).timings == []
+
+
+def test_emit_prints_one_time_line_per_check_to_stderr(capsys):
+    emit(Verdict("passed", 0, [], [], timings=[Timing("reach", "real", 1.25),
+                                               Timing("reach", "coverage", 0.0),
+                                               Timing("reach", "plants", 2.5)]))
+    out = capsys.readouterr()
+    assert "time: reach | real 1.2 s | coverage 0.0 s | plants 2.5 s" in out.err
+    assert out.out == "passed\n"
+
+
+def test_every_blind_unit_is_collected_and_the_real_findings_ride_along():
+    with pytest.raises(BlindCheck) as e:
+        run_gate([Sees(), AlwaysPass(), WrongItem()], ["a"], None)
+    assert e.value.blind == ("always_pass: planted", "wrong_item: planted")
+    assert str(e.value) == "always_pass: planted; wrong_item: planted"
+    assert e.value.verdict.lines == ["sees | a | bad", "wrong_item | somewhere_else | bad"]
+
+
+def test_failures_are_the_last_stderr_lines(capsys):
+    emit(Verdict("failed", 1, ["reach | a | too far"], ["reach: skipped x"], ["allowed: y"]))
+    err = capsys.readouterr().err.splitlines()
+    assert err == ["coverage: reach: skipped x", "allowed: y", "reach | a | too far"]
+
+
+def test_on_timing_hears_each_phase_as_it_ends():
+    ticks = iter(range(100))
+    heard = []
+    verdict = run_gate([Sees(), Skips()], [], None, clock=lambda: float(next(ticks)),
+                       on_timing=heard.append)
+    assert heard == verdict.timings
+
+
+def test_a_scoped_run_is_partial_with_the_scoped_line_first():
+    ctx = two_pieces()
+    verdict = run_gate([Crossings()], ctx, None, scope=Scope(frozenset({"kit:Thing"})))
+    assert verdict.status == "partial" and verdict.failed == 0
+    assert verdict.coverage[0].startswith("gate: scoped run (pieces: kit:Thing)")
+
+
+def test_a_scoped_run_with_faults_is_still_partial_and_shows_them(capsys):
+    ctx = two_pieces(sink=CALIBRATION_FAIL * CROSS)
+    verdict = run_gate([Crossings()], ctx, None, scope=Scope(frozenset({"kit:Thing"})))
+    assert verdict.status == "partial"
+    assert [line.split(" | ")[1] for line in verdict.lines] == ["kit:Thing base x post"]
+    assert emit(verdict) == 1
+    assert capsys.readouterr().out.strip() == "partial"
+
+
+def test_a_scoped_run_measures_the_named_pieces_as_the_full_run_does():
+    ctx = two_pieces(sink=CALIBRATION_FAIL * CROSS)
+    full = run_gate([Crossings()], ctx, None)
+    scoped = run_gate([Crossings()], ctx, None, scope=Scope(frozenset({"kit:Thing"})))
+    assert full.failed == 2
+    assert scoped.lines == [line for line in full.lines if " | kit:Thing " in line]
+
+
+def test_a_scoped_run_hands_the_allowlist_only_the_scene_checks(tmp_path):
+    path = tmp_path / "a.allow"
+    path.write_text("crossings | kit:Other base x post | pinned in its socket\n")
+    ctx = two_pieces()
+    scope = Scope(frozenset({"kit:Thing"}))
+    # A piece check's stale line is not judged in a scoped run; a full run judges it.
+    assert run_gate([Crossings()], ctx, Allowlist.load(path), scope=scope).failed == 0
+    assert run_gate([Crossings()], ctx, Allowlist.load(path)).failed == 1
+
+
+def test_a_wildcard_line_that_matches_a_piece_check_is_not_stale_in_a_scoped_run(tmp_path):
+    path = tmp_path / "a.allow"
+    path.write_text("c* | kit:Other base x post | pinned in its socket\n")
+    ctx = two_pieces(sink=CALIBRATION_FAIL * CROSS)
+    checks = [Crossings(), Clearance()]
+    scoped = run_gate(checks, ctx, Allowlist.load(path), scope=Scope(frozenset({"kit:Thing"})))
+    assert not any("stale" in line for line in scoped.lines)
+    full = run_gate(checks, ctx, Allowlist.load(path))
+    assert not any("stale" in line for line in full.lines)
+    assert any("kit:Other base x post" in line for line in full.allowed)

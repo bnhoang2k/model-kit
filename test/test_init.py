@@ -90,6 +90,13 @@ def test_guide_prints_the_agent_steps(capsys):
     assert "model-kit gate" in out
 
 
+def test_guide_says_how_to_iterate_and_where_the_times_go(capsys):
+    assert cli.main(["guide"]) == 0
+    out = capsys.readouterr().out
+    assert "Only a gate run on the whole scene is a pass." in out
+    assert "--timing" in out
+
+
 def test_guide_where_prints_the_bars_and_kinds_folders(capsys):
     assert cli.main(["guide", "--where"]) == 0
     lines = dict(line.split(": ", 1) for line in capsys.readouterr().out.splitlines())

@@ -11,7 +11,8 @@ from pathlib import Path
 import numpy as np
 
 from model_kit.core.grow.buds import MESH_VERSION, grow_buds
-from model_kit.core.grow.mesh import grown_parts, leaf_part_name
+from model_kit.core.grow.cards import card_dials, card_parts
+from model_kit.core.grow.mesh import grown_parts, leaf_lean, leaf_part_name
 from model_kit.core.grow.rules import KIT_RULES, load_rules
 from model_kit.core.grow.skeleton import CONE, DOME, Skeleton, check_skeleton, limb_at, unit
 from model_kit.core.manifest import Frame, Listed, Pack, Part, Piece, Recipe, View
@@ -284,6 +285,42 @@ def viewed_ctx(sk: Skeleton, *, meshed_with: Sight | None = None, view: View | N
     seen = dataclasses.replace(pack.pieces[PIECE], view=view)
     return dataclasses.replace(ctx, style=VIEWED_STYLE, packs={
         PACK: dataclasses.replace(pack, pieces={**pack.pieces, PIECE: seen})})
+
+
+# --- a card copy of a grown tree ---------------------------------------------------------------
+
+CARD = "Tree_Cards"
+CARDS_PART = "Cards_Leaf"
+CARD_VIEW = View(10.0, "a test tree, seen from the path ten metres away")
+CARD_STYLE = dataclasses.replace(VIEWED_STYLE, dials={**VIEWED_STYLE.dials, "leaves": {
+    "normal_lean": 0.8, "centre_drop": 0.35, "why": "a test lean"}, "cards": {
+    "ball_m": 0.5, "normal_mix": 0.5, "sky": 3.0, "why": "a test budget, not measured"}})
+
+
+def card_ctx(sk: Skeleton, *, style: Style = CARD_STYLE) -> SceneCtx:
+    """The scene of `grown_ctx` plus `Tree_Cards`, a card copy of `Tree`: it shares the tree's
+    skeleton (`cards_of`), declares a view, is not outlined, and ships `card_parts`' output."""
+    base = grown_ctx(sk)
+    pack = base.packs[PACK]
+    probe = dataclasses.replace(_piece(CARD, "branching", (), ()), view=CARD_VIEW, outlined=False)
+    parts, _ = card_parts(sk, sight_for(probe, style, UPM), card_dials(style), UPM,
+                          leaf_lean(style))
+    wood = {name: tris for name, tris in parts.items() if name != CARDS_PART}
+    listed, rows = _listed_and_parts(sk, wood)
+    listed += (Listed("cards_leaf", "Leaf cards", "test", 0.0, None),)
+    rows += (Part(CARDS_PART, "cards_leaf", "leaf", None, CARDS_PART, "skip_outline", (), None),)
+    card = dataclasses.replace(_piece(CARD, "branching", listed, rows), view=CARD_VIEW,
+                               outlined=False, outlined_why="cards draw no lines", cards_of=PIECE)
+    key = piece_key(PACK, CARD)
+    return dataclasses.replace(
+        base, style=style, packs={PACK: dataclasses.replace(pack, pieces={**pack.pieces,
+                                                                         CARD: card})},
+        pieces={**base.pieces, key: PieceGeom(CARD, dict(parts))},
+        skeletons={**base.skeletons, key: sk})
+
+
+def card_item(rest: str) -> str:
+    return f"{piece_key(PACK, CARD)} {rest}"
 
 
 def item(rest: str) -> str:

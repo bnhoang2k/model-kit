@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from model_kit.core import gate, geom
-from model_kit.core.checks import pieces, take_apart
+from model_kit.core.checks import crossings, pieces, take_apart
 from model_kit.core.checks.crossings import Crossings
 from model_kit.core.checks.take_apart import TakeApart
 from model_kit.core.errors import BlindCheck, Unmeasurable
@@ -18,7 +18,15 @@ from model_kit.core.tolerances import (
 )
 
 from ..shapes import box
-from .piece_scenes import make_ctx, plants_caught, post_on_base, refuses_the_core, tried_and_caught
+from .piece_scenes import (
+    make_ctx,
+    plants_caught,
+    post_on_base,
+    refuses_the_core,
+    sheet_and_knob,
+    strip_and_post,
+    tried_and_caught,
+)
 
 GROUPS = {"base": {"group": "base"}, "post": {"group": "post"}}
 ITEM = "kit:Thing base x post"
@@ -529,3 +537,22 @@ def test_the_check_cites_its_principle_and_its_source():
     assert check.principle.endswith(".") and ". " not in check.principle
     assert "Wilson and Latombe 1994" in check.source and "section 5.3 (p. 384)" in check.source
     assert "UNVERIFIED" not in check.source
+
+
+def test_the_shortcut_never_changes_a_reading(monkeypatch):
+    scenes = [lane(), lane(overlap=CROSS / 2), lane(("anchor", "b", "a")), two_arm_group(),
+              guard_past_saddles(), pin_in_plate(seat_over_limit(0.1)),
+              pin_in_plate(seat_over_limit(0.1), anchor_y=-6.0), pin_in_plate(0.0),
+              make_ctx(post_on_base(sink=0.05), GROUPS), caged(), long_cage()]
+    fast = [TakeApart().run(ctx) for ctx in scenes]
+    monkeypatch.setattr(crossings, "_all_leave", lambda sides: False)
+    assert fast == [TakeApart().run(ctx) for ctx in scenes]
+
+
+@pytest.mark.parametrize("scene,mover", [(sheet_and_knob, "knob"), (strip_and_post, "post")])
+def test_the_plant_boxes_in_the_cheapest_group_not_the_fewest_triangles(scene, mover):
+    parts = scene()
+    ctx = make_ctx(parts, {name: {"group": name} for name in parts})
+    (unit,) = TakeApart().plants(ctx)
+    assert unit.item.split(" ")[1] == mover
+    assert plants_caught(TakeApart(), ctx)

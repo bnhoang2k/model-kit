@@ -17,13 +17,20 @@ or `<pack>:<piece> leaf.<n>`):
   less its radius, must not dip below `-tol`;
 - no vertex of a leaf's triangles may dip below `-tol`.
 
+A card piece (`Piece.cards_of`) is judged on its limbs as above, read from its skeleton. Its leaves
+are the triangles of its shipped `Cards_<shade>` part: each card is two triangles, item
+`<pack>:<piece> card.<n>` with n the triangle index // 2, and no corner of it may dip below
+`-tol`. A card piece with no geometry has no cards to read.
+
 Plants, one unit each on every grown piece, built from the skeleton's points and the leaves'
 triangles alone (never `_limb_findings`, `_low_past` or `_leaf_low`): the whole skeleton lifted
 until the deepest rooted base sits `CALIBRATION_FAIL` x the tolerance above the soil; the whole
 skeleton sunk until that base sits at `-CALIBRATION_FAIL` x its depth limit (both on that rooted
 limb); and the leaf whose node is lowest sunk so its lowest vertex sits at `-CALIBRATION_FAIL` x
 the tolerance (with no leaves, the free limb whose lowest point is lowest sunk the same way, then
-sunk until its highest point sits there).
+sunk until its highest point sits there). On a card piece the leaf plant moves in place of the
+skeleton's: the shipped card whose lowest corner is lowest, moved down until that corner sits at
+`-CALIBRATION_FAIL` x the tolerance.
 """
 
 from __future__ import annotations
@@ -35,11 +42,12 @@ import numpy as np
 
 from model_kit.core.checks.branching._pairs import Zones
 from model_kit.core.checks.branching._pieces import KINDS, Grown, coverage, grown, tube_base
+from model_kit.core.grow.cards import CARDS_PREFIX
 from model_kit.core.grow.mesh import leaf_tris
 from model_kit.core.grow.shape import SEGMENT_EPS
 from model_kit.core.grow.skeleton import Skeleton, arc_lengths, ring_lows
 from model_kit.core.metagate import Finding, Plant, PlantUnit
-from model_kit.core.scene import SceneCtx
+from model_kit.core.scene import PieceGeom, SceneCtx
 from model_kit.core.tolerances import (
     BURIED_SEAT_OF_RADIUS,
     CALIBRATION_FAIL,
@@ -84,6 +92,29 @@ def _low_past(pts: np.ndarray, radii: np.ndarray, start: float) -> float:
     at = pts[k - 1, 1] + (pts[k, 1] - pts[k - 1, 1]) * f
     r = radii[k - 1] + (radii[k] - radii[k - 1]) * f
     return float(min(at - r, (pts[k:, 1] - radii[k:]).min()))
+
+
+def _card_parts(ctx: SceneCtx, g: Grown) -> list[str]:
+    """The names of the shipped card parts of a card piece, in name order."""
+    geom = ctx.pieces.get(g.key)
+    return [] if geom is None else sorted(n for n in geom.parts if n.startswith(CARDS_PREFIX))
+
+
+def _card_lows(tris: np.ndarray) -> np.ndarray:
+    """(cards,) the lowest y of each card: two consecutive triangles."""
+    return np.asarray(tris, dtype=float)[..., 1].reshape(-1, 6).min(axis=1)
+
+
+def _card_findings(ctx: SceneCtx, g: Grown, tol: float, only) -> list[Finding]:
+    found = []
+    for name in _card_parts(ctx, g):
+        lows = _card_lows(ctx.pieces[g.key].parts[name])
+        for n in np.flatnonzero(lows < -tol):
+            item = g.item(f"card.{int(n)}")
+            if g.wants(only, item):
+                found.append(Finding(NAME, item, f"a card corner dips to {lows[n]:.4f}, below "
+                                                 f"{-tol:.4f}"))
+    return found
 
 
 def _limb_findings(g: Grown, i: int, tol: float, zones: Zones) -> list[Finding]:
@@ -131,6 +162,8 @@ def _findings(ctx: SceneCtx, g: Grown, only) -> list[Finding]:
     zones = Zones(sk, SEAT_ZONE_OPENS_OF_RADIUS)
     found = [f for i in range(len(sk.limb_id)) if g.wants(only, g.limb(i))
              for f in _limb_findings(g, i, tol, zones)]
+    if g.card:
+        return found + _card_findings(ctx, g, tol, only)
     candidates = np.flatnonzero(_leaf_bounds(sk) < -tol) if len(sk.host) else []
     for f in candidates:
         item = g.leaf(int(f))
@@ -175,6 +208,27 @@ def _leaf_unit(ctx: SceneCtx, g: Grown, tol: float) -> PlantUnit:
     return PlantUnit(item, (plant,))
 
 
+def _card_unit(ctx: SceneCtx, g: Grown, tol: float) -> PlantUnit:
+    """The shipped card whose lowest corner is lowest, moved down until that corner sits at
+    `-CALIBRATION_FAIL` x tol."""
+    geom = ctx.pieces[g.key]
+    best = None
+    for name in _card_parts(ctx, g):
+        tris = np.asarray(geom.parts[name], dtype=float)
+        lows = tris[..., 1].reshape(-1, 6).min(axis=1)
+        n = int(np.argmin(lows))
+        if best is None or lows[n] < best[0]:
+            best = (float(lows[n]), name, n)
+    low, name, n = best
+    tris = np.array(geom.parts[name], dtype=float)
+    tris[2 * n:2 * n + 2, :, 1] -= low + CALIBRATION_FAIL * tol
+    moved = PieceGeom(geom.name, {**geom.parts, name: tris})
+    item = g.item(f"card.{n}")
+    plant = Plant(f"sink card: {item}", item,
+                  dataclasses.replace(ctx, pieces={**ctx.pieces, g.key: moved}))
+    return PlantUnit(item, (plant,))
+
+
 def _limb_unit(ctx: SceneCtx, g: Grown, tol: float, free: np.ndarray) -> PlantUnit:
     """The free limb whose lowest point (less its radius) is lowest, sunk until that point sits
     at `-CALIBRATION_FAIL` x tol; the second candidate sinks it until its highest point (plus its
@@ -196,7 +250,9 @@ def _limb_unit(ctx: SceneCtx, g: Grown, tol: float, free: np.ndarray) -> PlantUn
 def _units(ctx: SceneCtx, g: Grown) -> list[PlantUnit]:
     tol = FLOOR_OF_THICKNESS * tube_base(ctx, g.piece)
     units = _rooted_units(ctx, g, tol)
-    if len(g.skeleton.host):
+    if g.card and _card_parts(ctx, g):
+        units.append(_card_unit(ctx, g, tol))
+    elif len(g.skeleton.host) and not g.card:
         units.append(_leaf_unit(ctx, g, tol))
     elif len(free := _free(g.skeleton)):
         units.append(_limb_unit(ctx, g, tol, free))
@@ -206,18 +262,29 @@ def _units(ctx: SceneCtx, g: Grown) -> list[PlantUnit]:
 class FloorOrganic:
     name = NAME
     kinds: frozenset[str] = KINDS
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
-        return [u for g in grown(ctx) for u in _units(ctx, g)]
+        return [u for g in grown(ctx, cards=True) for u in _units(ctx, g)]
 
     def measured(self, ctx: SceneCtx) -> set[str]:
-        """The tube and leaf parts of each grown piece: its limbs and its leaves are read."""
-        return {part for g in grown(ctx) for part in g.limb_parts() | g.leaf_parts()}
+        """The tube and leaf parts of each grown piece: its limbs and its leaves are read. A card
+        piece with geometry: the tube parts it ships and its card parts."""
+        out: set[str] = set()
+        for g in grown(ctx, cards=True):
+            if g.card and g.key in ctx.pieces:
+                out |= {g.item(n) for n in ctx.pieces[g.key].parts
+                        if n in g.skeleton.level_names or n.startswith(CARDS_PREFIX)}
+            elif g.card:
+                out |= g.limb_parts()
+            else:
+                out |= g.limb_parts() | g.leaf_parts()
+        return out
 
     def run(self, ctx: SceneCtx, only: Collection[str] | None = None,
             samples: frozenset[int] = frozenset()) -> list[Finding]:
         # No per-sample work here: `samples` is accepted and ignored.
-        return [f for g in grown(ctx, only) for f in _findings(ctx, g, only)]
+        return [f for g in grown(ctx, only, cards=True) for f in _findings(ctx, g, only)]
 
     def coverage(self, ctx: SceneCtx) -> list[str]:
-        return coverage(ctx, NAME)
+        return coverage(ctx, NAME, judges_cards=True)

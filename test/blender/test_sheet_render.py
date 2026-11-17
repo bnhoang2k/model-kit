@@ -5,12 +5,25 @@ import math
 from pathlib import Path
 
 import pytest
+from test_grow_blender import (  # noqa: F401  (cards_built is a fixture)
+    CARD,
+    CARD_DIALS,
+    CARD_SIGHT,
+    LEAN,
+    UPM,
+    _card_tree,
+    cards_built,
+)
 
 from model_kit import sheet
 from model_kit.blender.runner import run_blender
+from model_kit.core.grow.cards import card_parts
 from model_kit.core.units import load_style
 
 pytestmark = pytest.mark.blender
+
+CARD_CELL_SCALE = 2  # a card is a few pixels wide in a normal cell; draw the test cell larger
+MIN_GAP_PIXELS = 50  # paper pixels that must show inside the cards; solid squares show none
 
 FIXTURES = Path(__file__).resolve().parent.parent / "core" / "fixtures"
 
@@ -146,3 +159,54 @@ def test_the_post_stands_right_of_the_piece_in_every_cell(tmp_path):
                 and max(abs(a - b) for a, b in zip(p, background, strict=True)) > 12]
         assert piece and post, f"column {col}: a piece or post is missing"
         assert min(x for x, _ in post) > max(x for x, _ in piece), f"column {col}: post not right"
+
+
+def test_card_sheet_shows_gaps(cards_built, monkeypatch):  # noqa: F811
+    """A card piece is drawn with its leaf image cut by its alpha: inside the cards' screen
+    rectangles some pixels are the sheet's paper, because the image is clear there. A solid card
+    would show none. The rectangles are found by projecting each card's corners through the
+    sheet's own camera maths (the cell's target, the camera's right and up axes, and the width one
+    cell spans), not by guessing pixels."""
+    np = pytest.importorskip("numpy")
+    Image = pytest.importorskip("PIL.Image")
+    out, _, style, _ = cards_built
+    pack = out / "grove.pack.json"
+    monkeypatch.setattr(sheet, "CELL", (CARD_CELL_SCALE * sheet.CELL[0],
+                                        CARD_CELL_SCALE * sheet.CELL[1]))
+    sheet_png = out / "card-sheet.png"
+    sheet.make_sheet(pack, CARD, style, bar="auto", out=sheet_png)
+    image = np.asarray(Image.open(sheet_png).convert("RGB")).astype(int)
+    rows = sheet.plan_sheet(pack, CARD, style, "auto", None)
+    assert len(rows) == 2 and rows[0].cards and not rows[1].cards
+    assert "Redbud" in rows[1].root  # the second row is the bar, Redbud, beside the card piece
+    cw, ch = sheet.CELL
+    col = 1
+    views = sheet.resolve_views(load_style(style), sheet.VIEWS)
+    _, turn, tilt = views[col]
+    width = sheet.ortho_width(rows, views, sheet.CELL)
+    tx, tz = sheet.target_xz(rows[0], turn)
+    target = np.array([tx, sheet.centre_height(rows), tz])
+    right, up = sheet._camera_axes(turn, tilt)
+    cell = image[sheet.TITLE_BAND:sheet.TITLE_BAND + ch,
+                 sheet.LABEL_COLUMN + col * cw:sheet.LABEL_COLUMN + (col + 1) * cw]
+
+    def screen(points):  # glTF metres to cell pixels (x right, y down)
+        d = np.asarray(points) * rows[0].metres_per_unit - target
+        return np.stack([cw / 2 + d @ right / width * cw, ch / 2 - d @ up / width * cw], axis=-1)
+
+    leaves = card_parts(_card_tree(), CARD_SIGHT, CARD_DIALS, UPM, LEAN)[1]
+    is_paper = np.abs(cell - np.array(sheet.PAPER)).max(axis=2) <= 6
+    ys, xs = np.mgrid[0:ch, 0:cw]
+    covered = np.zeros((ch, cw), bool)
+    for tri in screen(leaves.tris.reshape(-1, 3)).reshape(-1, 3, 2):  # a card is two triangles
+        (ax, ay), (bx, by), (cx, cy) = tri
+        det = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+        if abs(det) < 1e-9:
+            continue
+        u = ((by - cy) * (xs + .5 - cx) + (cx - bx) * (ys + .5 - cy)) / det
+        v = ((cy - ay) * (xs + .5 - cx) + (ax - cx) * (ys + .5 - cy)) / det
+        covered |= (u > 0) & (v > 0) & (u + v < 1)
+    inside = int((covered & is_paper).sum())
+    print("PAPER PIXELS inside the cards:", inside, "of", int(covered.sum()))
+    assert covered.sum() > 1000, "the projected cards do not land in the cell"
+    assert inside >= MIN_GAP_PIXELS, f"no card shows a gap: {inside} paper pixels inside the cards"

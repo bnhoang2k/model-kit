@@ -6,6 +6,9 @@ names `branching`. Each heading below is the name of a check, with what it measu
 the tolerance factors it uses and the plants that prove it can fail.
 
 A limb is one branch, twig or root. A leaf is one card with a node on its host limb and a blade.
+A card piece (`cards_of`) is the game-weight copy of a grown piece: its wood levels plus leaf cards,
+with the skeleton of the piece it copies. `skeleton-match` and `floor-organic` judge it on what it
+ships; every other check prints that the card piece is judged on its source piece.
 The skeleton has two grow modes: a full skeleton draws each leaf's petiole (the leaf stalk) as a
 ribbon, and a lite skeleton draws none.
 
@@ -85,6 +88,13 @@ triangles alone:
   (less radius) the same way; if the limb's seat part hides that point, a second candidate sinks
   the limb until its highest point (plus radius) sits there.
 
+A card piece (`cards_of`, the game-weight copy of a grown tree) is judged on its limbs the same
+way, read from its skeleton. Its leaves are the triangles of its shipped `Cards_<shade>` part.
+Each card is two triangles; its item is `<pack>:<piece> card.<n>`, with n the triangle index
+divided by 2. No corner of a card may dip below `-tol`. The card plant replaces the sink leaf
+plant: the shipped card whose lowest corner is lowest is moved down until that corner sits at
+`-CALIBRATION_FAIL` x `tol`.
+
 ## crossing-organic
 
 Measures whether two limbs grow through each other. Every limb pair is read (a parent and its
@@ -151,6 +161,13 @@ The plant picks a vertex whose nearest other vertex of the skeleton's part lies 
 `PLANT_CLEAR_OF_TOL` (3.0) x `tol` away, so the move cannot land near another vertex. Every
 copy of that vertex in the part moves. If no vertex of the part stands that clear, a second
 candidate moves the part's first vertex along +Y by the part's bounding box diagonal.
+
+A card piece (`cards_of`) is compared with the card copy the skeleton makes (`card_parts`: the
+wood levels and the `Cards_<shade>` part of leaf cards), not with the full tree's mesh. It
+needs a view, the style's crease angle, and `dials.cards` and `dials.leaves`; with one missing it
+is not measured, and coverage says which. The same rules apply, and the same plant moves one
+shipped vertex of the first part both meshes hold, and a second unit moves one of the first
+`Cards_<shade>` part, so the leaf cards are planted too.
 
 ## near-crease
 

@@ -34,6 +34,7 @@
     "pack": "lamp.pack.json",
     "glb": "lamp.glb",
     "scene": "scene",
-    "sheet": "sheet.png"
+    "sheet": "sheet.png",
+    "allow": "lamp.allow"
   }
 }

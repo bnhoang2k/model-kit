@@ -14,7 +14,7 @@ from importlib import resources
 from pathlib import Path
 from typing import Literal
 
-from model_kit._shipped import PRIVATE_BAR_FILE, SCENE_DIR, ships
+from model_kit._shipped import ALLOW_SUFFIX, PRIVATE_BAR_FILE, SCENE_DIR, ships
 from model_kit.core.errors import ManifestError
 from model_kit.core.manifest.fields import (
     _At,
@@ -46,11 +46,14 @@ class Reference:
 
 @dataclass(frozen=True)
 class BarFiles:
+    """The files a bar names. `allow` is optional: the gate allowlist (`check | item | reason`
+    lines) for findings the bar keeps on purpose, beside bar.json."""
     style: str
     pack: str
     glb: str
     scene: str
     sheet: str
+    allow: str | None = None
 
 
 @dataclass(frozen=True)
@@ -67,6 +70,14 @@ class Bar:
     files: BarFiles
     superseded: str | None
     dir: Path
+
+    def gate_args(self) -> list[str]:
+        """The gate's arguments for this bar's whole scene: the scene folder, then `--allow` and
+        the bar's allowlist when it has one."""
+        args = [str(self.dir / self.files.scene)]
+        if self.files.allow is not None:
+            args += ["--allow", str(self.dir / self.files.allow)]
+        return args
 
 
 def _bool(at: _At, raw) -> bool:
@@ -131,11 +142,18 @@ def load_bar(dir: Path) -> Bar:
     if len(set(keys)) != len(keys):
         at.key("references").fail(f"keys repeat: {keys}")
     fat = at.key("files")
-    fraw = _fields(fat, raw["files"], ("style", "pack", "glb", "scene", "sheet"))
+    fraw = _fields(fat, raw["files"], ("style", "pack", "glb", "scene", "sheet"), ("allow",))
     files = BarFiles(**{k: _relative(fat.key(k), fraw[k]) for k in fraw})
     if files.scene != SCENE_DIR:
         fat.key("scene").fail(f"must be {SCENE_DIR!r}, got {files.scene!r}")
-    for field in ("style", "pack", "glb", "sheet"):
+    if files.allow is not None and (Path(files.allow).parts[0] == SCENE_DIR
+                                    or Path(files.allow).suffix != ALLOW_SUFFIX
+                                    or not ships(Path(files.allow))):
+        fat.key("allow").fail(f"must be a {ALLOW_SUFFIX} file the bar ships, outside "
+                              f"{SCENE_DIR}/ (a build replaces it), got {files.allow!r}")
+    for field in ("style", "pack", "glb", "sheet", "allow"):
+        if getattr(files, field) is None:
+            continue
         if not (dir / getattr(files, field)).is_file():
             fat.key(field).fail(f"the file {getattr(files, field)!r} is not in {dir}")
     if (dir / files.scene).exists() and not (dir / files.scene).is_dir():

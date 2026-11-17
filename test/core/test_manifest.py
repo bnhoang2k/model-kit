@@ -991,6 +991,56 @@ def test_outlined_refuses_a_missing_reason_a_stale_reason_and_a_non_bool(tmp_pat
             load_pack_from(tmp_path, data)
 
 
+def _card_data() -> dict:
+    """The shop pack with its Lamp branching and a card copy `Lamp_Cards` of it."""
+    data = pack_data()
+    data["pieces"]["Lamp"]["recipe"]["kind"] = "branching"
+    data["pieces"]["Lamp_Cards"] = {
+        **copy.deepcopy(data["pieces"]["Lamp"]), "cards_of": "Lamp", "outlined": False,
+        "outlined_why": "the shipping look draws cards flat"}
+    return data
+
+
+def test_cards_of_round_trip(tmp_path):
+    from model_kit.core.writer import write_pack
+
+    pack = load_pack_from(tmp_path, _card_data())
+    assert pack.pieces["Lamp_Cards"].cards_of == "Lamp"
+    assert pack.pieces["Lamp"].cards_of == ""
+    path = write_pack(pack, tmp_path / "out.pack.json")
+    raw = json.loads(path.read_text())["pieces"]
+    assert raw["Lamp_Cards"]["cards_of"] == "Lamp" and "cards_of" not in raw["Lamp"]
+    assert load_pack(path, shop_style()) == pack
+
+
+def test_cards_of_refusals(tmp_path):
+    def card(edit_source=None, **edit):
+        data = _card_data()
+        data["pieces"]["Lamp_Cards"] |= edit
+        if edit_source:
+            data["pieces"]["Lamp"] |= edit_source
+        return data
+
+    cases = [
+        (card(cards_of="Ghost"), r"Lamp_Cards.*Ghost.*lacks"),
+        (card(cards_of=""), "non-empty"),
+        (card(cards_of="Doll"), r"Lamp_Cards.*Doll.*(assembly|rigged|\w+) piece"),
+        (card(outlined=True, outlined_why=None), r"Lamp_Cards.*Lamp.*outlined: false"),
+        (card({"cards_of": "Lamp_Cards"}), r"Lamp.*Lamp_Cards.*itself a card copy"),
+    ]
+    for data, match in cases:
+        if data["pieces"]["Lamp_Cards"].get("outlined_why", 1) is None:
+            del data["pieces"]["Lamp_Cards"]["outlined_why"]
+        if data["pieces"]["Lamp"].get("cards_of"):
+            data["pieces"]["Lamp"] |= {"outlined": False, "outlined_why": "x"}
+        with fails(match):
+            load_pack_from(tmp_path, data)
+    data = _card_data()
+    data["pieces"]["Lamp_Cards"]["recipe"]["kind"] = "assembly"
+    with fails(r"Lamp_Cards.*Lamp.*a card piece is branching"):
+        load_pack_from(tmp_path, data)
+
+
 def test_view_farthest_round_trips_and_defaults_to_none(tmp_path):
     data = pack_data()
     data["pieces"]["Lamp"]["view"] = _view()
@@ -1784,6 +1834,44 @@ def test_a_part_built_in_code_checks_its_vocabulary_and_what_it_retains():
         Part("a", "l", "box", None, "g", "paint", (), None)
     with pytest.raises(ManifestError, match=r"part 'a': retains: .*cannot retain itself"):
         Part("a", "l", "box", None, "g", "solid", (), None, retains=("a",))
+
+
+def test_rests_on_defaults_empty_and_reads_two_supports(tmp_path):
+    parts = _lamp_parts(tmp_path, lead={"on": None, "rests_on": ["base", "stem"]})
+    assert parts["lead"].rests_on == ("base", "stem")
+    assert parts["base"].rests_on == () and parts["stem"].rests_on == ()
+
+
+@pytest.mark.parametrize("lead,match", [
+    ({"on": None, "rests_on": ["base"]}, "use `on` for one support"),
+    ({"on": "base", "rests_on": ["base", "stem"]}, "both `on` and `rests_on`"),
+    ({"on": None, "rests_on": ["lead", "base"]}, "cannot rest on itself"),
+    ({"on": None, "rests_on": ["base", "ghost"]}, "names no part of this piece: 'ghost'"),
+    ({"on": None, "rests_on": ["base", "base"]}, "names repeat"),
+    ({"on": None, "rests_on": []}, "must not be empty"),
+    ({"on": None, "fastener": True, "rests_on": ["base", "stem"]}, "is a fastener"),
+    ({"on": None, "shape": "decal", "role": "decal", "rests_on": ["base", "stem"]}, "is a decal"),
+])
+def test_a_bad_rests_on_is_a_load_error(tmp_path, lead, match):
+    with fails(match):
+        _lamp_parts(tmp_path, lead=lead)
+
+
+def test_rests_on_on_a_rigged_piece_is_a_load_error(tmp_path):
+    data = pack_data()
+    doll = data["pieces"]["Doll"]["parts"]
+    doll[0].update(on=None, rests_on=[doll[1]["name"], doll[2]["name"]])
+    with fails("rigged"):
+        load_pack_from(tmp_path, data)
+
+
+def test_a_part_built_in_code_checks_its_supports():
+    with pytest.raises(ManifestError, match=r"part 'a': rests_on: .*cannot rest on itself"):
+        Part("a", "l", "box", None, "g", "solid", (), None, rests_on=("a", "b"))
+    with pytest.raises(ManifestError, match="use `on` for one support"):
+        Part("a", "l", "box", None, "g", "solid", (), None, rests_on=("b",))
+    with pytest.raises(ManifestError, match="names 'b' twice"):
+        Part("a", "l", "box", None, "g", "solid", (), None, rests_on=("b", "b"))
 
 
 def test_loader_error_names_file_and_field(tmp_path):

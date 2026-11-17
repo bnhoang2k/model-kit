@@ -85,7 +85,7 @@ _EXTRAS_ORDER = ("listed", "group", "shape", "on", "role")  # the order the bars
 # their order, so a bar that sets no new field writes the same .glb bytes as before.
 PART_PROPS = (*_EXTRAS_ORDER, *(k for k in PART_TAGGED if k not in _EXTRAS_ORDER))
 _FLAG_PROPS = ("fastener",)  # true or false; unset means false
-_LIST_PROPS = ("retains",)  # a list of part names; unset means none
+_LIST_PROPS = ("retains", "rests_on")  # lists of part names; unset means none
 REQUIRED_PART_PROPS = ("listed", "group", "shape")  # the ones tag() cannot do without
 
 
@@ -206,7 +206,8 @@ def object_name(piece_name: str, part: str) -> str:
 
 def _check_part_props(where: str, fields: Mapping) -> None:
     """`listed`, `group` and `shape` must be strings; `on` and `role` may also be None;
-    `fastener` must be true or false; `retains` must be a list or tuple of strings."""
+    `fastener` must be true or false; `retains` and `rests_on` must be a list or tuple of
+    strings."""
     for key, value in fields.items():
         if key in _FLAG_PROPS:
             if not isinstance(value, bool):
@@ -221,7 +222,7 @@ def _check_part_props(where: str, fields: Mapping) -> None:
 
 def tag(ob, piece: str, part: str, *, listed: str, group: str, shape: str,
         on: str | None = None, role: str | None = None, fastener: bool = False,
-        retains: tuple[str, ...] = ()) -> None:
+        retains: tuple[str, ...] = (), rests_on: tuple[str, ...] = ()) -> None:
     """Make a mesh that other code built into a part of `piece`.
 
     Names the object `object_name(piece, part)` (a name another object holds raises, and `ob`
@@ -242,7 +243,7 @@ def tag(ob, piece: str, part: str, *, listed: str, group: str, shape: str,
         raise ManifestError(f"tag: {ob.name!r} is a {ob.type}; only a MESH becomes the part "
                             f"{full!r}")
     given = {"listed": listed, "group": group, "shape": shape, "on": on, "role": role,
-             "fastener": fastener, "retains": retains}
+             "fastener": fastener, "retains": retains, "rests_on": rests_on}
     fields = {key: given[key] for key in PART_PROPS}  # a tagged field tag() lacks is a KeyError
     _check_part_props(f"piece {piece!r} part {part!r}", fields)
     other = bpy.data.objects.get(full)
@@ -661,6 +662,7 @@ class _Entry:
     view: View | None = None
     outlined: bool = True
     outlined_why: str = ""
+    cards_of: str = ""
     uses: list[Use] = field(default_factory=list)
     holds: list[dict] = field(default_factory=list)
     seats: list[Seat] = field(default_factory=list)
@@ -743,7 +745,8 @@ class PackBuilder:
                  zones: Sequence[str] = ("d",), skin=None, hosts=None, fill: bool = False,
                  tool: bool = False, rig: RigSpec | None = None,
                  forms: Mapping[str, SoftForm] = MappingProxyType({}),
-                 view: View | None = None, outlined: bool = True, outlined_why: str = ""):
+                 view: View | None = None, outlined: bool = True, outlined_why: str = "",
+                 cards_of: str = ""):
         """Add a piece. `origin` says in words where the piece frame's origin sits (the
         manifest's `frame.origin`). `kind`, `snap`, `zones`, `skin`, `hosts` and `fill` go to
         `measured` as before; `fill` asks for the measured fill fraction.
@@ -758,6 +761,9 @@ class PackBuilder:
 
         `outlined` says whether the piece's shipping look draws outlines (the default). A piece
         that does not needs an `outlined_why`; the loader checks the pair at `finish`.
+
+        `cards_of` names the grown piece of this pack that this piece is the card copy of (see
+        `Piece.cards_of`); the loader checks it at `finish`.
 
         `rig` makes the piece rigged: `finish` writes it into the `Piece`, takes each part's
         `bones` and `bind` from `rig.bind`, and needs the armature object `rig.armature` under
@@ -776,7 +782,7 @@ class PackBuilder:
                   "hosts": None if hosts is None else list(_names(f"{root.name}.hosts", hosts)),
                   "fill": fill, "tool": tool},
             rig=rig, forms={k: v for k, v in forms.items() if v is not None}, view=view,
-            outlined=outlined, outlined_why=outlined_why,
+            outlined=outlined, outlined_why=outlined_why, cards_of=cards_of,
         )
         return root
 
@@ -1030,6 +1036,7 @@ class PackBuilder:
             measured=measured, rig=entry.rig, connectors=tuple(entry.connectors),
             keep_off=tuple(entry.keep_offs), view=entry.view,
             outlined=entry.outlined, outlined_why=entry.outlined_why,
+            cards_of=entry.cards_of,
         )
 
 

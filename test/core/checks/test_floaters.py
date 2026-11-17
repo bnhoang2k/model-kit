@@ -1,11 +1,12 @@
 import dataclasses
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 
 from model_kit.core import gate, sight
 from model_kit.core.checks import pieces
-from model_kit.core.checks.floaters import Floaters
+from model_kit.core.checks.floaters import Floaters, _check_chains
 from model_kit.core.errors import BlindCheck, ManifestError
 from model_kit.core.geom import surface_gap
 from model_kit.core.metagate import Unmeasured, run_gate
@@ -21,6 +22,13 @@ from .piece_scenes import (
     tried_and_caught,
 )
 from .sight_scenes import unviewed, viewed
+from .support_scenes import (
+    BRIDGES,
+    SUPPORT_TOUCH,
+    bench_ctx,
+    pallet_ctx,
+    shortened,
+)
 
 ON_BASE = {"post": {"on": "base"}}
 ITEM = "kit:Thing post"
@@ -312,13 +320,18 @@ def test_plants_stay_caught_under_a_far_view_on_two_pieces():
         assert plants_caught(Floaters(), base), label
 
 
-def test_floaters_plants_never_call_the_core(monkeypatch):
+@pytest.mark.parametrize("make,units", [
+    (lambda: make_ctx(post_on_base(), ON_BASE), 1), (pallet_ctx, 3), (bench_ctx, 3)],
+    ids=["post on a base", "pallet", "bench"])
+def test_floaters_plants_never_call_the_core(monkeypatch, make, units):
     from model_kit.core.checks import floaters
 
-    ctx = make_ctx(post_on_base(), ON_BASE)
+    ctx = make()
     refuses_the_core(monkeypatch, floaters, "_problem", "_findings", "_gap")
     monkeypatch.setattr(floaters.Floaters, "run", lambda *a, **k: 1 / 0)
-    assert [u.item for u in Floaters().plants(ctx)] == [ITEM]
+    assert len(Floaters().plants(ctx)) == units
+    if units == 1:
+        assert [u.item for u in Floaters().plants(ctx)] == [ITEM]
 
 
 def test_floaters_plants_caught_on_two_pieces():
@@ -338,3 +351,104 @@ def test_a_check_that_misses_every_float_stops_the_run():
 
     with pytest.raises(BlindCheck, match=r"floaters: kit:Thing post"):
         run_gate([Blind()], make_ctx(post_on_base(), ON_BASE), None)
+
+
+# --- a part that rests on several supports ----------------------------------------------------
+
+
+@pytest.mark.parametrize("piece", sorted(BRIDGES))
+def test_an_honest_bridging_piece_passes(piece):
+    ctx = BRIDGES[piece][0]()
+    assert Floaters().run(ctx) == []
+    assert run_gate([Floaters()], ctx, None).status == "passed"
+
+
+@pytest.mark.parametrize("piece,part,support", [
+    ("pallet", "stringer_3", "block_31"), ("bench", "seat", "trestle_r")])
+def test_a_part_off_one_support_is_one_finding_naming_it(piece, part, support):
+    make, meshes = BRIDGES[piece]
+    # shorten that support by 2 contact lengths, so only it lets go of the part
+    tris = shortened(meshes()[support], CALIBRATION_FAIL * SUPPORT_TOUCH)
+    found = Floaters().run(make(parts={support: tris}))
+    assert [f.item for f in found] == [f"kit:Thing {part} off {support}"]
+    assert f"from its support {support}" in found[0].detail
+
+
+def test_a_scoped_run_returns_only_the_support_it_names():
+    pallet = pallet_ctx(parts={"block_31": shortened(
+        BRIDGES["pallet"][1]()["block_31"], CALIBRATION_FAIL * SUPPORT_TOUCH)})
+    item = "kit:Thing stringer_3 off block_31"
+    assert [f.item for f in Floaters().run(pallet, only={item})] == [item]
+
+
+def test_a_cycle_through_rests_on_raises():
+    with pytest.raises(ManifestError, match="`rests_on` makes a cycle"):
+        Floaters().run(bench_ctx(specs={"trestle_l": {"on": "seat"}}))
+
+
+def test_a_support_with_no_geometry_raises():
+    ctx = bench_ctx(parts={"trestle_r": np.zeros((0, 3, 3))})
+    with pytest.raises(ManifestError, match=r"seat: rests on 'trestle_r', which has no geometry"):
+        Floaters().run(ctx)
+
+
+def test_a_chain_of_1500_parts_is_walked_without_recursion():
+    names = [f"p{i}" for i in range(1500)]
+    parts = [SimpleNamespace(name=n, on=m, rests_on=()) for n, m in zip(names, [*names[1:], None])]
+    _check_chains(SimpleNamespace(key="kit:Thing", parts=parts))
+
+
+EXPECTED_BRIDGE_ITEMS = {
+    "pallet": ("kit:Thing stringer_1 off block_11", "kit:Thing stringer_1 off stringer_2"),
+    "bench": ("kit:Thing seat off trestle_l", "kit:Thing seat off stretcher"),
+}
+
+
+@pytest.mark.parametrize("piece", sorted(BRIDGES))
+def test_bridging_plants_are_caught_on_two_pieces(piece):
+    ctx = BRIDGES[piece][0]()
+    caught_items = tried_and_caught(Floaters(), ctx)
+    tilt, phantom = EXPECTED_BRIDGE_ITEMS[piece]
+    assert tilt in caught_items and phantom in caught_items
+    assert run_gate([Floaters()], ctx, None).status == "passed"
+
+
+@pytest.mark.parametrize("piece", sorted(BRIDGES))
+def test_the_tilt_lifts_the_target_and_keeps_the_pivot(piece):
+    ctx = BRIDGES[piece][0]()
+    tilt, _ = EXPECTED_BRIDGE_ITEMS[piece]
+    unit = next(u for u in Floaters().plants(ctx) if u.item == tilt)
+    (plant,) = unit.candidates
+    part, target = tilt.removeprefix("kit:Thing ").split(" off ")
+    view = next(pieces.contact_pieces(plant.ctx, Floaters.kinds))
+    tilted = next(p for p in view.parts if p.name == part)
+    supports = {p.name: p for p in view.parts if p.name in tilted.rests_on}
+    limit = CALIBRATION_FAIL * SUPPORT_TOUCH * 2
+    assert surface_gap(tilted.tris, supports[target].tris, limit) >= (
+        CALIBRATION_FAIL * SUPPORT_TOUCH * (1 - 1e-6))
+    pivot = [n for n in supports if n != target]
+    assert any(surface_gap(tilted.tris, supports[n].tris, limit) <= SUPPORT_TOUCH
+               for n in pivot)
+
+
+def test_the_phantom_never_names_a_part_whose_chain_reaches_the_part():
+    ctx = pallet_ctx()
+    unit = next(u for u in Floaters().plants(ctx) if u.item.endswith("stringer_1 off stringer_2"))
+    (plant,) = unit.candidates
+    view = next(pieces.contact_pieces(plant.ctx, Floaters.kinds))
+    named = next(p for p in view.parts if p.name == "stringer_1").rests_on
+    assert not any(n.startswith("top_") for n in named)
+    assert Floaters().run(plant.ctx)  # runs with no ManifestError and reports the phantom
+
+
+def test_a_bridging_part_lifted_reports_its_first_support():
+    ctx = bench_ctx(hosts=["trestle_l", "trestle_r", "stretcher"])
+    unit = Floaters().plants(ctx)[0]
+    assert unit.item == "kit:Thing seat off trestle_l"
+    assert any(f.item == unit.item for plant in unit.candidates
+               for f in Floaters().run(plant.ctx, only=plant.scope))
+
+
+def test_a_piece_with_no_bridging_part_gets_the_same_units():
+    ctx = make_ctx(post_on_base(), ON_BASE)
+    assert [u.item for u in Floaters().plants(ctx)] == [ITEM]

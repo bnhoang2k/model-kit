@@ -1,9 +1,14 @@
-import numpy as np
+import dataclasses
 
-from model_kit.core.checks.branching._pieces import grown
+import numpy as np
+import pytest
+
+from model_kit.core.checks.branching._pieces import grown, tube_base
 from model_kit.core.checks.branching.skeleton_match import SkeletonMatch, _sight
 from model_kit.core.grow.mesh import grown_parts
 from model_kit.core.metagate import Unmeasured, run_gate
+from model_kit.core.scene import PieceGeom, piece_key
+from model_kit.core.scope import Scope
 from model_kit.core.sight import Sight
 from model_kit.core.tolerances import (
     CALIBRATION_FAIL,
@@ -11,9 +16,14 @@ from model_kit.core.tolerances import (
     SKELETON_MATCH_OF_THICKNESS,
 )
 
+from ..piece_scenes import caught
 from .branching_scene import (
+    CARD,
+    CARDS_PART,
     MIN_THICKNESS_M,
     UPM,
+    card_ctx,
+    card_item,
     grown_ctx,
     item,
     plants_caught,
@@ -22,6 +32,7 @@ from .branching_scene import (
     tube_skeleton,
     viewed_ctx,
 )
+from .tiny_trees import SPECIES, tiny_tree
 
 CHECK = SkeletonMatch()
 TOL = SKELETON_MATCH_OF_THICKNESS * MIN_THICKNESS_M * UPM
@@ -155,3 +166,63 @@ def test_a_buds_v2_piece_with_no_view_is_unmeasured_and_the_old_meshes_need_none
     # a skeleton of the original mesh reads no sight: the piece is compared without a view
     assert CHECK.run(grown_ctx(small_tree())) == []
     assert CHECK.measured(grown_ctx(small_tree()))
+
+
+# --- a card copy is compared with the card copy the skeleton makes -------------------------------
+
+CARD_PIECES = [pytest.param(path, id=path.name.split(".")[0]) for path in SPECIES]
+
+
+def _card_scene(path):
+    return card_ctx(tiny_tree(path, 1))
+
+
+def _card_vertex_moved(ctx, part, by):
+    """The scene with the first vertex of the shipped card part moved `by` along +Y."""
+    key = piece_key("grove", CARD)
+    geom = ctx.pieces[key]
+    tris = np.array(geom.parts[part], dtype=float)
+    tris[np.all(tris == tris[0, 0], axis=-1)] += np.array([0.0, by, 0.0])
+    return dataclasses.replace(
+        ctx, pieces={**ctx.pieces, key: PieceGeom(geom.name, {**geom.parts, part: tris})})
+
+
+@pytest.mark.parametrize("path", CARD_PIECES)
+def test_card_scene_quiet(path):
+    ctx = _card_scene(path)
+    assert CHECK.run(ctx) == []
+    assert not any("judged on its source" in line for line in CHECK.coverage(ctx))
+    assert card_item(CARDS_PART) in CHECK.measured(ctx)
+    assert all(ok for _, ok in plants_caught(CHECK, ctx))
+
+
+@pytest.mark.parametrize("path", CARD_PIECES)
+def test_card_vertex_moved_caught(path):
+    ctx = _card_scene(path)
+    tol = SKELETON_MATCH_OF_THICKNESS * tube_base(ctx, ctx.packs["grove"].pieces[CARD])
+    assert CHECK.run(_card_vertex_moved(ctx, CARDS_PART, CALIBRATION_PASS * tol)) == []
+    found = CHECK.run(_card_vertex_moved(ctx, CARDS_PART, CALIBRATION_FAIL * tol))
+    assert {f.item for f in found} == {card_item(CARDS_PART)}
+    units = [u for u in CHECK.plants(ctx) if u.item.startswith(card_item(""))]
+    assert card_item(CARDS_PART) in [u.item for u in units]
+    assert units and all(any(caught(CHECK, p) for p in u.candidates) for u in units)
+
+
+def test_missing_card_dials_unmeasured():
+    ctx = _card_scene(SPECIES[0])
+    bare = dataclasses.replace(ctx, style=dataclasses.replace(
+        ctx.style, dials={k: v for k, v in ctx.style.dials.items() if k != "cards"}))
+    assert CHECK.run(bare) == []
+    assert not any(k.startswith(card_item("")) for k in CHECK.measured(bare))
+    assert not any(u.item.startswith(card_item("")) for u in CHECK.plants(bare))
+    lines = CHECK.coverage(bare)
+    assert any(isinstance(line, Unmeasured) and "grove:Tree_Cards" in line for line in lines), lines
+
+
+def test_scoped_card_piece():
+    ctx = _card_scene(SPECIES[0])
+    scope = Scope(frozenset({piece_key("grove", CARD)}))
+    verdict = run_gate([SkeletonMatch()], ctx, None, scope=scope)
+    assert verdict.status == "partial" and verdict.failed == 0
+    assert any("scoped run" in line for line in verdict.coverage)
+    assert card_item(CARDS_PART) in SkeletonMatch().measured(scope.scene(ctx))

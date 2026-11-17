@@ -49,7 +49,21 @@ model-kit gate <scene>
 It prints `passed`, `partial` or `failed: n`. A partial run is not a pass: a check could not
 measure something, and the lines above it say what the pack leaves out. Fix each failure, build
 again and run the gate again. An allow line (`--allow FILE`) excuses one finding and needs a reason
-a stranger would accept, never "it passes this way".
+a stranger would accept, never "it passes this way". A bar may keep its allow file beside its
+`bar.json`, named in `files.allow` (a `.allow` file); the bar tests then gate its scene with it.
+
+While you edit one piece, gate the whole scene folder with `--pieces <pack>:<piece>`. Never
+build one piece over the whole scene's folder. The part checks then measure only that piece; the
+layout, clip and export checks still run on the whole scene. A scoped run always prints `partial`:
+it is never a pass. Before you show the piece or merge, run the gate on the whole scene once,
+without `--pieces`. Only a gate run on the whole scene is a pass.
+
+The failure lines are the last lines on stderr, above the status line. Each check prints a
+`time:` line; `--timing FILE` appends the times to a file. A run that stops with
+`cannot start: BlindCheck` has printed its real findings above that line: fix those too.
+
+If the pack cannot say how a part is really held, stop and tell the person what is missing. Never
+remove a part's `on` or `rests_on`, or list it as an anchor in `hosts`, to make a check pass.
 
 ## 5. Look at the piece
 
@@ -62,6 +76,35 @@ model-kit sheet <name>.pack.json --piece <Piece> --style style.json --out sheet.
 
 Read `sheet.png`. Compare the piece with the bar: its size against the 1 m post, its outline, its
 parts. Fix what looks wrong, then run the gate and the sheet again.
+
+## 6. Bake the light
+
+Skip this step when the scene is lit live. To bake light into a scene, write a stage file for one
+layout: its lights, grouped in layers, its stage cameras and the placements that move (`live`).
+[REFERENCE.md](REFERENCE.md) lists the fields. Take each light's place and kind from the scene's
+real light, and each camera's distance from the piece's `view`. Never pick a density or a sample
+count so that a check passes.
+
+```bash
+model-kit bake <scene> --stage stage.json
+```
+
+Run it on the scene folder after the build has written it, because a build replaces the folder.
+The bake writes `<scene>/bake/`: one picture per layer and `bake.json`. It refuses a folder that
+already has one; add `--replace` to bake over it. Read the picture sizes it prints.
+
+Then run the gate on the whole scene. Four checks read the bake: `bake-files`,
+`lightmap-overlap`, `seam-jump` and `lightmap-density`. When `lightmap-density` names a
+placement, raise `texels_per_m`, or that placement's own `placement_texels_per_m`, and bake again. Never lower a check's factor. In `full` mode a hard
+direct light (a small point, a sun) may never pass `lightmap-density` at a usable size: use soft
+lights, bake `indirect`, or ask the person. When `seam-jump`
+fires, stop and tell the person the finding lines.
+
+To see the bake against live three.js light, run `model-kit bake <scene> --stage stage.json
+--compare`. It keeps an existing bake, renders each stage camera in Blender and in a browser, and
+prints one number per camera. The number says where to look. It is never a pass. Its live
+stand-ins differ: the sun is measured, a point light uses the physical factor 1/(4 pi), a spot and
+a hemisphere are unmeasured, and an area light has none (it prints a note).
 
 ## Changing the kit itself
 

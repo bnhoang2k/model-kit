@@ -10,18 +10,18 @@ glance whether the crown, trunk, limbs and leaves read right at the same scale.
   sources, one cited range and 17 params, each tagged. The grower merges it with the kit file
   (`src/model_kit/kinds/branching/botany.rules.json`), which holds the facts true of every tree
   and the constants of the growth model. A species file may not set a kit key.
-- `build.py`: grows the two trees with `model_kit.core.grow.buds.grow_buds`, runs Blender
+- `build.py`: grows the two trees (and makes `Redbud_Cards` from `Redbud`'s skeleton) with `model_kit.core.grow.buds.grow_buds`, runs Blender
   through `model_kit/blender/grow_build.py`, and writes `redbud.pack.json`, `redbud.glb` and
   `scene/`. Run it with `MODEL_KIT_BLENDER` set: `uv run python bars/02-redbud/build.py`.
-- `style.json`: 0.5 units per metre; the page camera is ortho at turn 14, tilt 52;
+- `style.json`: 0.5 units per metre; `dials.cards` (`ball_m` 0.5, `normal_mix` 0.5, `sky` 3.0; budget, a render choice); the page camera is ortho at turn 14, tilt 52;
   `min_thickness` is 0.018 m; `dials.leaves` is the leaf-normal lean (a render dial).
   It also declares the reference camera for depth: a three.js perspective camera, near 0.1 m,
   far 2000 m, 24-bit depth (the 24 bits to confirm; `depth_why` has the sources).
-- `redbud.pack.json` and `redbud.glb` (Draco, 2.5 MB): the pack with its two pieces.
-- `scene/`: the saved scene the gate reads: each piece's triangles and skeleton, the node table
+- `redbud.pack.json` and `redbud.glb` (Draco): the pack with its three pieces.
+- `scene/`: the saved scene the gate reads: each piece's triangles and skeleton (`Redbud_Cards` has no skeleton of its own), the node table
   of the .glb, and `rules/redbud.rules.json` (the copy `reference-range` reads). It does not
   ship in the wheel.
-- `sheet.png`: `Redbud` alone at the page camera and four more views.
+- `sheet.png`: `Redbud_Cards` (row one) beside `Redbud` (row two) at one scale, at the page camera and four more views, with a 1 m post.
 
 ## The pieces
 
@@ -29,6 +29,7 @@ glance whether the crown, trunk, limbs and leaves read right at the same scale.
 | --- | --- | --- | --- | --- |
 | `Redbud` (the bar) | 5.0 m, seed 6, full | about 35 s | 349,392 | 5 m |
 | `Redbud_Lite` | 5.0 m, seed 7, lite | about 35 s | 128,322 | 20 m |
+| `Redbud_Cards` | the card copy of `Redbud` (same skeleton) | none: shares `Redbud`'s | 40,008 | 10 m |
 
 Grow time is `perf_counter` around one `grow_buds` call, as `build.py` prints it, one grow at a
 time on one machine. The budget is 60 s for `Redbud`.
@@ -42,6 +43,36 @@ view in brackets), `Redbud`: trunk and roots 7,262 (1,814), leaders 11,470 (9,37
 `Redbud_Lite`: 1,692 (1,558), 5,200 (5,256), 18,416 (18,354), 33,296 (22,480), 43,600 (30,882)
 and 26,118 (26,118).
 
+`Redbud_Cards` is the game-weight copy of `Redbud`: the same wood levels plus leaf cards (a painted
+leaf image on squares, alpha-cut), from the same seed-6 skeleton. Its build prints 25,019 vertices
+(wood 20,775, leaves 4,244), the vertices its .glb holds, which a game loads; its wood is shaded
+smooth, with no crease, and its leaf part holds 1,061 cards (2,122 triangles). By part, in
+triangles: trunk and roots 3,574, leaders 4,900, branches 9,656, twigs 9,706, shoots 10,050, cards
+2,122. These counts are report-only: no target, no pass or fail. The cards come from rules ported
+from Razel's "Just a simple tree" (credit in `REFERENCE.md`). Its outline is off
+(`outlined_why` in `build.py`): the shipping look draws it without lines.
+`tools/tree_cards_page/index.html` draws it beside `Redbud` in three.js.
+
+A viewer must not flip a card's back-face normal: both faces use the clump normal. glTF
+`doubleSided` makes a stock viewer flip it before lighting, so the shared normal holds only in a
+viewer that turns the flip off. In three.js, set `material.onBeforeCompile` on a card material to:
+
+```js
+o.material.onBeforeCompile = (s) => {
+  s.fragmentShader = s.fragmentShader.replace('#include <normal_fragment_begin>',
+    'float faceDirection = 1.0; vec3 normal = normalize( vNormal ); vec3 nonPerturbedNormal = normal;')
+}
+```
+
+`tools/tree_cards_page/index.html` does this, and so does Razel's viewer.
+
+A viewer should sample the leaf texture with anisotropic filtering (three.js:
+`texture.anisotropy = renderer.capabilities.getMaxAnisotropy()`); glTF has no field for it. A
+slanted card then picks its mip level from the short axis of its footprint, not the long one,
+which would land on a level where no texel passes the alpha cut. The atlas bleeds leaf colour
+under clear texels, so far mips keep the leaf colour. The page `tools/tree_cards_page/index.html`
+sets the anisotropy too.
+
 Nearest view is the distance the detail check reads (`view.nearest_m`):
 - `Redbud`, 5 m: the bar scene is the page camera framing the whole 5 m tree, and a person in a
   scene stands back about one tree height to see a small tree whole.
@@ -52,6 +83,9 @@ Nearest view is the distance the detail check reads (`view.nearest_m`):
 Farthest view (`view.farthest_m`): `Redbud`, 20 m, where `Redbud_Lite` takes over. `Redbud_Lite`,
 50 m: an estimate from how it is used, to be confirmed (the far end of the backdrop; the text
 above says only where the backdrop begins).
+
+`Redbud_Cards`, 10 m to 70 m: proposed from a scene's close-up on one building with trees beside
+it (10 m) and its orthographic overview (70 m). Not measured; the pack's `view.why` says so.
 
 ## How it was grown
 

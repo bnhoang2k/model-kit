@@ -18,6 +18,7 @@ from model_kit.core.metagate import run_gate
 
 from .checks import (
     test_assembly_plants_blind,
+    test_bake_plants_blind,
     test_clip_rig_plants_blind,
     test_frame_joint_plants_blind,
     test_mesh_look_plants_blind,
@@ -33,7 +34,8 @@ def make_check(name):
 
 def _scenes() -> dict[str, list]:
     """The scene factories of the per-verdict guards, by the name of the check they plant."""
-    tables = (test_assembly_plants_blind.SCENES, test_clip_rig_plants_blind.SCENES,
+    tables = (test_assembly_plants_blind.SCENES, test_bake_plants_blind.SCENES,
+              test_clip_rig_plants_blind.SCENES,
               test_frame_joint_plants_blind.SCENES, test_mesh_look_plants_blind.SCENES,
               test_reach_contact_plants_blind.SCENES, test_branching_plants_blind.CASES)
     by_check: dict[str, list] = {}

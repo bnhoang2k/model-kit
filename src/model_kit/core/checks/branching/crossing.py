@@ -45,6 +45,7 @@ def _findings(g: Grown, only) -> list[Finding]:
 class CrossingOrganic:
     name = NAME
     kinds: frozenset[str] = KINDS
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         share = -CALIBRATION_FAIL * CROSS_OF_RADIUS

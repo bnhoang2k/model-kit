@@ -2,6 +2,7 @@
 test/blender/test_profile.py."""
 
 import builtins
+from pathlib import Path
 
 from core.scenes import make_ctx
 from test_bars_format import make_bar as make_bar_folder
@@ -22,7 +23,13 @@ def test_gate_runs_all_checks_by_default(tmp_path, capsys):
     assert default.out == "partial\n"
     assert cli.main(["gate", str(tmp_path / "scene"), "--checks",
                      ",".join(gate.CHECKS)]) == 1
-    assert capsys.readouterr() == default
+    again = capsys.readouterr()
+    assert again.out == default.out
+
+    def without_times(err):
+        return [line for line in err.splitlines() if not line.startswith("time: ")]
+
+    assert without_times(again.err) == without_times(default.err)
 
 
 def test_gate_unknown_check_exits_2(tmp_path, capsys):
@@ -157,6 +164,28 @@ def test_sheet_prints_the_rows_and_views(tmp_path, monkeypatch, capsys):
     assert cli.main(["sheet", "p.pack.json", "--piece", "Bench", "--style", "s.json",
                      "--out", str(out)]) == 0
     assert capsys.readouterr().out == f"wrote {out}: 2 rows x 5 views\n"
+
+
+def test_bake_plans_then_runs(tmp_path, monkeypatch, capsys):
+    calls = {}
+    monkeypatch.setattr(cli.bake_module, "plan_bake",
+                        lambda scene, stage: calls.update(scene=scene, stage=stage) or "plan")
+    monkeypatch.setattr(cli.bake_module, "run_bake",
+                        lambda plan, *, replace, timeout: calls.update(plan=plan, replace=replace)
+                        or tmp_path / "bake")
+    assert cli.main(["bake", "scene", "--stage", "s.json", "--replace"]) == 0
+    assert calls == {"scene": Path("scene"), "stage": Path("s.json"), "plan": "plan",
+                     "replace": True}
+    assert capsys.readouterr().out == f"wrote {tmp_path / 'bake'}\n"
+    cli.main(["bake", "scene", "--stage", "s.json"])
+    assert calls["replace"] is False
+
+
+def test_bake_needs_a_stage_and_names_a_bad_scene(tmp_path, capsys):
+    assert cli.main(["bake", "scene"]) == 2
+    assert "--stage" in capsys.readouterr().err
+    assert cli.main(["bake", str(tmp_path / "nothing"), "--stage", str(tmp_path / "s.json")]) == 2
+    assert "cannot start" in capsys.readouterr().err
 
 
 def test_profile_without_blender_exits_2(tmp_path, monkeypatch, capsys):

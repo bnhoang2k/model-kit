@@ -25,10 +25,11 @@ from model_kit.core.checks.must_touch import MustTouch
 from model_kit.core.checks.topology import Topology
 from model_kit.core.errors import BlindCheck
 from model_kit.core.metagate import Unmeasured, run_gate
+from model_kit.core.scope import Scope
 
 from ..shapes import box
 from .piece_scenes import make_ctx as piece_ctx
-from .piece_scenes import post_on_base, refuses_the_core, tried_and_caught, with_parts
+from .piece_scenes import post_on_base, refuses_the_core, tried_and_caught, two_pieces, with_parts
 from .test_overlap import (
     CUSHION_TOP,
     HAND,
@@ -429,3 +430,13 @@ def test_a_piece_the_clip_places_twice_has_one_unit_of_its_first_copy_s_scenes()
     assert 0 < len(units[0].candidates) <= 3 * len(overlap_module.ROOM_FRACTIONS)
     assert len({u.item for u in Coverage([Floaters()]).plants(twice)}) == len(
         Coverage([Floaters()]).plants(twice))
+
+
+def test_a_scoped_coverage_skips_dropped_pieces_and_still_catches_its_ghost():
+    ctx = two_pieces(decal=True)
+    scope = Scope(frozenset({"kit:Thing"}))
+    checks = [Crossings(), Coverage([Crossings()], scope)]
+    verdict = run_gate(checks, ctx, None, scope=scope)  # a blind ghost plant would raise
+    text = "\n".join(verdict.lines)
+    assert "kit:Thing label" in text
+    assert "kit:Other label" not in text

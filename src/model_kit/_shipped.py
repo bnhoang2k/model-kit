@@ -9,7 +9,8 @@ from __future__ import annotations
 from collections.abc import Iterator
 from pathlib import Path
 
-TEXT_SUFFIXES = (".json", ".md", ".py")  # the hygiene scan reads every one of these
+ALLOW_SUFFIX = ".allow"  # a bar's gate allowlist (`files.allow` in bar.json)
+TEXT_SUFFIXES = (".json", ".md", ".py", ALLOW_SUFFIX)  # the hygiene scan reads every one of these
 SHIPPED_SUFFIXES = (*TEXT_SUFFIXES, ".glb", ".png")  # .glb: scanned by its JSON chunk; .png: pixels
 SCENE_DIR = "scene"  # a bar's Blender scene folder: never ships
 PRIVATE_BAR_FILE = "bar.private.json"  # never ships; load_bar refuses a bar folder that holds one

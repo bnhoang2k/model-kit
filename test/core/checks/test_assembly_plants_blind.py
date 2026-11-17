@@ -36,6 +36,7 @@ from model_kit.core.metagate import run_gate
 from .bearing_scenes import PUSHED_PIECES, pushed_post, stack
 from .furniture_scenes import furniture_ctx
 from .piece_scenes import make_ctx, post_on_base
+from .support_scenes import bench_ctx, pallet_ctx
 from .test_clearance import shop_with_lamp_resting
 from .test_coplanar import lifted_mark_scene
 from .test_inset_seat import thing_scene
@@ -83,6 +84,8 @@ def blind_bearing(monkeypatch):
 SCENES = {
     "floaters": (Floaters, blind_floaters,
                  lambda: make_ctx(post_on_base(), {"post": {"on": "base"}})),
+    "floaters (pallet)": (Floaters, blind_floaters, pallet_ctx),
+    "floaters (bench)": (Floaters, blind_floaters, bench_ctx),
     "crossings": (Crossings, blind_crossings, lambda: make_ctx(post_on_base())),
     "take-apart": (TakeApart, blind_take_apart, lambda: lane(("anchor", "b", "a"))),
     "markings": (Markings, blind_markings, lambda: furniture_ctx("Label")),
@@ -90,6 +93,8 @@ SCENES = {
     "clearance": (Clearance, blind_clearance, shop_with_lamp_resting),
     "inset-seat": (InsetSeat, blind_inset_seat, thing_scene),
     "bearing": (Bearing, blind_bearing, stack),
+    "bearing (pallet)": (Bearing, blind_bearing, pallet_ctx),
+    "bearing (bench)": (Bearing, blind_bearing, bench_ctx),
     "coplanar": (Coplanar, blind_coplanar, lifted_mark_scene),
 }
 
@@ -100,7 +105,7 @@ def test_a_blind_core_stops_the_run(name, monkeypatch):
     ctx = make()
     assert run_gate([check()], ctx, None).status == "passed"  # the clean scene, with its plants
     blind(monkeypatch)
-    with pytest.raises(BlindCheck, match=name):
+    with pytest.raises(BlindCheck, match=name.split(" (")[0]):
         run_gate([check()], ctx, None)
 
 

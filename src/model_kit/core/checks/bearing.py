@@ -80,6 +80,15 @@ sides of a flush cap and post, are not in contact.
    finding too, and this rule never passes it. Not applicable to a part on a rigged piece whose
    bones differ from its host's.
 
+A part with `rests_on` (two or more supports, a tabletop on its legs) is held by all of them
+together. Rule 1 reads its centre of mass over the support polygon, the convex hull of its upward
+contact points on every support (https://en.wikipedia.org/wiki/Support_polygon); the item is
+`<pack>:<piece> <part> tips off <s1>, <s2>, ...`, naming every support in `rests_on` order, touched
+or not. Rule 3 is not applicable (no single surface holds its whole seat). Rule 5 runs once per
+support, with `sinks into <support>`. A bonded row skips rules 1 and 5. A support with no geometry
+raises, as an `on` host does. The rest and sink plants run on the smallest such part, built
+from the geometry and the manifest as the one-host plants are.
+
 Contact points (rules 3 and 5). Baraff's contact model: a contact is a point of one body on a face
 of the other, and its normal is that face's outward normal; the bodies are apart there by the
 normal's dot with the gap (eq. 9-1), negative when they interpenetrate. The part's faces in the
@@ -127,7 +136,7 @@ import numpy as np
 from model_kit.core import edges, geom
 from model_kit.core.checks import pieces
 from model_kit.core.checks.pieces import PartMesh, PieceView, item_of
-from model_kit.core.errors import ManifestError, Unmeasurable
+from model_kit.core.errors import ManifestError, TooManySamples, Unmeasurable
 from model_kit.core.metagate import Finding, Plant, PlantUnit, Unmeasured
 from model_kit.core.scene import SceneCtx
 from model_kit.core.tolerances import (
@@ -315,6 +324,18 @@ class _Piece:
                                 f"geometry in the scene; the scene has {sorted(self.by_name)}")
         return host
 
+    def supports_of(self, part: PartMesh) -> tuple[PartMesh, ...]:
+        """Every support the part names in `rests_on`, in that order."""
+        out = []
+        for name in part.rests_on:
+            support = self.by_name.get(name)
+            if support is None or len(support.tris) == 0:
+                raise ManifestError(f"{self.view.key} {part.name}: rests on {name!r}, which has "
+                                    f"no geometry in the scene; the scene has "
+                                    f"{sorted(self.by_name)}")
+            out.append(support)
+        return tuple(out)
+
     def index(self, host: PartMesh) -> geom.SurfaceIndex:
         if host.name not in self._indexes:
             self._indexes[host.name] = geom.SurfaceIndex(host.tris)
@@ -376,11 +397,13 @@ def _contact(piece: _Piece, part: PartMesh, host: PartMesh) -> tuple[np.ndarray,
     return contact_patch(part.tris, host.tris, piece.touch, _sink(piece, part, host))
 
 
-def _rest_plan(piece: _Piece, part: PartMesh, host: PartMesh, patch: np.ndarray) -> Entry:
-    """Rule 1's geometry for one part. The patch is read as a whole: its area-weighted normal.
-    The entry is `ready` with the patch's hull, the part's centre of mass and whether it rests
-    or hangs, or says why the rule cannot judge the part."""
-    ht = host.tris[patch]
+def _rest_plan(piece: _Piece, part: PartMesh, hosts: tuple[PartMesh, ...], ht: np.ndarray
+               ) -> Entry:
+    """Rule 1's geometry for one part. `hosts` is every host the part names (one, or every support
+    in `rests_on` order, touched or not); `ht` is the contact triangles of those that touch, joined.
+    The patch is read as a whole: its area-weighted normal. The entry is `ready` with the patch's
+    hull, the part's centre of mass and whether it rests or hangs, or says why the rule cannot
+    judge the part."""
     n, area = normals(ht), areas(ht)
     net = float((area * n[:, Y]).sum() / area.sum())  # the patch's mean normal, y part
     if abs(net) <= BEARING_WALL_COSINE:
@@ -392,28 +415,29 @@ def _rest_plan(piece: _Piece, part: PartMesh, host: PartMesh, patch: np.ndarray)
     except ValueError:
         return Entry(REST, part.name, "unmeasured", note="not a closed solid, no centre of mass")
     return Entry(REST, part.name, "ready", plan={
-        "host": host, "pts": pts, "hull": hull_2d(pts[:, [0, 2]]), "com": com,
-        "resting": resting})
+        "hosts": tuple(h.name for h in hosts), "pts": pts, "hull": hull_2d(pts[:, [0, 2]]),
+        "com": com, "resting": resting})
 
 
 def _rest(piece: _Piece, part: PartMesh, entry: Entry) -> Entry:
     """Rule 1 for one part: its centre of mass over its patch."""
     plan = entry.plan
-    host, pts, hull, com, resting = (plan[k] for k in ("host", "pts", "hull", "com", "resting"))
+    hosts, pts, hull, com, resting = (plan[k] for k in ("hosts", "pts", "hull", "com", "resting"))
+    named = ", ".join(hosts)
     depth = depth_in(hull, com[[0, 2]])
     verb, how = ("rests", "tips off") if resting else ("hangs", "swings off")
     why = None
     if depth < piece.noise:
         shown = "outside" if depth < 0 else "on the edge of"
         gap = abs(depth) * piece.mm if math.isfinite(depth) else 0.0
-        why = (f"{verb} on {host.name}, and its centre of mass is {shown} the patch's outline "
+        why = (f"{verb} on {named}, and its centre of mass is {shown} the patch's outline "
                f"{gap:.2f} mm (it must lie inside)")
     elif not resting and com[Y] > float(pts[:, Y].min()):
-        why = (f"hangs from {host.name}, and its centre of mass is above the patch's lowest point "
+        why = (f"hangs from {named}, and its centre of mass is above the patch's lowest point "
                f"by {(com[Y] - pts[:, Y].min()) * piece.mm:.2f} mm")
     if why is None:
         return Entry(REST, part.name, "pass", plan=plan)
-    return Entry(REST, part.name, "fail", Finding(NAME, piece.item(part, how, host.name), why),
+    return Entry(REST, part.name, "fail", Finding(NAME, piece.item(part, how, named), why),
                  plan=plan)
 
 
@@ -588,6 +612,8 @@ def _touch(piece: _Piece, part: PartMesh, host: PartMesh) -> _Touch:
     reach (a long face, a string's, reaches far past its contact). They are sampled
     `CROSS_SAMPLE_OF_THICKNESS` times the thinner part's thickness apart (crossings' step; their
     corners are always samples), so each sample stands for an equal share of the part's surface.
+    Raises `TooManySamples` when the seat's samples would pass the kit's cap; its callers read
+    that as an `unmeasured` entry.
     At each sample the nearest point of the host decides the contact: inside the host's solid, or
     on the inside of a host face (the sample lies square off it, to float noise), the normal is
     the host face's, reversed; on a host edge or corner the face is the part's, and the normal is
@@ -612,7 +638,16 @@ def _touch(piece: _Piece, part: PartMesh, host: PartMesh) -> _Touch:
                      bool(patch.any()))
         piece.touches[key] = out
         return out
-    pts = geom.surface_samples(faces, CROSS_SAMPLE_OF_THICKNESS * sink / CROSS_OF_PART_THICKNESS)
+    try:
+        pts = geom.surface_samples(faces, CROSS_SAMPLE_OF_THICKNESS * sink
+                                   / CROSS_OF_PART_THICKNESS)
+    except TooManySamples as e:
+        raise TooManySamples(e.points, e.spacing, e.cap,
+                             lead=f"on {host.name}, the "
+                                  f"thinner part reads {sink / CROSS_OF_PART_THICKNESS:.3g} thick "
+                                  f"at the seat, and ",
+                             note="a thin spot there, or a shell sunk inside another shell of "
+                                  "the part") from e
     near = index.closest(pts)
     held = index.inside(pts)
     gap = pts - near.point  # from the host's nearest point out to the sample
@@ -668,7 +703,10 @@ def _seat_face(piece: _Piece, part: PartMesh, host: PartMesh, seat_faces: np.nda
     distance).
     """
     faces = part.tris[seat_faces]
-    touch = _touch(piece, part, host)
+    try:
+        touch = _touch(piece, part, host)
+    except TooManySamples as err:
+        return Entry(rule, part.name, "unmeasured", note=str(err))
     if not touch.touching.any():
         gap = float(-touch.depth.max()) * piece.mm
         return Entry(rule, part.name, "unmeasured", note=(
@@ -919,11 +957,48 @@ def _sink_entry(piece: _Piece, part: PartMesh, host: PartMesh, lost: str | None)
     if not sink > piece.touch:
         return Entry(SINK, part.name, "na", note="half the thinner part's thickness is not over "
                      "the contact length, so no depth lies between a seat and crossings' limit")
-    touch = _touch(piece, part, host)
+    try:
+        touch = _touch(piece, part, host)
+    except TooManySamples as err:
+        return Entry(SINK, part.name, "unmeasured", note=str(err))
     if not touch.reached and not touch.touching.any():
         return Entry(SINK, part.name, "na", note="no face of it lies on or in its host (floaters "
                      "reports a part off its host)")
     return _sink_plan(piece, part, host)
+
+
+def _bridge_plans(piece: _Piece, part: PartMesh) -> list[Entry]:
+    """Rules 1, 3 and 5 for a part with `rests_on`. Rule 3 does not apply: no single surface holds
+    the whole seat. Rule 1 reads the part's centre of mass over the support polygon, the convex
+    hull of its upward contact points on all its supports (`_rest_plan`). Rule 5 runs once per
+    support."""
+    entries = [Entry(SEAT, part.name, "na", note="rests on several supports: no single surface "
+                     "holds its whole seat")]
+    supports = piece.supports_of(part)
+    patches: list[np.ndarray | None] = []
+    lost: list[str | None] = []
+    for s in supports:
+        try:
+            patches.append(_contact(piece, part, s)[1])
+            lost.append(None)
+        except Unmeasurable as err:
+            patches.append(None)
+            lost.append(f"no seat thickness (the first part is the part, the second its host "
+                        f"{s.name}): {err}")
+    lost_notes = [note for note in lost if note]
+    if piece.bonded(part):
+        entries.append(Entry(REST, part.name, "na", note="its parts-list row is held bonded: the "
+                             "bond, not gravity, holds it"))
+    elif lost_notes:
+        entries.append(Entry(REST, part.name, "unmeasured", note=lost_notes[0]))
+    elif not any(patch.any() for patch in patches):
+        entries.append(Entry(REST, part.name, "na", note="no face of it bears on its supports "
+                             "(floaters reports a part off its support)"))
+    else:
+        ht = np.concatenate([s.tris[patch] for s, patch in zip(supports, patches) if patch.any()])
+        entries.append(_rest_plan(piece, part, supports, ht))
+    entries += [_sink_entry(piece, part, s, note) for s, note in zip(supports, lost)]
+    return entries
 
 
 def _plan_part(piece: _Piece, part: PartMesh) -> list[Entry]:
@@ -951,7 +1026,7 @@ def _plan_part(piece: _Piece, part: PartMesh) -> list[Entry]:
             elif lost:
                 entries.append(Entry(REST, part.name, "unmeasured", note=lost))
             elif patch.any():
-                entries.append(_rest_plan(piece, part, host, patch))
+                entries.append(_rest_plan(piece, part, (host,), host.tris[patch]))
         if piece.rigged and piece.bones(part) != piece.bones(host):
             entries.append(Entry(SEAT, part.name, "na", note="a joint carries it: its bones "
                                  "differ from its host's"))
@@ -969,6 +1044,8 @@ def _plan_part(piece: _Piece, part: PartMesh) -> list[Entry]:
             entries.append(_fastener_plan(piece, part, host))
         else:
             entries.append(_sink_entry(piece, part, host, lost))
+    elif part.rests_on:
+        entries += _bridge_plans(piece, part)
     elif fastener:
         entries.append(Entry(FASTENER, part.name, "unmeasured", note="fastener with no host"))
     if record is not None and record.retains:
@@ -1054,7 +1131,7 @@ def _fault_item(piece: _Piece, part: PartMesh, entry: Entry) -> str:
     """The item the check reports once the part is moved, from its names and its geometry."""
     if entry.rule == REST:
         return piece.item(part, "tips off" if entry.plan["resting"] else "swings off",
-                          entry.plan["host"].name)
+                          ", ".join(entry.plan["hosts"]))
     if entry.rule == FASTENER:  # pulled clear, a fastener holds nothing
         return piece.item(part, "engages", f"{entry.plan['host'].name} 0.0 mm")
     if entry.rule == SEAT:
@@ -1113,30 +1190,58 @@ NOT_APPLICABLE = {
 }
 
 
+_Planned = tuple[_Piece, list[tuple[PartMesh, list[Entry]]]]
+
+
 class Bearing:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 
     def __init__(self) -> None:
         self._seen: tuple[SceneCtx, dict[str, list[Entry]]] | None = None
+        self._kept: tuple[SceneCtx, dict[str, _Planned]] | None = None
+
+    def _plans(self, ctx: SceneCtx) -> dict[str, _Planned]:
+        """Every solid part's plan (`_plan_part`), per piece in `view.parts` order, kept for the
+        scene it was made for. The real run and the plants both read it, so a part is planned
+        once. No judge changes an entry or its plan, so the one plan serves both."""
+        if self._kept is None or self._kept[0] is not ctx:
+            plans: dict[str, _Planned] = {}
+            for view in pieces.contact_pieces(ctx, self.kinds):
+                piece = _Piece(ctx, view)
+                plans[view.key] = (piece, [(p, _plan_part(piece, p)) for p in view.parts
+                                           if p.solid and len(p.tris)])
+            self._kept = (ctx, plans)
+        return self._kept[1]
 
     def _entries(self, ctx: SceneCtx) -> dict[str, list[Entry]]:
         """Every entry of every piece, kept for the scene it was made for."""
         if self._seen is None or self._seen[0] is not ctx:
-            self._seen = (ctx, {v.key: measure(ctx, v)
-                                for v in pieces.contact_pieces(ctx, self.kinds)})
+            self._seen = (ctx, {
+                key: [_JUDGE[e.rule](piece, part, e) if e.status == "ready" else e
+                      for part, planned in parts for e in planned]
+                for key, (piece, parts) in self._plans(ctx).items()})
         return self._seen[1]
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         units = []
         for view in pieces.contact_pieces(ctx, self.kinds):
-            piece = _Piece(ctx, view)
-            planned = [(p, _plan_part(piece, p)) for p in sorted(
-                (p for p in view.parts if p.solid and len(p.tris)), key=_size)]
-            units += [unit for rule in RULES
-                      if (unit := _unit(ctx, view, piece, rule, planned))]
+            piece, parts = self._plans(ctx)[view.key]
+            planned = sorted(parts, key=lambda pe: _size(pe[0]))
+            plain = [pe for pe in planned if not pe[0].rests_on]
+            bridging = [pe for pe in planned if pe[0].rests_on]
+            for rule in RULES:
+                unit = _unit(ctx, view, piece, rule, plain)
+                if unit:
+                    units.append(unit)
+                # a bridging part adds its own rest and sink units; any other rule is planted on
+                # it only when no other part carries the rule
+                if bridging and (rule in (REST, SINK) or unit is None) and (
+                        extra := _unit(ctx, view, piece, rule, bridging)):
+                    units.append(extra)
         return units
 
     def measured(self, ctx: SceneCtx) -> set[str]:
@@ -1173,7 +1278,7 @@ class Bearing:
                                        ).append(e.part)
             for (rule, note, lost), names in sorted(by_note.items()):
                 text = (f"{NAME}: {'skipped' if lost else 'not applicable'} ({note}; {rule} rule): "
-                        f"{view.key} {', '.join(sorted(names))}")
+                        f"{view.key} {', '.join(sorted(set(names)))}")
                 lines.append(Unmeasured(text) if lost else text)
             for rule, why in NOT_APPLICABLE.items():
                 if not any(e.rule == rule for e in entries):

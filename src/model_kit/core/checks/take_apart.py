@@ -38,9 +38,11 @@ item is `<pack>:<piece> <a> x <b>`, the two group names sorted. A part with no g
 manifest is `Unmeasured` ("no group"), and a piece in one group has nothing to take apart.
 
 The plant is one unit per piece with two or more swept groups, built from the groups' geometry
-alone (never from the sweep). It takes the group with the fewest triangles and boxes it in: six slabs around the box of its parts,
-a gap clear of it, each as thick as the piece is large, in a group of its own that is built first
-and so comes off last. No way out is free, so the check must flag the pair.
+alone (never from the sweep). It takes the group with the least estimated sample count (the sum of
+`Solid.sample_estimate` over its parts), because its sweeps hold the fewest points, and boxes it
+in: six slabs around the box of its parts, a gap clear of it, each as thick as the piece is
+large, in a group of its own that is built first and so comes off last. No way out is free, so the
+check must flag the pair.
 """
 
 from __future__ import annotations
@@ -276,16 +278,16 @@ def _group_centre(lay: _Layout, group: str) -> np.ndarray:
 
 
 def _unit(ctx: SceneCtx, view: PieceView, lay: _Layout) -> PlantUnit:
-    """The piece's plant unit: the group with the fewest triangles
-    (its sweeps are the cheapest to measure, and a boxed group is swept in all 27 ways), boxed in
-    by a cage. The cage is a group of its own, built first, so it is the last to come off and
-    stays on the piece for every group. Its item is new, so no real pair of the piece (one that
-    fails already, or cannot be read) stands in for it. Read from the layout alone; `_sweep` is
-    never called."""
-    def tris(group: str) -> int:
-        return sum(len(p.tris) for p in lay.parts if p.group == group)
+    """The piece's plant unit: the group with the least estimated sample count (its sweeps hold
+    the fewest points, and a boxed group is swept in all 27 ways), boxed in by a cage. The cage
+    is a group of its own, built first, so it is the last to come off and stays on the piece for
+    every group. Its item is new, so no real pair of the piece (one that fails already, or cannot
+    be read) stands in for it. Read from the layout alone; `_sweep` is never called."""
+    def samples(group: str) -> float:
+        return sum(lay.solids[k].sample_estimate
+                   for k, p in enumerate(lay.parts) if p.group == group)
 
-    mover = min(lay.order, key=lambda g: (tris(g), lay.order.index(g)))
+    mover = min(lay.order, key=lambda g: (samples(g), lay.order.index(g)))
     donor = next(p for p in lay.parts if p.group == mover)
     record = next(r for r in view.piece.parts if r.name == donor.name)
     taken = [p.name for p in view.parts]
@@ -297,7 +299,7 @@ def _unit(ctx: SceneCtx, view: PieceView, lay: _Layout) -> PlantUnit:
         taken.append(name)
         geometry[name] = pieces.box_mesh(lo, hi)
         records.append(dataclasses.replace(record, name=name, group=group, on=None, retains=(),
-                                           fastener=False))
+                                           rests_on=(), fastener=False))
     piece = dataclasses.replace(view.piece, parts=(*records, *view.piece.parts))
     planted = pieces.with_geometry(pieces.with_piece(ctx, view.pack, view.name, piece), view,
                                    geometry)
@@ -308,6 +310,7 @@ def _unit(ctx: SceneCtx, view: PieceView, lay: _Layout) -> PlantUnit:
 class TakeApart:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

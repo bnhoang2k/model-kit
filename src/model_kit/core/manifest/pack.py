@@ -79,9 +79,37 @@ def load_pack(path: Path, style: Style) -> Pack:
         for key, value in _obj(pieces_at, raw["pieces"]).items()
     }
     _check_camera(at, pieces, style)
+    _check_cards(at, pieces)
     spacing = raw.get("spacing")
     return Pack(name=name, units_per_metre=units, pieces=pieces,
                 spacing=None if spacing is None else _positive(at.key("spacing"), spacing))
+
+
+def _check_cards(at: _At, pieces: dict[str, Piece]) -> None:
+    """A card piece copies a branching piece of its own pack that is not itself a card piece. It
+    is branching and not outlined. Each refusal names both pieces."""
+    for name, piece in pieces.items():
+        src = piece.cards_of
+        if not src:
+            continue
+        here = at.key("pieces").key(name)
+        if src not in pieces:
+            here.key("cards_of").fail(f"{name!r} is a card copy of {src!r}, a piece this pack "
+                                      "lacks")
+        if pieces[src].recipe.kind != "branching":
+            here.key("cards_of").fail(f"{name!r} is a card copy of {src!r}, a "
+                                      f"piece of kind {pieces[src].recipe.kind}; only a branching "
+                                      "piece can be copied")
+        if pieces[src].cards_of:
+            here.key("cards_of").fail(f"{name!r} is a card copy of {src!r}, which is itself a "
+                                      f"card copy of {pieces[src].cards_of!r}; name the "
+                                      "original piece")
+        if piece.recipe.kind != "branching":
+            here.key("cards_of").fail(f"{name!r} is a card copy of {src!r} but is "
+                                      f"of kind {piece.recipe.kind}; a card piece is branching")
+        if piece.outlined:
+            here.key("outlined").fail(f"{name!r} is a card copy of {src!r}, so it needs "
+                                      "outlined: false (cards draw no lines) and an outlined_why")
 
 
 def _check_camera(at: _At, pieces: dict[str, Piece], style: Style) -> None:
@@ -116,7 +144,7 @@ _PIECE_FIELDS = ("frame", "recipe", "listed", "parts", "uses", "holds", "seats",
 
 def _piece(at: _At, name: str, raw: Any) -> Piece:
     _fields(at, raw, _PIECE_FIELDS,
-            ("rig", "connectors", "keep_off", "view", "outlined", "outlined_why"))
+            ("rig", "connectors", "keep_off", "view", "outlined", "outlined_why", "cards_of"))
     f = _fields(at.key("frame"), raw["frame"], ("axes", "origin"))
     frame = Frame(_choice(at.key("frame.axes"), f["axes"], FRAME_AXES),
                   _text(at.key("frame.origin"), f["origin"]))
@@ -139,8 +167,18 @@ def _piece(at: _At, name: str, raw: Any) -> Piece:
             if held not in part_names:
                 at.key("parts").index(i).key("retains").index(j).fail(
                     f"names no part of this piece: {held!r}")
+        for j, held in enumerate(p["rests_on"]):
+            if held not in part_names:
+                at.key("parts").index(i).key("rests_on").index(j).fail(
+                    f"names no part of this piece: {held!r}")
     _check_forms(at.key("parts"), parts_raw)
     rig = _rig(at.key("rig"), raw["rig"], part_names) if "rig" in raw else None
+    if rig is not None:
+        for i, p in enumerate(parts_raw):
+            if p["rests_on"]:
+                at.key("parts").index(i).key("rests_on").fail(
+                    "a rigged piece's parts are carried by their joints; `rests_on` is for "
+                    "unrigged pieces")
     parts = tuple(
         _built(at.key("parts").index(i), lambda p=p: Part(
             **p, bones=rig.bind[p["name"]].bones if rig else (),
@@ -173,6 +211,8 @@ def _piece(at: _At, name: str, raw: Any) -> Piece:
     view = _view(at.key("view"), raw["view"]) if "view" in raw else None
     outlined, outlined_why = _outlined(at, raw)
 
+    cards_of = _text(at.key("cards_of"), raw["cards_of"]) if "cards_of" in raw else ""
+
     measured = _obj(at.key("measured"), raw["measured"])
     for key in measured:
         if key not in MEASURED_KEYS:
@@ -183,7 +223,7 @@ def _piece(at: _At, name: str, raw: Any) -> Piece:
         holds=holds, seats=seats, mounts=mounts, done=_text(at.key("done"), raw["done"]),
         size_class=_choice(at.key("size_class"), raw["size_class"], SIZE_CLASSES),
         measured=dict(measured), rig=rig, connectors=connectors, keep_off=keep_off,
-        view=view, outlined=outlined, outlined_why=outlined_why,
+        view=view, outlined=outlined, outlined_why=outlined_why, cards_of=cards_of,
     )
 
 
@@ -231,7 +271,7 @@ def _part_raw(at: _At, raw: Any, listed_ids: set[str]) -> dict:
     if isinstance(raw, dict) and ("bones" in raw or "bind" in raw):
         at.fail("a part's bones and bind mode live in the piece's rig.bind")
     _fields(at, raw, ("name", "listed", "shape", "on", "group", "role"),
-            ("form", "fastener", "retains"))
+            ("form", "fastener", "retains", "rests_on"))
     listed = _name(at.key("listed"), raw["listed"])
     if listed not in listed_ids:
         at.key("listed").fail(f"names no listed row: {listed!r}")
@@ -240,6 +280,7 @@ def _part_raw(at: _At, raw: Any, listed_ids: set[str]) -> dict:
     if not isinstance(fastener, bool):
         at.key("fastener").fail(f"must be true or false, got {fastener!r}")
     retains = _names(at.key("retains"), raw["retains"]) if "retains" in raw else ()
+    rests_on = _names(at.key("rests_on"), raw["rests_on"]) if "rests_on" in raw else ()
     part = {
         "name": _name(at.key("name"), raw["name"]),
         "listed": listed,
@@ -250,6 +291,7 @@ def _part_raw(at: _At, raw: Any, listed_ids: set[str]) -> dict:
         "form": read_form(at.key("form"), shape, raw["form"]) if "form" in raw else None,
         "fastener": fastener,
         "retains": retains,
+        "rests_on": rests_on,
     }
     return part
 

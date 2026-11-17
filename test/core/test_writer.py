@@ -441,6 +441,20 @@ def test_fastener_round_trip(tmp_path):
     assert load_pack(path, STYLE) == pack
 
 
+def test_rests_on_is_written_only_when_set(tmp_path):
+    pack = _shop()
+    lamp = pack.pieces["Lamp"]
+    parts = tuple(dataclasses.replace(p, on=None, rests_on=("base", "stem")) if p.name == "lead"
+                  else p for p in lamp.parts)
+    pack = dataclasses.replace(pack, pieces={**pack.pieces,
+                                             "Lamp": dataclasses.replace(lamp, parts=parts)})
+    path = write_pack(pack, tmp_path / "p.json")
+    raw = {p["name"]: p for p in json.loads(path.read_text())["pieces"]["Lamp"]["parts"]}
+    assert raw["lead"]["rests_on"] == ["base", "stem"]
+    assert "rests_on" not in raw["base"]
+    assert load_pack(path, STYLE) == pack
+
+
 def test_finish_round_trip(tmp_path):
     pack = _shop()
     lamp = pack.pieces["Lamp"]

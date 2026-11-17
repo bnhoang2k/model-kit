@@ -46,6 +46,7 @@ def _findings(g: Grown, only) -> list[Finding]:
 class NearMissOrganic:
     name = NAME
     kinds: frozenset[str] = KINDS
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         share = CALIBRATION_PASS * NEAR_OF_RADIUS

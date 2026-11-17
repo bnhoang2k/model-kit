@@ -22,7 +22,7 @@ HOME = "core/tolerances.py"
 
 CATEGORIES = frozenset({
     "float guard", "sampling", "plant", "budget", "axis", "units", "version", "layout",
-    "grower model", "build geometry",
+    "grower model", "build geometry", "card copy", "read point",
 })
 
 # Roots the scan walks, repo-relative: the whole package.
@@ -47,20 +47,25 @@ _BY_CATEGORY = {
         core.scene.DUE_SLACK_FRAMES core.slices.NO_DIRECTION
         blender.export.STEP_TOL blender.export.UNIT_SCALE_TOL blender.export.WORLD_DRIFT_TOL
         blender.export.ZERO_LOCATION_TOL blender.grow.WELD_DECIMALS blender.soft._FRAME_MIN
+        blender.bake_render.DENSITY_TOL blender.bake_render.FIT_TOL blender.bake_render.INSIDE_EPS
+        core.checks.seam_jump.WELD core.checks.seam_jump.SAME_UV core.checks.seam_jump.SAME_NORMAL
     """,
     # How finely a check or a measure looks: counts of probes, rings, points and samples.
     # `compare._GAP_PERCENTILE` is here because no check compares a measured value against it:
     # it picks which statistic of the gap is judged, and the limit that judges it is in tolerances.
     "sampling": """
         core.checks.bend_quality.SLICES core.checks.branching._pairs.PLACE_SAMPLES
+        core.checks.seam_jump.ALONG
         core.checks.branching.skeleton_match._OFFSETS
         core.geom.CUT_SAMPLES core.manifest.forms.MIN_RINGS core.manifest.forms.MIN_SEGMENTS
         core.pose.stress.FPS core.compare._GAP_PERCENTILE
-        blender.build.FILL_GRID blender.soft.SEAT_RAY_MARGIN
+        blender.build.FILL_GRID blender.soft.SEAT_RAY_MARGIN blender.bake_render.RAYS_LONG_SIDE
     """,
     # How hard a planted fault pushes, and how many it tries.
     "plant": """
         core.checks.bend_quality.PINCH_PLANT
+        core.checks.lightmap_density.PLANT_FACTOR
+        core.checks.seam_jump.BRIGHTEN core.checks.seam_jump.STEP_SIGMAS
         core.checks.inset_seat.SINK_STEPS
         core.checks.near_crease.BEND_OF_CREASE core.checks.near_crease.PLANT_EDGES
         core.checks.overlap.ROOM_FRACTIONS core.checks.overlap._PROBE_RATIO
@@ -75,7 +80,15 @@ _BY_CATEGORY = {
         core.geom.PAIR_BLOCK core.geom.PAIR_BUDGET core.geom._MORTON_BITS
         core.checks.overlap._MOST_PROBES
         core.grow.shape.PAIR_CHUNK core.solve.SOLID_STEPS core.solve.STEPS
-        cli.PROFILE_TIMEOUT sheet.RENDER_TIMEOUT
+        cli.PROFILE_TIMEOUT sheet.RENDER_TIMEOUT bake.BAKE_TIMEOUT compare.COMPARE_TIMEOUT
+        blender.bake_render.FILL blender.bake_render.MAX_ATLAS blender.bake_render.THREADS
+    """,
+    # Where a check reads the picture. Unlike a sampling count, `seam_jump.INSETS` CHANGES the
+    # answer a little (the extrapolation is exact for a linear light only), and the threshold's
+    # `sqrt(5)` assumes the far read is at twice the near one's depth; changing that means
+    # re-deriving the threshold.
+    "read point": """
+        core.checks.seam_jump.INSETS
     """,
     # Directions and frame conventions.
     "axis": """
@@ -95,7 +108,10 @@ _BY_CATEGORY = {
     # declare, so a declaration is refused or accepted; no measured value is compared with it.
     "version": """
         core.gate.CANNOT_START core.glb._CHUNK_HEAD core.glb._HEADER blender.export.MIN_BLENDER
-        core.units.MAX_DEPTH_BITS
+        core.units.MAX_DEPTH_BITS blender.grow.ALPHA_CUT
+        blender.stage_scene.WHITE blender.stage_scene.UNIT
+        core.exr._BLOCK_ROWS core.exr._HALF core.exr._NOT_PLAIN core.exr._ZIP
+        core.checks.seam_jump.NORMAL_DIGITS
     """,
     # The contact sheet's drawing numbers: paper, inks, cell sizes, the scale post. `sheet.py`
     # and `blender/sheet_render.py` only.
@@ -108,11 +124,24 @@ _BY_CATEGORY = {
     # The builders' own modelling numbers (a bevel width). They shape a mesh; no check compares
     # a measured value against one.
     "build geometry": """
-        blender.build.BEVEL
+        blender.build.BEVEL core.grow.card_image._RIB_HALF_WIDTH
+        blender.bake_render.COLLAPSE_AT blender.bake_render.MARGIN_PX
+        blender.bake_render.SMART_ANGLE blender.bake_render.SMART_STRETCH
+        blender.bake_render.BAKE_MARGIN_PX
+        blender.bake_render.DILATE_PX
+    """,
+    # The card copy: Razel's foliage.js numbers, named in `cards.py`, and the budget draws
+    # around them. Not a check's limit.
+    "card copy": """
+        core.grow.cards.AO_BOOST core.grow.cards.AO_MIX core.grow.cards.AO_RAYS
+        core.grow.cards.AO_REACH_M core.grow.cards.BURIED core.grow.cards.CARD_TILT
+        core.grow.cards.FADE_IN core.grow.cards.HIDDEN
+        core.grow.cards.LEAF_DENSITY core.grow.cards.ROUNDNESS core.grow.cards.SHOWN_CUT
+        core.grow.cards.SIZE_DRAW core.grow.cards.SPREAD_JITTER core.grow.cards._TRIANGLES
     """,
     # The grower's own model numbers: rules-file territory.
     "grower model": """
-        core.grow.buds.TERMINAL core.grow.rules.FIT_SEEDS
+        core.grow.buds.TERMINAL core.grow.card_image.PAINTED_SHARE core.grow.rules.FIT_SEEDS
         core.grow.shape.CLEAR_SUBSTEPS core.grow.shape.CONE_POINT_OF_RADIUS
         core.grow.shape.DOME_POINT_OF_RADIUS core.grow.shape.DOME_RINGS
         core.grow.shape.FLARE_HEIGHT_OF_RADIUS core.grow.shape.FLARE_MIN_GAP_OF_RADIUS

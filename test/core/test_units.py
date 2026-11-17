@@ -193,6 +193,26 @@ def test_leaves_dial_without_why_raises():
     assert Style(0.5, {}, {"leaves": LEAVES}).dials["leaves"] == LEAVES
 
 
+CARDS = {"ball_m": 0.5, "normal_mix": 0.5, "sky": 3.0, "why": "a budget choice, not measured"}
+
+
+def test_card_dials_refusals():
+    from model_kit.core.grow.cards import card_dials
+
+    bad = {"ball_m": (0, -1, "x"), "normal_mix": (-0.1, 1.1), "sky": (-1,),
+           "why": (None, "", " ")}
+    for key, values in bad.items():
+        for value in values:
+            with pytest.raises(ManifestError, match=rf"style: dials\.cards\.{key}: "):
+                Style(0.5, {}, {"cards": {**CARDS, key: value}})
+    with pytest.raises(ManifestError, match=r"dials\.cards\.why"):
+        Style(0.5, {}, {"cards": {k: v for k, v in CARDS.items() if k != "why"}})
+    got = card_dials(Style(0.5, {}, {"cards": CARDS}))
+    assert (got.ball_m, got.normal_mix, got.sky) == (0.5, 0.5, 3.0)
+    with pytest.raises(ManifestError, match=r"dials\.cards"):
+        card_dials(Style(0.5, {}, {}))
+
+
 def test_loader_names_the_file_and_the_leaves_dial(tmp_path):
     path = write_style(tmp_path, {"units_per_metre": 0.5, "page_camera": {},
                                   "dials": {"leaves": {**LEAVES, "why": ""}}})

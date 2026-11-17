@@ -6,6 +6,7 @@ passes the .npz to the Blender script.
 """
 
 import dataclasses
+import io
 import json
 import struct
 from functools import cache
@@ -13,10 +14,13 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from PIL import Image
 
 from model_kit.blender.runner import run_blender
 from model_kit.core.checks.branching.skeleton_match import SkeletonMatch
 from model_kit.core.grow.buds import MESH_V1, MESH_VERSION, _read
+from model_kit.core.grow.card_image import paint_cells
+from model_kit.core.grow.cards import CardDials, card_parts
 from model_kit.core.grow.mesh import crown_normals, grown_parts, leaf_lean
 from model_kit.core.grow.rules import RuleReader, load_rules
 from model_kit.core.grow.skeleton import load_skeleton, save_skeleton
@@ -177,7 +181,7 @@ def _accessor(js, binary, index):
     view = js["bufferViews"][acc["bufferView"]]
     assert "byteStride" not in view
     dtype = {5126: "<f4", 5123: "<u2", 5125: "<u4"}[acc["componentType"]]
-    width = {"SCALAR": 1, "VEC3": 3}[acc["type"]]
+    width = {"SCALAR": 1, "VEC2": 2, "VEC3": 3}[acc["type"]]
     start = view.get("byteOffset", 0) + acc.get("byteOffset", 0)
     return np.frombuffer(binary, dtype, acc["count"] * width, start).reshape(-1, width)
 
@@ -501,3 +505,348 @@ def test_leaf_parts_sit_on_their_own_level(tmp_path):
     # A shade with no leaf, or a host level with no part, is a clear refusal, not a bare error.
     assert "'Leaf' has no leaves" in got["no_leaves"], got
     assert f"level {names[0]!r}" in got["no_part"] and "grew no part" in got["no_part"], got
+
+
+# --- the card piece: the game-weight copy of a grown tree --------------------------------------
+
+CARD = f"{PIECE}_Cards"
+CARD_NEAREST_M = 10.0
+CARD_FARTHEST_M = 70.0
+CARD_DIALS = CardDials(ball_m=0.5, normal_mix=0.5, sky=3.0)
+CARD_WHY = "cards draw no lines: the leaves are an image with an alpha cut"
+CARD_SIGHT = Sight(view_floor(View(CARD_NEAREST_M, "a test tree"), UPM), CREASE_DEG, round=False)
+
+CARD_BUILD = """
+from pathlib import Path
+
+import bpy
+import numpy as np
+
+from model_kit.blender import build, grow, runner
+from model_kit.blender.axes import BLENDER_TO_GLTF
+from model_kit.blender.export import export_pieces
+from model_kit.core.grow.card_image import paint_cells
+from model_kit.core.grow.cards import card_dials, card_parts
+from model_kit.core.grow.mesh import leaf_lean
+from model_kit.core.grow.rules import load_rules
+from model_kit.core.grow.skeleton import load_skeleton
+from model_kit.core.manifest import View
+from model_kit.core.sight import Sight, view_floor
+from model_kit.core.units import load_style
+
+skeleton, rules, out_dir, scene_dir, style_path = runner.script_args()
+style = load_style(Path(style_path))
+lean, dials = leaf_lean(style), card_dials(style)
+sk = load_skeleton(Path(skeleton))
+rules = load_rules(Path(rules))
+build.reset()
+mats = build.slots({"Bark": (0.25, 0.17, 0.12), "Twig": (0.1, 0.08, 0.07),
+                    "Leaf": (0.4, 0.62, 0.25)})
+wood = {"Trunk_Roots": mats["Bark"], "Leaders": mats["Bark"], "Branches": mats["Bark"],
+        "Twigs": mats["Twig"], "Shoots": mats["Twig"]}
+pack = build.PackBuilder("grove", 0.5, Path(out_dir), None, crease_deg=style.crease_deg)
+root, apply_normals = grow.add_grown(
+    pack, sk, rules=rules, materials={**wood, "Leaves_Leaf": mats["Leaf"]},
+    done="A tree grown from its rules.", size_class="hero", origin="centre of the base",
+    lean=lean, view=View(5.0, "a test tree, seen from the path beside it"))
+view = View(NEAREST, "a test tree, seen from the road", farthest_m=FARTHEST,
+            farthest_why="the farthest a test viewer stands")
+cards, apply_corners = grow.add_cards(
+    pack, sk, source=sk.info["piece"], rules=rules, materials={**wood, "Cards_Leaf": mats["Leaf"]},
+    image=paint_cells(sk.outline, seed=int(sk.info["seed"])), done="The card copy.",
+    size_class="hero", origin="centre of the base", dials=dials, lean=lean, view=view,
+    outlined_why=WHY)
+
+
+def before_export():
+    apply_normals()
+    apply_corners()
+
+
+written = pack.finish([root.name, cards.name], before_export=before_export)
+
+# What the Blender card mesh holds, against what `card_parts` made.
+sight = Sight(view_floor(view, pack.units_per_metre), pack.crease_deg, round=False)
+leaves = card_parts(sk, sight, dials, pack.units_per_metre, lean)[1]
+me = bpy.data.objects[build.object_name(cards.name, "Cards_Leaf")].data
+turn = BLENDER_TO_GLTF[:3, :3]
+got = np.array([c.vector for c in me.corner_normals])
+dev = np.abs(got - leaves.normals.reshape(-1, 3) @ turn).max(axis=1)
+print("NORMALS", len(got), f"{dev.max():.2e}", int((dev > NORMALS_TOL).sum()))
+uv = np.array([d.uv for d in me.uv_layers["UVMap"].data])
+print("UVS", len(uv), f"{np.abs(uv - leaves.uvs.reshape(-1, 2)).max():.2e}")
+col = np.array([d.color for d in me.color_attributes["Color"].data])
+want = np.concatenate([leaves.colours.reshape(-1, 3), np.ones((len(col), 1))], axis=1)
+print("COLOURS", len(col), f"{np.abs(col - want).max():.2e}")
+
+export_pieces(written, Path(scene_dir), pieces=[root.name, cards.name])
+runner.done()
+"""
+CARD_BUILD = (CARD_BUILD.replace("NORMALS_TOL", repr(NORMALS_TOL))
+              .replace("NEAREST", repr(CARD_NEAREST_M)).replace("FARTHEST", repr(CARD_FARTHEST_M))
+              .replace("WHY", repr(CARD_WHY)))
+
+
+CARD_TWO_BUILD = """
+from pathlib import Path
+
+import bpy
+
+from model_kit.blender import build, grow, runner
+from model_kit.core.grow.card_image import paint_cells
+from model_kit.core.grow.cards import card_dials
+from model_kit.core.grow.mesh import leaf_lean
+from model_kit.core.grow.rules import load_rules
+from model_kit.core.grow.skeleton import load_skeleton
+from model_kit.core.manifest import View
+from model_kit.core.units import load_style
+
+skeleton, rules, out_dir, style_path = runner.script_args()
+style = load_style(Path(style_path))
+lean, dials = leaf_lean(style), card_dials(style)
+sk = load_skeleton(Path(skeleton))
+rules = load_rules(Path(rules))
+build.reset()
+mats = build.slots({"Bark": (0.25, 0.17, 0.12), "Twig": (0.1, 0.08, 0.07),
+                    "Leaf": (0.4, 0.62, 0.25)})
+wood = {"Trunk_Roots": mats["Bark"], "Leaders": mats["Bark"], "Branches": mats["Bark"],
+        "Twigs": mats["Twig"], "Shoots": mats["Twig"]}
+pack = build.PackBuilder("grove", 0.5, Path(out_dir), None, crease_deg=style.crease_deg)
+root, apply_normals = grow.add_grown(
+    pack, sk, rules=rules, materials={**wood, "Leaves_Leaf": mats["Leaf"]},
+    done="A tree grown from its rules.", size_class="hero", origin="centre of the base",
+    lean=lean, view=View(5.0, "a test tree, seen from the path beside it"))
+view = View(NEAREST, "a test tree, seen from the road", farthest_m=FARTHEST,
+            farthest_why="the farthest a test viewer stands")
+image = paint_cells(sk.outline, seed=int(sk.info["seed"]))
+made, fixes = [root], [apply_normals]
+for name in ("First_Cards", "Second_Cards"):
+    card, apply_corners = grow.add_cards(
+        pack, sk, source=sk.info["piece"], rules=rules, name=name,
+        materials={**wood, "Cards_Leaf": mats["Leaf"]}, image=image, done="A card copy.",
+        size_class="hero", origin="centre of the base", dials=dials, lean=lean, view=view,
+        outlined_why=WHY)
+    made.append(card)
+    fixes.append(apply_corners)
+mat_names = sorted(m.name for m in bpy.data.materials if m.name.endswith("_Cards"))
+print("CARD_MATS", mat_names)
+pack.finish([ob.name for ob in made], before_export=lambda: [f() for f in fixes])
+print("TWO_DONE")
+runner.done()
+"""
+CARD_TWO_BUILD = (CARD_TWO_BUILD.replace("NEAREST", repr(CARD_NEAREST_M))
+                  .replace("FARTHEST", repr(CARD_FARTHEST_M)).replace("WHY", repr(CARD_WHY)))
+
+
+def _card_tree():
+    """Bar 02's redbud (buds-v2: its tube sides come from the view, so its wood depends on
+    `Sight.round`, which a card piece sets False)."""
+    return _redbud()
+
+
+def _card_style(folder: Path) -> Path:
+    """Bar 02's style with a `dials.cards` (a test budget, not measured)."""
+    raw = json.loads(BAR_STYLE.read_text())
+    raw["dials"]["cards"] = {"ball_m": CARD_DIALS.ball_m, "normal_mix": CARD_DIALS.normal_mix,
+                             "sky": CARD_DIALS.sky, "why": "a test budget, not measured"}
+    path = folder / "card-style.json"
+    path.write_text(json.dumps(raw))
+    return path
+
+
+@pytest.fixture(scope="module")
+def cards_built(tmp_path_factory):
+    """Bar 02's redbud and its card copy, built plain in one pack, with the scene exported."""
+    folder = tmp_path_factory.mktemp("cards")
+    skeleton = folder / "tree.npz"
+    save_skeleton(_card_tree(), skeleton)
+    script = folder / "script.py"
+    script.write_text(CARD_BUILD)
+    out, scene = folder / "out", folder / "scene"
+    style = _card_style(folder)
+    result = run_blender(script, [str(skeleton), str(RULES), str(out), str(scene),
+                                  str(style)], timeout=TIMEOUT)
+    assert "Traceback" not in result.log, result.log
+    assert result.ok, result.log
+    return out, scene, style, result.log
+
+
+def test_two_card_pieces_in_one_pack(tmp_path):
+    """Two card pieces of one tree build in one pack: each gets its own leaf material, named for
+    its piece, since each image is painted for it and a shared colour role name would collide."""
+    skeleton = tmp_path / "tree.npz"
+    save_skeleton(_card_tree(), skeleton)
+    script = tmp_path / "script.py"
+    script.write_text(CARD_TWO_BUILD)
+    out = tmp_path / "out"
+    result = run_blender(script, [str(skeleton), str(RULES), str(out),
+                                  str(_card_style(tmp_path))], timeout=TIMEOUT)
+    assert "Traceback" not in result.log, result.log
+    assert result.ok and "TWO_DONE" in result.log, result.log
+    assert "CARD_MATS ['First_Cards_Leaf_Cards', 'Second_Cards_Leaf_Cards']" in result.log
+    pack = load_pack(out / "grove.pack.json", load_style(_card_style(tmp_path)))
+    assert {p.name for p in pack.pieces.values() if p.cards_of} == {"First_Cards", "Second_Cards"}
+
+
+def test_card_piece_builds(cards_built, tmp_path):
+    """The pack loads with the card piece (`cards_of` the tree, not outlined), and the scene's
+    card piece is clean under skeleton-match, which rebuilds its wood with a sight that is not
+    round (`sight_for` reads `Piece.outlined`)."""
+    out, scene_dir, style, _ = cards_built
+    pack = load_pack(out / "grove.pack.json", load_style(style))
+    card = pack.pieces[CARD]
+    assert (card.cards_of, card.outlined, card.recipe.kind) == (PIECE, False, "branching")
+    assert card.outlined_why == CARD_WHY
+    assert (card.view.nearest_m, card.view.farthest_m) == (CARD_NEAREST_M, CARD_FARTHEST_M)
+    names = [p.name for p in card.parts]
+    assert names == [*card_parts(_card_tree(), CARD_SIGHT, CARD_DIALS, UPM, LEAN)[0]]
+    assert [(p.shape, p.on, p.role) for p in card.parts][-1] == ("leaf", "Trunk_Roots",
+                                                                 "skip_outline")
+    assert pack.pieces[PIECE].cards_of == "" and pack.pieces[PIECE].outlined
+    clips = tmp_path / "clips.json"
+    clips.write_text(json.dumps({"clips": {}}))
+    stage_manifests(scene_dir, style=style, clips=clips, packs=[out / "grove.pack.json"])
+    save_skeleton(_card_tree(), scene_dir / "pieces" / PACK / f"{PIECE}{SKELETON_SUFFIX}")
+    ctx = load_scene(scene_dir)
+    assert sorted(ctx.pieces[f"{PACK}:{CARD}"].parts) == sorted(names)
+    check = SkeletonMatch()
+    assert check.run(ctx) == []
+    units = [u for u in check.plants(ctx) if u.item.startswith(f"{PACK}:{CARD} ")]
+    assert any("Cards_Leaf" in u.item for u in units), [u.item for u in check.plants(ctx)]
+    for unit in units:  # the check still fails on the card piece when a vertex is moved
+        assert any(f.item == unit.item for plant in unit.candidates
+                   for f in check.run(plant.ctx, only=plant.scope))
+
+
+def test_card_corner_attributes_written(cards_built):
+    """The card mesh's normals, UVs and corner colours in Blender are `card_parts`'; and the .glb's
+    TEXCOORD_0 of each corner is (u, 1 - v) of its UV (the exporter flips v; the card image is
+    painted with v up from the bottom, as Blender stores it)."""
+    out, _, _, log = cards_built
+    lines = {ln.split()[0]: ln.split() for ln in log.splitlines()
+             if ln.split()[:1] in (["NORMALS"], ["UVS"], ["COLOURS"])}
+    _, count, worst, stray = lines["NORMALS"]
+    assert int(count) > 0 and float(worst) < NORMALS_MAX
+    assert int(stray) <= NORMALS_STRAY_SHARE * int(count)
+    for key in ("UVS", "COLOURS"):
+        assert int(lines[key][1]) == int(count) and float(lines[key][2]) < 1e-6, lines[key]
+    leaves = card_parts(_card_tree(), CARD_SIGHT, CARD_DIALS, UPM, LEAN)[1]
+    js, binary = _glb(out / "grove.glb")
+    node = next(n for n in js["nodes"] if n.get("name", "").endswith(f"{CARD}/Cards_Leaf"))
+    prim = js["meshes"][node["mesh"]]["primitives"][0]
+    pos = _accessor(js, binary, prim["attributes"]["POSITION"])
+    uv = _accessor(js, binary, prim["attributes"]["TEXCOORD_0"])
+    corners = leaves.tris.reshape(-1, 3)
+    corner_uv = leaves.uvs.reshape(-1, 2)
+    far = np.flatnonzero(np.abs(corner_uv[:, 1] - 0.5) > 0.1)[::37][:60]  # v is not 1 - v
+    assert len(far) > 20
+    for i in far:
+        at = np.flatnonzero(np.abs(pos - corners[i]).max(axis=1) < 1e-5)
+        want = np.array([corner_uv[i, 0], 1 - corner_uv[i, 1]])
+        assert len(at) and np.abs(uv[at] - want).max(axis=1).min() < 1e-5, (i, corner_uv[i])
+
+
+@pytest.fixture(scope="module")
+def cards_spec_built(tmp_path_factory):
+    """The same pair through `grow_build.py`, from a spec: Draco on, spacing 5."""
+    folder = tmp_path_factory.mktemp("cards-spec")
+    skeleton = folder / "tree.npz"
+    save_skeleton(_card_tree(), skeleton)
+    view = {"nearest_m": CARD_NEAREST_M, "why": "a test tree, seen from the road",
+            "farthest_m": CARD_FARTHEST_M, "farthest_why": "the farthest a test viewer stands"}
+    spec = {"pack": "grove", "units_per_metre": UPM, "spacing": 5.0, "rules": str(RULES),
+            "style": str(_card_style(folder)), "out": str(folder / "out"),
+            "scene": str(folder / "scene"),
+            "colours": {"Bark": [0.25, 0.17, 0.12], "Twig": [0.1, 0.08, 0.07],
+                        "Leaf": [0.4, 0.62, 0.25]},
+            "pieces": [
+                {"skeleton": str(skeleton), "size_class": "hero", "done": "The tree.",
+                 "origin": "centre of the base", "view": {**view, "nearest_m": 5.0}},
+                {"cards_of": PIECE, "size_class": "hero", "done": "The card copy.",
+                 "origin": "centre of the base", "view": view, "outlined_why": CARD_WHY}]}
+    path = folder / "spec.json"
+    path.write_text(json.dumps(spec))
+    result = run_blender(REPO / "src" / "model_kit" / "blender" / "grow_build.py", [str(path)],
+                         timeout=TIMEOUT)
+    assert "Traceback" not in result.log, result.log
+    assert result.ok, result.log
+    return folder / "out", result.log
+
+
+def test_card_material_is_masked(cards_spec_built):
+    """The card piece's leaf part ships the leaf image: its material is alpha MASK (cutoff 0.5),
+    double-sided, with a base colour texture that is a PNG; the tree's own leaves and wood are
+    not masked. The image's alpha is `paint_cells`' (v up from the bottom, so the PNG's rows run
+    top-down the other way)."""
+    out, _ = cards_spec_built
+    js, binary = _glb(out / "grove.glb")
+    by_name = {n["name"]: n for n in js["nodes"] if "name" in n and "mesh" in n}
+    card = by_name[f"{CARD}/Cards_Leaf"]
+    material = js["materials"][js["meshes"][card["mesh"]]["primitives"][0]["material"]]
+    assert material["name"] == f"{CARD}_Leaf_Cards"
+    assert material.get("alphaMode", "OPAQUE") == "MASK"
+    assert material.get("alphaCutoff", 0.5) == 0.5  # glTF's default, which the exporter omits
+    assert material["doubleSided"] is True
+    texture = js["textures"][material["pbrMetallicRoughness"]["baseColorTexture"]["index"]]
+    image = js["images"][texture["source"]]
+    assert image["mimeType"] == "image/png"
+    start = js["bufferViews"][image["bufferView"]]
+    png = binary[start.get("byteOffset", 0):start.get("byteOffset", 0) + start["byteLength"]]
+    assert png[:8] == b"\x89PNG\r\n\x1a\n"
+    sk = _card_tree()
+    painted = paint_cells(sk.outline, seed=int(sk.info["seed"]))
+    got = np.array(Image.open(io.BytesIO(png)).convert("RGBA"))
+    assert got.shape == painted.shape
+    assert np.array_equal(got[::-1, :, 3], painted[:, :, 3])
+    for name in (f"{PIECE}/Leaves_Leaf", f"{PIECE}/Branches", f"{CARD}/Branches"):
+        other = js["materials"][js["meshes"][by_name[name]["mesh"]]["primitives"][0]["material"]]
+        assert other.get("alphaMode", "OPAQUE") == "OPAQUE", name
+        assert "baseColorTexture" not in other["pbrMetallicRoughness"], name
+
+
+def _glb_counts(out: Path, piece: str) -> dict[str, int]:
+    """The POSITION accessor count of each part mesh of `piece` in `out/grove.glb`."""
+    js, _ = _glb(out / "grove.glb")
+    counts = {}
+    for node in js["nodes"]:
+        if node.get("name", "").startswith(f"{piece}/") and "mesh" in node:
+            prims = js["meshes"][node["mesh"]]["primitives"]
+            counts[node["name"].split("/", 1)[1]] = sum(
+                js["accessors"][p["attributes"]["POSITION"]]["count"] for p in prims)
+    return counts
+
+
+def test_card_build_prints_vertex_counts(cards_spec_built):
+    """The build prints `<piece>: <n> vertices (wood <w>, leaves <l>)`: the vertices the .glb
+    holds for the card piece (what a game loads), which are the sums of its meshes' POSITION
+    accessor counts, read from the Draco file as the page reads them."""
+    out, log = cards_spec_built
+    counts = _glb_counts(out, CARD)
+    leaves = counts["Cards_Leaf"]
+    wood = sum(n for part, n in counts.items() if part != "Cards_Leaf")
+    line = f"{CARD}: {wood + leaves} vertices (wood {wood}, leaves {leaves})"
+    assert line in log.splitlines(), (line, [ln for ln in log.splitlines() if "vertices" in ln])
+
+
+def test_card_wood_is_shaded_smooth(cards_spec_built):
+    """No wood part of the card piece has a sharp edge: each exports one vertex per distinct
+    position (the wood has no UVs, so no seam splits it). The full piece is shaded as before."""
+    out, _ = cards_spec_built
+    parts, _ = card_parts(_card_tree(), CARD_SIGHT, CARD_DIALS, UPM, LEAN)
+    counts = _glb_counts(out, CARD)
+    wood = [n for n in parts if not n.startswith("Cards_")]
+    assert wood
+    for name in wood:
+        distinct = len(np.unique(np.round(parts[name].reshape(-1, 3), 6), axis=0))
+        assert counts[name] == distinct, (name, counts[name], distinct)
+
+
+def test_card_corners_export_once(cards_spec_built):
+    """A card is one flat quad: each of its four corners carries one normal, UV and colour, so
+    `Cards_Leaf` exports one vertex per distinct position. (Flat faces gave the two triangles'
+    shared corners normals Blender packed 0.011 apart, and the exporter split them.)"""
+    out, _ = cards_spec_built
+    parts, leaves = card_parts(_card_tree(), CARD_SIGHT, CARD_DIALS, UPM, LEAN)
+    distinct = len(np.unique(np.round(parts["Cards_Leaf"].reshape(-1, 3), 6), axis=0))
+    assert distinct == 4 * leaves.cards
+    assert _glb_counts(out, CARD)["Cards_Leaf"] == distinct

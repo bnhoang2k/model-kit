@@ -18,7 +18,8 @@ cone of rays) at the sample nearest the middle of the shared region, and
 The pair fails when the shared depth is over `CROSS_OF_PART_THICKNESS` times that thinner
 thickness: a part sunk more than halfway into another is embedded and not resting (a design call of this kit).
 The limit follows the parts and not the pack. Flush contact (a foot on a
-deck) shares no space. Parts printed on a surface (role `eyes` or `decal`) are left out.
+deck) shares no space; a pair whose points all leave along one common way is read as flush before
+any ray is cast. Parts printed on a surface (role `eyes` or `decal`) are left out.
 
 A pair whose surfaces never meet is skipped before any sampling: no corner of either part inside
 the other and no triangle of one cutting a triangle of the other.
@@ -36,17 +37,19 @@ is an allowlist line with a reason; the allowlist fails a line with no reason an
 matched nothing.
 
 The plant is one unit per piece with two or more measurable solid parts, built from the
-geometry alone (never from `measure`). It takes the pair of parts whose boxes lie nearest (or
-overlap), and sinks a copy of the smaller into the larger by `CALIBRATION_FAIL` limits, going
-toward the larger one's centre, then along each axis, then right onto its centre (which reaches a
-pair however far apart). The copy is a new part, so the unit's item is new and the pair itself may
-fail or pass.
+geometry alone (never from `measure`). Each part has a host: the part whose box lies nearest it
+(or overlaps it; the first in part order on a tie). A part costs the estimated sample count of
+its surface: its area over the square of the finer of its own and its host's sample spacing,
+because the check samples that many points. The plant
+copies the part of least cost (the first in part order on a tie) and sinks the copy into its host
+by `CALIBRATION_FAIL` limits, going toward the host's centre, then along each axis, then right
+onto its centre (which reaches a pair however far apart). The copy is a new part, so the
+unit's item is new and the pair itself may fail or pass.
 """
 
 from __future__ import annotations
 
-import itertools
-from collections.abc import Collection
+from collections.abc import Collection, Sequence
 from dataclasses import dataclass
 from typing import NamedTuple
 
@@ -54,7 +57,7 @@ import numpy as np
 
 from model_kit.core.checks import pieces
 from model_kit.core.checks.pieces import PartMesh, PieceView, item_of
-from model_kit.core.errors import Unmeasurable
+from model_kit.core.errors import TooManySamples, Unmeasurable
 from model_kit.core.geom import (
     DEPTH_WAYS,
     NO_DIRECTION,
@@ -62,9 +65,11 @@ from model_kit.core.geom import (
     Exit,
     Nearest,
     SurfaceIndex,
+    check_sample_budget,
     is_closed,
     local_thickness,
     shortest_exit,
+    surface_area,
     surface_samples,
     thinner_thickness,
     tri_tri_cut,
@@ -110,6 +115,12 @@ class Solid:
     def spacing(self) -> float:
         return CROSS_SAMPLE_OF_THICKNESS * self.thickness
 
+    @property
+    def sample_estimate(self) -> float:
+        """About how many surface samples the part has: its area over the spacing squared. It
+        ranks cost between parts and is never compared with a limit."""
+        return surface_area(self._root.tris) / self.spacing ** 2
+
     def moved(self, by: np.ndarray) -> Solid:
         return Solid(self.tris + by, self.thickness, self._root, self.shift + by)
 
@@ -153,16 +164,28 @@ def solid_of(tris: np.ndarray) -> Solid:
     samples of its surface are spaced from it. That centre thickness is not the thinner thickness
     at the overlap of a pair (`measure` reads that), so a thin place away from the centre is
     sampled no finer. Raises `ValueError` for an open mesh, or one with no
-    thickness at its centre; the message reads as the reason in a coverage line."""
+    thickness at its centre, and `TooManySamples` when that thickness is so thin that its samples
+    would pass the kit's cap (`geom.check_sample_budget`: a shell sunk a hair inside another shell
+    of the same part reads as the hair); each message reads as the reason in a coverage line."""
     if not is_closed(tris):
         raise ValueError("open part")
+    centre = pieces.centroid(tris)
     try:
-        thickness = local_thickness(tris, pieces.centroid(tris))
+        thickness = local_thickness(tris, centre)
     except ValueError as e:
         raise ValueError("no thickness at its centre") from e
     if not thickness > 0.0:
         raise ValueError("no thickness at its centre")
-    return Solid(tris, thickness)
+    solid = Solid(tris, thickness)
+    try:
+        check_sample_budget(tris, solid.spacing)
+    except TooManySamples as e:
+        at = ", ".join(f"{c:.3g}" for c in centre)
+        raise TooManySamples(e.points, e.spacing, e.cap,
+                             lead=f"its thickness at its centre ({at}) reads {thickness:.3g}, and ",
+                             note="a thin spot there, or a shell sunk inside another shell of "
+                                  "the part") from e
+    return solid
 
 
 class Cross(NamedTuple):
@@ -198,6 +221,12 @@ def _touch(a: Solid, b: Solid) -> bool:
     return tri_tri_cut(a.index, b.index) > 0.0
 
 
+def _all_leave(sides: Sequence[Exit]) -> bool:
+    """True when one way takes every point of every side out at once: the pair is flush, and
+    `shortest_exit` would read 0 for it."""
+    return bool(np.logical_and.reduce([side.leaves.all(axis=0) for side in sides]).any())
+
+
 def measure(a: Solid, b: Solid) -> Cross:
     """How far the two parts share space, and the limit for that. A depth within float noise is
     flush contact and shares nothing. Raises `Unmeasurable` when no direction takes the parts out
@@ -227,6 +256,8 @@ def measure(a: Solid, b: Solid) -> Cross:
         # leaves at once along a way that looks out of it (one the surface's normal faces).
         leaves = (near.dist <= TIE_DISTANCE)[:, None] & (near.normal @ dirs.T > 0.0)
         exits.append((Exit(y.tris, held, dirs, leaves), float(near.dist.max())))
+    if _all_leave([side for side, _ in exits]):
+        return Cross(0.0, 0.0, 0.0)
     reach = max(2.0 * max(deepest for _, deepest in exits), min(a.spacing, b.spacing))
     depth = shortest_exit([side for side, _ in exits], reach)
     if not np.isfinite(depth):
@@ -254,7 +285,7 @@ def made_of(view: PieceView) -> _Made:
             continue
         try:
             solids[part.name] = solid_of(part.tris)
-        except ValueError as e:
+        except (ValueError, TooManySamples) as e:
             skipped[part.name] = str(e)
         else:
             parts.append(part)
@@ -291,16 +322,22 @@ def _apart(a: PartMesh, b: PartMesh) -> float:
     return float(np.linalg.norm(np.maximum(0.0, np.maximum(a.lo - b.hi, b.lo - a.hi))))
 
 
-def _size(part: PartMesh) -> float:
-    return float(np.linalg.norm(part.hi - part.lo))
-
-
 def _sinks(ctx: SceneCtx, view: PieceView, made: _Made) -> PlantUnit:
-    """The piece's plant unit: a copy of the smaller part of the nearest pair, sunk into the
-    larger one. Read from the parts' boxes, centres and thickness; `measure` is never called."""
-    pairs = sorted(itertools.combinations(range(len(made.parts)), 2),
-                   key=lambda ij: _apart(made.parts[ij[0]], made.parts[ij[1]]))
-    a, b = sorted((made.parts[pairs[0][0]], made.parts[pairs[0][1]]), key=_size)
+    """The piece's plant unit: a copy of the part of least cost, sunk into its host (the part
+    whose box lies nearest it). Read from the parts' boxes, centres, areas and thickness;
+    `measure` is never called."""
+    parts, solids = made.parts, made.solids
+
+    def host(i: int) -> int:
+        return min((j for j in range(len(parts)) if j != i),
+                   key=lambda j: (_apart(parts[i], parts[j]), j))
+
+    def cost(i: int) -> float:
+        spacing = min(solids[parts[i].name].spacing, solids[parts[host(i)].name].spacing)
+        return surface_area(parts[i].tris) / spacing ** 2
+
+    copy = min(range(len(parts)), key=lambda i: (cost(i), i))
+    a, b = parts[copy], parts[host(copy)]
     depth = CALIBRATION_FAIL * CROSS_OF_PART_THICKNESS * min(
         made.solids[a.name].thickness, made.solids[b.name].thickness)
     name = pieces.free_name([p.name for p in view.parts], a.name)
@@ -318,6 +355,7 @@ def _sinks(ctx: SceneCtx, view: PieceView, made: _Made) -> PlantUnit:
 class Crossings:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

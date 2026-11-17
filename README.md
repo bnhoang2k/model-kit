@@ -12,7 +12,7 @@ model-kit gives the tool finished reference pieces to start from and 37 checks t
 Each check rests on a cited source: a standard, a paper, a measured tree. A model is done when the
 gate passes and its sheet looks right beside its reference.
 
-<sub>Above: a made-up festival built from kit pieces. The scene itself is not in this repository.</sub>
+<sub>Above: a made-up festival scene built from kit pieces.</sub>
 
 ## What it makes
 
@@ -37,7 +37,7 @@ lidar-scanned trees. A redbud and a young sweetgum, from one grower.
 You need [uv](https://docs.astral.sh/uv/) and Blender. Run this in your project folder:
 
 ```bash
-uvx --from git+https://github.com/bnhoang2k/model-kit@v0.1.0 model-kit init
+uvx --from git+https://github.com/bnhoang2k/model-kit@v0.2.0 model-kit init
 ```
 
 It installs model-kit for your project and adds one line to your `CLAUDE.md` (and to `AGENTS.md`,

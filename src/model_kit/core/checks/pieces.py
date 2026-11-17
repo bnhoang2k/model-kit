@@ -49,6 +49,7 @@ class PartMesh(PartKind):
     shape: str | None
     group: str
     on: str | None
+    rests_on: tuple[str, ...] = ()
 
     @property
     def lo(self) -> np.ndarray:
@@ -98,7 +99,7 @@ def part_mesh(piece: Piece, name: str, tris: np.ndarray) -> PartMesh:
     if record is None:
         return PartMesh(name, tris, role="solid", shape=None, group=NO_GROUP, on=None)
     return PartMesh(name, tris, role=record.role, shape=record.shape, group=record.group,
-                    on=record.on)
+                    on=record.on, rests_on=record.rests_on)
 
 
 def family(parts: Iterable[PartMesh], name: str) -> list[PartMesh]:
@@ -120,11 +121,11 @@ def family(parts: Iterable[PartMesh], name: str) -> list[PartMesh]:
 
 
 def merged(name: str, parts: Sequence[PartMesh]) -> PartMesh:
-    """One mesh of these parts, named `name`: their triangles together, the role, shape, group
-    and `on` of the first (the part the others rest on)."""
+    """One mesh of these parts, named `name`: their triangles together, the role, shape, group,
+    `on` and `rests_on` of the first (the part the others rest on)."""
     first = parts[0]
     return PartMesh(name, np.concatenate([p.tris for p in parts]), first.role, first.shape,
-                    first.group, first.on)
+                    first.group, first.on, first.rests_on)
 
 
 def measured_pieces(ctx: SceneCtx, kinds: Collection[str],

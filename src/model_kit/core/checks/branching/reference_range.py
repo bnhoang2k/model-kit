@@ -271,6 +271,7 @@ def _bare_units(g: Grown, rules: GrowthRules, ctx: SceneCtx) -> list[PlantUnit]:
 class ReferenceRange:
     name = NAME
     kinds: frozenset[str] = KINDS
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         return [u for g, rules in _judged(ctx) for make in (_spread_units, _bare_units)

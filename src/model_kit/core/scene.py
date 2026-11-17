@@ -24,6 +24,8 @@ and their `times` are clip frame numbers, the same unit as a hold's `when` windo
     pieces/<pack>/<piece>.skeleton.npz   a branching piece's grown skeleton; optional
     rules/<file>.rules.json        a species' growth rules, loaded with the kit file; optional
                                    (`sources/` takes only .py, so rules have their own folder)
+    bake/                          a light bake (`model-kit bake` writes it; see `core.bake_data`);
+                                   optional, read into `SceneCtx.bake`
 
 Load checks what the checks would otherwise meet late: each geometry key is a part name (not a
 Blender object name) and the piece's hold and seat surface parts all have geometry; sample
@@ -46,6 +48,7 @@ from pathlib import Path
 
 import numpy as np
 
+from model_kit.core.bake_data import BakeData, load_bake
 from model_kit.core.errors import ManifestError
 from model_kit.core.glb import GlbNode, glb_nodes, nodes_from_json, nodes_to_json
 from model_kit.core.grow.rules import KIT_RULES, GrowthRules, load_rules
@@ -126,6 +129,7 @@ class SceneCtx:
     skeletons: dict[str, Skeleton] = field(default_factory=dict)  # keyed by piece_key
     folder: str = ""  # the scene folder's name, set by `load_scene`; empty for a scene in code
     rules: dict[str, GrowthRules] = field(default_factory=dict)  # `rules/` file name -> rules
+    bake: BakeData | None = None  # `bake/`, read by `load_scene`; None for a scene with none
 
 
 def piece_key(pack: str, piece: str) -> str:
@@ -479,6 +483,8 @@ def _write_data(ctx: SceneCtx, dir: Path) -> None:
         _write_json(dir / "nodes" / f"{pack}.json", {"nodes": nodes_to_json(nodes)})
     for key, skeleton in ctx.skeletons.items():
         pack, _, piece = key.partition(":")
+        if (p := ctx.packs.get(pack)) and piece in p.pieces and p.pieces[piece].cards_of:
+            continue  # a card piece borrows its source's skeleton on load; it has no file
         folder = dir / "pieces" / pack
         folder.mkdir(parents=True, exist_ok=True)
         save_skeleton(skeleton, folder / f"{piece}{SKELETON_SUFFIX}")
@@ -798,8 +804,10 @@ def _rest_files(folder: Path) -> list[Path]:
             if not path.parent.name.startswith(".") and not path.name.startswith(".")]
 
 
-def load_scene(dir: Path) -> SceneCtx:
-    """Read a scene folder written by `save_scene`. Every file is checked as it loads."""
+def load_scene(dir: Path, *, bake: bool = True) -> SceneCtx:
+    """Read a scene folder written by `save_scene`. Every file is checked as it loads. With
+    `bake=False` the `bake/` folder is not read (`SceneCtx.bake` is None): the bake's own planner
+    reads the scene that way, so a half-written or stale bake never stops a new one."""
     dir = Path(dir)
     style = load_style(dir / "style.json")
     packs: dict[str, Pack] = {}
@@ -826,6 +834,7 @@ def load_scene(dir: Path) -> SceneCtx:
             pieces[key] = PieceGeom(path.stem, {p: _tris(str(path), p, npz[p]) for p in npz.files})
         _check_parts(path, pack.pieces[path.stem], pieces[key])
     skeletons = dict(_read_skeletons(dir / "pieces", packs))
+    _alias_card_skeletons(skeletons, packs)
     samples: dict[str, ClipSamples] = {}
     for path in sorted((dir / "samples").glob("*.npz")):
         with np.load(path) as npz:
@@ -889,7 +898,20 @@ def load_scene(dir: Path) -> SceneCtx:
              if not path.name.startswith(".")}
     return SceneCtx(style=style, packs=packs, clips=clips, pieces=pieces, samples=samples,
                     rigs=rigs, rig_of_clip=rig_of_clip, layouts=layouts, sources=sources,
-                    nodes=nodes, rests=rests, skeletons=skeletons, folder=dir.name, rules=rules)
+                    nodes=nodes, rests=rests, skeletons=skeletons, folder=dir.name, rules=rules,
+                    bake=load_bake(dir) if bake else None)
+
+
+def _alias_card_skeletons(skeletons: dict[str, Skeleton], packs: dict[str, Pack]) -> None:
+    """Each card piece shares its source piece's skeleton: its key maps to the source's. A card
+    piece with a skeleton file of its own is refused when the files are read."""
+    for pack in packs.values():
+        for name, piece in pack.pieces.items():
+            if not piece.cards_of:
+                continue
+            key, src = piece_key(pack.name, name), piece_key(pack.name, piece.cards_of)
+            if src in skeletons:
+                skeletons[key] = skeletons[src]
 
 
 def _read_skeletons(folder: Path, packs: dict[str, Pack]) -> list[tuple[str, Skeleton]]:
@@ -911,6 +933,10 @@ def _read_skeletons(folder: Path, packs: dict[str, Pack]) -> list[tuple[str, Ske
         if kind != "branching":
             raise ManifestError(f"{path}: a skeleton for {piece_key(pack.name, piece)}, an "
                                 f"{kind} piece; only a branching piece has one")
+        if source := pack.pieces[piece].cards_of:
+            raise ManifestError(f"{path}: {piece_key(pack.name, piece)} is a card copy of "
+                                f"{piece_key(pack.name, source)} and shares its skeleton; "
+                                "delete this file")
         skeleton = load_skeleton(path)
         named = skeleton.info.get("piece")
         if named != piece:

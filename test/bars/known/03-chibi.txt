@@ -2,24 +2,6 @@
 # Why: partial: the rig has no supports and no joint ranges; also the limbs' designed joins (crossings), detail and near-crease findings.
 # Issue: https://github.com/bnhoang2k/model-kit/issues
 # test_gate_verdict fails when the output changes: fix the bar, then delete this file.
-crossings | chibi:chibi thigh_L x torso | surfaces share 0.164 of depth (limit 0.0568, 0.5 x the thinner part's thickness 0.114)
-crossings | chibi:chibi thigh_R x torso | surfaces share 0.164 of depth (limit 0.0568, 0.5 x the thinner part's thickness 0.114)
-crossings | chibi:chibi shin_L x thigh_L | surfaces share 0.112 of depth (limit 0.0564, 0.5 x the thinner part's thickness 0.113)
-crossings | chibi:chibi shin_R x thigh_R | surfaces share 0.112 of depth (limit 0.0564, 0.5 x the thinner part's thickness 0.113)
-crossings | chibi:chibi shin_L x torso | surfaces share 0.0599 of depth (limit 0.0537, 0.5 x the thinner part's thickness 0.107)
-crossings | chibi:chibi shin_R x torso | surfaces share 0.0599 of depth (limit 0.0537, 0.5 x the thinner part's thickness 0.107)
-near-crease | chibi:chibi arm_L line end 1997 | a drawn line stops at [0.2204, 0.1403, 0.0669], where one edge over 35 deg meets none; it dashes across a smooth surface
-near-crease | chibi:chibi arm_L line end 2000 | a drawn line stops at [0.2205, 0.1402, 0.0634], where one edge over 35 deg meets none; it dashes across a smooth surface
-near-crease | chibi:chibi arm_R line end 1977 | a drawn line stops at [-0.2205, 0.1402, 0.0634], where one edge over 35 deg meets none; it dashes across a smooth surface
-near-crease | chibi:chibi arm_R line end 1980 | a drawn line stops at [-0.2204, 0.1403, 0.0669], where one edge over 35 deg meets none; it dashes across a smooth surface
-detail | chibi:chibi arm_L blocky at 1.3 m | edge 4581: a gap of 0.420 mm between its facets and the curve they stand for, over a turn of 13.83 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi arm_R blocky at 1.3 m | edge 7599: a gap of 0.420 mm between its facets and the curve they stand for, over a turn of 13.83 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi head blocky at 1.3 m | edge 86: a gap of 1.523 mm between its facets and the curve they stand for, over a turn of 11.99 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi shin_L blocky at 1.3 m | edge 3994: a gap of 0.690 mm between its facets and the curve they stand for, over a turn of 22.53 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi shin_R blocky at 1.3 m | edge 907: a gap of 0.690 mm between its facets and the curve they stand for, over a turn of 22.53 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi thigh_L blocky at 1.3 m | edge 2934: a gap of 0.633 mm between its facets and the curve they stand for, over a turn of 17.04 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi thigh_R blocky at 1.3 m | edge 21: a gap of 0.633 mm between its facets and the curve they stand for, over a turn of 17.04 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
-detail | chibi:chibi torso blocky at 1.3 m | edge 2231: a gap of 1.324 mm between its facets and the curve they stand for, over a turn of 21.28 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
 coverage: must-touch: not applicable (no holds): idle
 coverage: reach: not applicable (keyed): idle
 coverage: trace: not applicable (keyed targets): idle
@@ -78,4 +60,22 @@ coverage: detail: rule 2 not applicable to 5 of 8 parts with a smooth edge (halv
 coverage: markings-flush: not applicable (a decal, a marked row, a part with no on host or an empty part) to 4 of 10 parts: chibi:chibi
 coverage: coplanar: not applicable (no layout): nothing to compare placements
 coverage: coverage: not applicable (no placed or carried piece): idle
+crossings | chibi:chibi thigh_L x torso | surfaces share 0.164 of depth (limit 0.0568, 0.5 x the thinner part's thickness 0.114)
+crossings | chibi:chibi thigh_R x torso | surfaces share 0.164 of depth (limit 0.0568, 0.5 x the thinner part's thickness 0.114)
+crossings | chibi:chibi shin_L x thigh_L | surfaces share 0.112 of depth (limit 0.0564, 0.5 x the thinner part's thickness 0.113)
+crossings | chibi:chibi shin_R x thigh_R | surfaces share 0.112 of depth (limit 0.0564, 0.5 x the thinner part's thickness 0.113)
+crossings | chibi:chibi shin_L x torso | surfaces share 0.0599 of depth (limit 0.0537, 0.5 x the thinner part's thickness 0.107)
+crossings | chibi:chibi shin_R x torso | surfaces share 0.0599 of depth (limit 0.0537, 0.5 x the thinner part's thickness 0.107)
+near-crease | chibi:chibi arm_L line end 1997 | a drawn line stops at [0.2204, 0.1403, 0.0669], where one edge over 35 deg meets none; it dashes across a smooth surface
+near-crease | chibi:chibi arm_L line end 2000 | a drawn line stops at [0.2205, 0.1402, 0.0634], where one edge over 35 deg meets none; it dashes across a smooth surface
+near-crease | chibi:chibi arm_R line end 1977 | a drawn line stops at [-0.2205, 0.1402, 0.0634], where one edge over 35 deg meets none; it dashes across a smooth surface
+near-crease | chibi:chibi arm_R line end 1980 | a drawn line stops at [-0.2204, 0.1403, 0.0669], where one edge over 35 deg meets none; it dashes across a smooth surface
+detail | chibi:chibi arm_L blocky at 1.3 m | edge 4581: a gap of 0.420 mm between its facets and the curve they stand for, over a turn of 13.83 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi arm_R blocky at 1.3 m | edge 7599: a gap of 0.420 mm between its facets and the curve they stand for, over a turn of 13.83 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi head blocky at 1.3 m | edge 86: a gap of 1.523 mm between its facets and the curve they stand for, over a turn of 11.99 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi shin_L blocky at 1.3 m | edge 3994: a gap of 0.690 mm between its facets and the curve they stand for, over a turn of 22.53 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi shin_R blocky at 1.3 m | edge 907: a gap of 0.690 mm between its facets and the curve they stand for, over a turn of 22.53 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi thigh_L blocky at 1.3 m | edge 2934: a gap of 0.633 mm between its facets and the curve they stand for, over a turn of 17.04 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi thigh_R blocky at 1.3 m | edge 21: a gap of 0.633 mm between its facets and the curve they stand for, over a turn of 17.04 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
+detail | chibi:chibi torso blocky at 1.3 m | edge 2231: a gap of 1.324 mm between its facets and the curve they stand for, over a turn of 21.28 deg, is over what the eye resolves, 0.378 mm at 1.3 m (1 arcmin): add segments
 partial

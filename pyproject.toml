@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "model-kit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Build 3D models for games in Blender, and check them against real-world rules."
 readme = "README.md"
 license = "MIT"
@@ -20,6 +20,8 @@ model-kit = "model_kit.cli:main"
 
 [project.optional-dependencies]
 sheet = ["pillow>=11"]
+# Headless Chromium for `model-kit bake --compare`; the browser itself is installed apart (`playwright install`).
+browser = ["playwright>=1.50"]
 
 [dependency-groups]
 dev = [
@@ -46,6 +48,7 @@ pythonpath = ["src"]
 addopts = "-ra --strict-markers --strict-config"
 markers = [
     "blender: needs Blender; skipped unless MODEL_KIT_BLENDER is set",
+    "browser: needs Playwright's Chromium; skipped unless installed",
     "held(*paths): needs files that not every copy of this repository has; skipped where one is missing",
 ]
 

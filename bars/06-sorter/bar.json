@@ -1,0 +1,24 @@
+{
+  "slug": "06-sorter",
+  "title": "Letter sorter, toy style",
+  "class": "assembly",
+  "default": false,
+  "piece": "sorter_toy:Sorter",
+  "reads": "A parcel sorting machine built as a toy of itself: 3.57 m long, 1.29 m deep and 1.42 m tall to its beacon, in 107 closed parts that are squashed, rounded hard and draw no crease, only a silhouette. A plinth on feet carries a spine cabinet with a belt between guide rails; a feeder magazine with three parcels, a C-frame scanner with a beacon, six pushers, six labelled pocket trays (four holding a parcel), a takeaway belt under the pockets, and an infeed cabinet with a door, an operator panel (screen, three oversized buttons, an emergency stop) and a stack light.",
+  "fits": "The machine reference for the toy style: hard-surface machines and props drawn as toys (squash 0.88 along, 0.76 up, 1.0 deep; controls grown 1.8 times; every part rounded hard; fine fittings left out) and built from a parts list by the machine kit in this folder. Compare a new machine's sheet with this one, and copy the folder to start one.",
+  "wrong_for": "Real-product detail: the toy drops the screws, rivets, hinges, louvres, legends and conduits a real machine shows (bar 05-lamp is the hard-surface bar at real detail). Rigged characters and branching plants. Pieces seen from nearer than 4 m: its facets are counted for that distance. It is one machine, not a measured product; every size is a modelling choice.",
+  "references": [
+    {
+      "key": "choices",
+      "file": "README.md",
+      "gives": "The modelling choices, each stated in the README's tables with its value and reason: the real-scale footprint (a 4.0 x 1.16 m plinth), the 1.71 m real height, the parcel, the six pockets, the pushers, the takeaway, the toy numbers (squash 0.88, 0.76, 1.0; controls 1.8; corner and rim radius 0.30 of the part's sides; thin parts thickened to 30 mm and 12 mm), the 0.018 mm join, the 0.1 m flat-face cut, and the view (nearest 4 m, farthest 30 m, both choices to be measured). No product or drawing is followed."
+    }
+  ],
+  "files": {
+    "style": "style.json",
+    "pack": "sorter_toy.pack.json",
+    "glb": "sorter_toy.glb",
+    "scene": "scene",
+    "sheet": "sheet.png"
+  }
+}

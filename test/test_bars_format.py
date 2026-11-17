@@ -7,10 +7,13 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from core.scenes import make_ctx
 
 from model_kit import bars as bars_module
 from model_kit.bars import INDEX_HEADER, bar_for, bars_root, load_bar, read_bars, render_index
+from model_kit.core import gate
 from model_kit.core.errors import ManifestError
+from model_kit.core.scene import save_scene
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -179,7 +182,8 @@ def test_scene_folder_name_is_pinned(tmp_path):
 def test_ships_rule():
     from model_kit._shipped import ships
 
-    for ok in ("INDEX.md", "02-a/bar.json", "02-a/a.glb", "02-a/sheet.png", "02-a/tool.py"):
+    for ok in ("INDEX.md", "02-a/bar.json", "02-a/a.glb", "02-a/sheet.png", "02-a/tool.py",
+               "02-a/a.allow"):
         assert ships(Path(ok)), ok
     for no in ("02-a/scene/x.json", "02-a/a.blend", "02-a/a.blend1", "02-a/n.txt", "02-a/n.yaml",
                ".gitignore", "02-a/.DS_Store", "02-a/__pycache__/x.py", "02-a/bar.private.json"):
@@ -257,3 +261,56 @@ def test_a_bad_reference_raises(tmp_path, ref, files, match):
     folder = _with_refs(tmp_path, [ref], files=files)
     with pytest.raises(ManifestError, match=match):
         load_bar(folder)
+
+
+def _with_allow(tmp_path, allow, text=None):
+    files = {**bar_json()["files"], "allow": allow}
+    folder = make_bar(tmp_path, files=files)
+    if text is not None:
+        (folder / allow).parent.mkdir(parents=True, exist_ok=True)
+        (folder / allow).write_text(text)
+    return folder
+
+
+def test_a_bar_without_an_allowlist_gates_its_scene_alone(tmp_path):
+    bar = load_bar(make_bar(tmp_path))
+    assert bar.files.allow is None
+    assert bar.gate_args() == [str(tmp_path / "02-redbud" / "scene")]
+
+
+def test_a_bar_allowlist_is_passed_to_the_gate(tmp_path):
+    folder = _with_allow(tmp_path, "redbud.allow", "reach | * | on purpose\n")
+    bar = load_bar(folder)
+    assert bar.files.allow == "redbud.allow"
+    assert bar.gate_args() == [str(folder / "scene"), "--allow", str(folder / "redbud.allow")]
+
+
+@pytest.mark.parametrize(("allow", "text", "match"), [
+    ("redbud.allow", None, "is not in"),
+    ("redbud.txt", "reach | * | x\n", "redbud.txt"),
+    ("scene/redbud.allow", "reach | * | x\n", "outside scene/"),
+    ("../redbud.allow", None, "inside the bar's folder"),
+])
+def test_a_bad_allowlist_raises(tmp_path, allow, text, match):
+    folder = _with_allow(tmp_path, allow, text)
+    with pytest.raises(ManifestError, match=match):
+        load_bar(folder)
+
+
+@pytest.mark.parametrize(("line", "code", "last"), [
+    ("reach | * -> kit:Plate.top_R | the plate is out of reach on purpose", 0, "passed"),
+    ("reach | * -> kit:Other.top_R | another plate is out of reach on purpose", 1, "failed: 2"),
+])
+def test_the_gate_reads_the_bar_allowlist_and_fails_an_unallowed_finding(tmp_path, capsys, line,
+                                                                        code, last):
+    """A real gate run through `gate_args`: the line that names the finding lets it through with
+    its reason; a line that names another item leaves the finding a failure (and is stale)."""
+    folder = _with_allow(tmp_path, "redbud.allow", line + "\n")
+    (folder / "scene").rmdir()
+    save_scene(make_ctx(at=(1.2, 0.0, 0.0)), folder / "scene")
+    assert gate.main([*load_bar(folder).gate_args(), "--checks", "reach"]) == code
+    out, err = capsys.readouterr()
+    assert out.splitlines()[-1] == last
+    reach = [ln for ln in err.splitlines() if ln.startswith("reach | ")]
+    allowed = [ln for ln in err.splitlines() if ln.startswith("allowed: reach | ")]
+    assert (len(reach), len(allowed)) == ((0, 1) if code == 0 else (1, 0)), err

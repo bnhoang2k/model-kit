@@ -108,8 +108,61 @@ published, so each is a choice:
 The datasheet's "hwd" order cannot be right for a strip that lies on a desk, so the strip is read as
 length x width x height. No source confirms the misprint; the shape settles it.
 
+## Light bake
+
+`stage.json` bakes the `desk` layout's light into `scene/bake/` in `indirect` mode (light that
+bounced at least once). `build.py` runs the bake after it installs the scene, so a build replaces
+the bake. The layers are `window` (an area light), `sky` and `ground` (the two halves of a
+hemisphere light) and `bulb` (a point light inside the shade). The two stage cameras sit at the
+bar's `view.nearest_m` (0.5 m, from the shade) and `view.farthest_m` (1.3 m, from the desk).
+`live` is empty: nothing moves.
+
+The density is 256 texels per metre (`texels_per_m`). Two placements bake at their own density
+(`placement_texels_per_m`):
+
+- The lamp bakes at 1024. At 512, two of the shade's seams were the 0.63-texel short edge of a
+  sliver triangle at an island's corner. `seam-jump` reads a seam up to 9/10 of its length, and a
+  bilinear read needs its 4 taps inside the island, so a seam needs 0.9 x L >= 1, which is
+  L >= 1.11 texels. That is 1.11 / 0.63 = 1.76 times 512, or 903 texels per metre; 1024 is the
+  first doubling at or above it.
+- The desk bakes at 512, not higher. Its window loss was 1.53 times its noise at 256 and is 1.15
+  times at 512 (error 2.931e-05, noise 2.035e-05, loss 2.342e-05). The per-texel noise did not
+  change with density (2.045e-05 at 256, 2.035e-05 at 512), and the loss fell only about as
+  density^-1/2. At that rate passing needs about 1024, and the bake folder would grow from 16 MB to
+  roughly 50 to 60 MB. The loss sits in a band within 3 doubled pixels of where the strip and the
+  lamp base stand on the desk (0.86 to 0.96 of the window loss^2 on about 2 % of the desk's
+  texels, measured at 256). The kit cannot yet give finer texels to that band only.
+- The strip keeps 256: it converges there.
+
+The bake folder is 16 MB (16,044 KB), with a shipped picture 1638 pixels on a side. The desk's
+`lightmap-density` finding is allowed, with the reason above, in `lamp.allow` (named in
+`bar.json` as `files.allow`).
+
+`full` mode (direct light too) is not committed. The bulb and the window are hard direct lights,
+and the light's shadow edge changes with every doubling of the density, so `lightmap-density`
+needs far more pixels than a committed bake can hold. `test/blender/test_bake_bar05.py` bakes
+`full` mode at a tiny size into a temporary copy to prove the path works.
+
+`uv run model-kit bake bars/05-lamp/scene --stage bars/05-lamp/stage.json --compare` compares the
+existing bake with three.js light and does not rewrite it. It printed (each number is the mean sRGB
+difference, 0 to 1, between Blender and three.js, over the pixels both renders cover):
+
+```
+COMPARE note: light 'window' (area) has no live stand-in in the browser; live pieces get no light from it
+COMPARE light maps: 10 of 10 baked parts
+near 0.0343 (covered in both 48.9%, in only one 0.4%)
+far 0.0263 (covered in both 26.9%, in only one 0.4%)
+```
+
+The three.js side has no stand-in for the window (an area light) and no measured one for the
+hemisphere layers; the bake's layers are mixed at white, strength 1. The numbers say where to
+look. They are not a pass.
+
 ## Gate
 
-`uv run model-kit gate bars/05-lamp/scene` reads `passed`. The `clearance` check does not judge a plug
+`uv run model-kit gate bars/05-lamp/scene --allow bars/05-lamp/lamp.allow` reads `passed`, with
+one `allowed:` line for the desk's density (see "Light bake"); without the allow file it reads
+`failed: 1`. The `lightmap-density` plant goes on the lamp, whose real data passes, and is
+caught. The `clearance` check does not judge a plug
 seated in its socket against the part the socket names, and prints a coverage line that says so;
 the plug against the strip's switch, or the lamp's base against the strip, would still fail.

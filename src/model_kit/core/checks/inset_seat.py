@@ -436,6 +436,7 @@ def _unit(ctx: SceneCtx, view: PieceView, rule: str) -> PlantUnit | None:
 class InsetSeat:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

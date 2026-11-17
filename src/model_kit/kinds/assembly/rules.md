@@ -4,10 +4,12 @@ An assembly piece is put together from parts by a build script. A check lists he
 `kinds` names `assembly`. Each heading below is the name of a registered check, with what it
 measures and the plant that proves it can fail.
 
-The clip, layout and scene checks (`must-touch`, `reach`, `trace`, `sides`, `mirror-pair`,
-`no-fallback`, `overlap`, `solver-error`, `clip-hygiene`, `receiver`, `connectors`,
-`export-hygiene`, `coverage`) measure a clip, a layout, a pack's packed file or the whole scene,
-not a recipe, so they declare no kind and have no heading here.
+The body, clip, layout and scene checks (`must-touch`, `reach`, `trace`, `sides`, `mirror-pair`,
+`no-fallback`, `overlap`, `solver-error`, `clip-hygiene`, `stress-poses`, `bend-quality`,
+`seat-fit`, `receiver`, `connectors`, `export-hygiene`, `bake-files`, `lightmap-overlap`,
+`seam-jump`, `lightmap-density`, `coverage`) measure a posed body, a clip, a layout, a pack's packed file, a light bake or the
+whole scene, not a recipe, so they declare no kind and have
+no heading here.
 
 ## crossings
 
@@ -50,7 +52,9 @@ piece's `view.nearest_m`, in project units through `units_per_metre` (`sight.con
 A gap a viewer can tell apart is a float, and a smaller one touches. A side the view lists as
 `hidden` changes nothing here: a float is a physical fault. A piece with no `view` has no contact
 length and is `Unmeasured`. Plant: lift one small part twice the contact length off its host, or
-off the floor. The check must flag the part.
+off the floor. The check must flag the part. A part with `rests_on` must touch each support it
+names (`<part> off <support>`). Plants: tilt it off the support it shares least contact with, and
+name a support it does not touch.
 
 ## topology
 
@@ -249,6 +253,14 @@ embed is an allowlist line with a reason. The sink rule is not applicable to a p
 piece whose bones differ from its host's, nor to a pair where half the thinner part's thickness
 is not over the contact length (no depth lies between a seat and crossings' limit). Parts printed
 on a surface are left out.
+
+A part with `rests_on` (two or more supports, a tabletop on its legs) is held by all of them
+together. Rule 1 reads its centre of mass over the support polygon, the convex hull of its upward
+contact points on every support
+(https://en.wikipedia.org/wiki/Support_polygon); else `<part> tips off <s1>, <s2>, ...`, naming
+every support in `rests_on` order, touched or not. Rule 3 is not applicable (no single surface
+holds its whole seat). Rule 5 runs once per support. A row held `bonded` skips rules 1 and 5. The
+rest and sink plants run on the smallest such part.
 
 Plant: slide a resting or hanging part off its patch, pull a fastener out to half the engagement
 it needs, slide a mounted part until its seat face overhangs, lift a retainer off what it retains

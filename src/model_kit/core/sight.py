@@ -32,10 +32,13 @@ from model_kit.core.units import Style, depth_step
 @dataclass(frozen=True)
 class Sight:
     """What a viewer resolves on one piece: `gap` is the seen floor in the pack's units and
-    `crease_deg` the style's crease angle in degrees. The grower sizes its segments from it."""
+    `crease_deg` the style's crease angle in degrees. The grower sizes its segments from it.
+    `round` is False for a piece that draws no outline (`Piece.outlined`): its tubes may then
+    have as few as 3 sides, since no crease line shows along a coarse turn."""
 
     gap: float
     crease_deg: float
+    round: bool = True
 
 
 def sight_for(piece: Piece, style: Style, units_per_metre: float) -> Sight | None:
@@ -45,7 +48,7 @@ def sight_for(piece: Piece, style: Style, units_per_metre: float) -> Sight | Non
     gap = seen_floor(piece, units_per_metre)
     if gap is None or style.crease_deg is None:
         return None
-    return Sight(gap, style.crease_deg)
+    return Sight(gap, style.crease_deg, round=piece.outlined)
 
 
 def view_floor(view: View, units_per_metre: float) -> float:

@@ -96,6 +96,7 @@ def problems(tris: np.ndarray, size: float) -> list[str]:
 class Topology:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         out = []

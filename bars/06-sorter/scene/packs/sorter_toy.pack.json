@@ -1,0 +1,1110 @@
+{
+  "pack": "sorter_toy",
+  "units_per_metre": 1.0,
+  "pieces": {
+    "Sorter": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the footprint, on the floor (y 0)"
+      },
+      "recipe": {
+        "kind": "assembly",
+        "source": "bars/06-sorter: parts.py resolved by resolve.py, built by machine_build.py (the machine kit); no product"
+      },
+      "listed": [
+        {
+          "id": "b01",
+          "text": "Plinth, the welded base frame every module stands on",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.09,
+          "held": "bonded"
+        },
+        {
+          "id": "b02",
+          "text": "Eight levelling feet under the plinth: threaded stem, lock nut and pad",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0456,
+          "held": "bonded"
+        },
+        {
+          "id": "c01",
+          "text": "Spine cabinet along the back, carrying the transport on top",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.45,
+          "held": "bonded"
+        },
+        {
+          "id": "c02",
+          "text": "Infeed cabinet at the feeder end, holding the electrics",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.66,
+          "held": "bonded"
+        },
+        {
+          "id": "c03",
+          "text": "Service door on the infeed cabinet, with hinges and a quarter-turn latch",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.018000000000000002,
+          "held": "bonded"
+        },
+        {
+          "id": "t01",
+          "text": "Transport bed along the spine's top",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.04,
+          "held": "bonded"
+        },
+        {
+          "id": "t02",
+          "text": "Transport belt on the bed",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.012,
+          "held": "bonded"
+        },
+        {
+          "id": "t03",
+          "text": "Guide rails each side of the belt, open at every pocket",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.03,
+          "held": "bonded"
+        },
+        {
+          "id": "t05",
+          "text": "Belt drive at the tail end: gearbox and motor",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.03952,
+          "held": "bonded"
+        },
+        {
+          "id": "d01",
+          "text": "Six pushers behind the belt, one per pocket: bracket, air cylinder and pad",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.008,
+          "held": "bonded"
+        },
+        {
+          "id": "h01",
+          "text": "Scanner: a C-frame post and hood over the belt, its window, lamps and status light",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.012,
+          "held": "bonded"
+        },
+        {
+          "id": "h02",
+          "text": "Beacon on the scanner hood",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0216,
+          "held": "bonded"
+        },
+        {
+          "id": "m01",
+          "text": "Feeder magazine at the head of the belt: back plate and two side guides",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.03,
+          "held": "bonded"
+        },
+        {
+          "id": "p01",
+          "text": "Operator panel housing on the infeed cabinet",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.1,
+          "held": "bonded"
+        },
+        {
+          "id": "p02",
+          "text": "Touch screen and its bezel",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.012,
+          "held": "bonded"
+        },
+        {
+          "id": "p03",
+          "text": "Three push buttons in collars, with legend plates",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0252,
+          "held": "bonded"
+        },
+        {
+          "id": "p04",
+          "text": "Emergency stop: collar and mushroom head",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.012,
+          "held": "bonded"
+        },
+        {
+          "id": "s01",
+          "text": "Stack light on the infeed cabinet: base, three lamp segments and cap",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0216,
+          "held": "bonded"
+        },
+        {
+          "id": "k01",
+          "text": "Pocket shelf on the spine's front, on three legs",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0304,
+          "held": "bonded"
+        },
+        {
+          "id": "k02",
+          "text": "Six pocket trays, one per labelled tray",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.07600000000000001,
+          "held": "bonded"
+        },
+        {
+          "id": "k04",
+          "text": "Label plates on the pocket fronts (blank; a label is added per tray)",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.012,
+          "held": "bonded"
+        },
+        {
+          "id": "k05",
+          "text": "Label screws and pocket-full lights",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.014400000000000001,
+          "held": "bonded"
+        },
+        {
+          "id": "w01",
+          "text": "Takeaway conveyor under the pockets: bed, belt and legs; it feeds the main belt",
+          "source": "No source: a modelling choice for a parcel sorter of about this size (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.012,
+          "held": "bonded"
+        },
+        {
+          "id": "x01",
+          "text": "Parcels stacked in the feeder magazine",
+          "source": "No source: a parcel size chosen for the scene (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.08360000000000001
+        },
+        {
+          "id": "x02",
+          "text": "Parcels sorted into pockets",
+          "source": "No source: a parcel size chosen for the scene (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0912
+        },
+        {
+          "id": "x03",
+          "text": "A sorted parcel on the takeaway belt",
+          "source": "No source: a parcel size chosen for the scene (README.md). min_thickness is the row's thinnest part side.",
+          "min_thickness": 0.0912
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "listed": "b01",
+          "shape": "extrude",
+          "on": null,
+          "group": "b01",
+          "role": "solid"
+        },
+        {
+          "name": "foot_00",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_01",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_10",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_11",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_20",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_21",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_30",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "foot_31",
+          "listed": "b02",
+          "shape": "lathe",
+          "on": "base",
+          "group": "b02",
+          "role": "solid"
+        },
+        {
+          "name": "spine",
+          "listed": "c01",
+          "shape": "extrude",
+          "on": "base",
+          "group": "c01",
+          "role": "solid"
+        },
+        {
+          "name": "infeed",
+          "listed": "c02",
+          "shape": "extrude",
+          "on": "base",
+          "group": "c02",
+          "role": "solid"
+        },
+        {
+          "name": "door",
+          "listed": "c03",
+          "shape": "extrude",
+          "on": "infeed",
+          "group": "c03",
+          "role": "solid"
+        },
+        {
+          "name": "latch",
+          "listed": "c03",
+          "shape": "lathe",
+          "on": "door",
+          "group": "c03",
+          "role": "solid"
+        },
+        {
+          "name": "latch_grip",
+          "listed": "c03",
+          "shape": "extrude",
+          "on": "latch",
+          "group": "c03",
+          "role": "solid"
+        },
+        {
+          "name": "bed",
+          "listed": "t01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "t01",
+          "role": "solid"
+        },
+        {
+          "name": "belt",
+          "listed": "t02",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t02",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_0",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_0",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_1",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_1",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_2",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_2",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_3",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_3",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_4",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_4",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_5",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_5",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_back_6",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "rail_front_6",
+          "listed": "t03",
+          "shape": "extrude",
+          "on": "bed",
+          "group": "t03",
+          "role": "solid"
+        },
+        {
+          "name": "gearbox",
+          "listed": "t05",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "t05",
+          "role": "solid"
+        },
+        {
+          "name": "motor",
+          "listed": "t05",
+          "shape": "lathe",
+          "on": "gearbox",
+          "group": "t05",
+          "role": "solid"
+        },
+        {
+          "name": "push_bracket_0",
+          "listed": "d01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_cylinder_0",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_bracket_0",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_pad_0",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_cylinder_0",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_bracket_1",
+          "listed": "d01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_cylinder_1",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_bracket_1",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_pad_1",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_cylinder_1",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_bracket_2",
+          "listed": "d01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_cylinder_2",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_bracket_2",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_pad_2",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_cylinder_2",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_bracket_3",
+          "listed": "d01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_cylinder_3",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_bracket_3",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_pad_3",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_cylinder_3",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_bracket_4",
+          "listed": "d01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_cylinder_4",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_bracket_4",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_pad_4",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_cylinder_4",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_bracket_5",
+          "listed": "d01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_cylinder_5",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_bracket_5",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "push_pad_5",
+          "listed": "d01",
+          "shape": "lathe",
+          "on": "push_cylinder_5",
+          "group": "d01",
+          "role": "solid"
+        },
+        {
+          "name": "scan_post",
+          "listed": "h01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "h01",
+          "role": "solid"
+        },
+        {
+          "name": "scan_hood",
+          "listed": "h01",
+          "shape": "extrude",
+          "on": "scan_post",
+          "group": "h01",
+          "role": "solid"
+        },
+        {
+          "name": "scan_window",
+          "listed": "h01",
+          "shape": "extrude",
+          "on": "scan_hood",
+          "group": "h01",
+          "role": "solid"
+        },
+        {
+          "name": "beacon_base",
+          "listed": "h02",
+          "shape": "lathe",
+          "on": "scan_hood",
+          "group": "h02",
+          "role": "solid"
+        },
+        {
+          "name": "beacon_lens",
+          "listed": "h02",
+          "shape": "lathe",
+          "on": "beacon_base",
+          "group": "h02",
+          "role": "solid"
+        },
+        {
+          "name": "beacon_cap",
+          "listed": "h02",
+          "shape": "lathe",
+          "on": "beacon_lens",
+          "group": "h02",
+          "role": "solid"
+        },
+        {
+          "name": "mag_back",
+          "listed": "m01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "m01",
+          "role": "solid"
+        },
+        {
+          "name": "mag_guide_0",
+          "listed": "m01",
+          "shape": "extrude",
+          "on": "mag_back",
+          "group": "m01",
+          "role": "solid"
+        },
+        {
+          "name": "mag_guide_1",
+          "listed": "m01",
+          "shape": "extrude",
+          "on": "mag_back",
+          "group": "m01",
+          "role": "solid"
+        },
+        {
+          "name": "panel",
+          "listed": "p01",
+          "shape": "extrude",
+          "on": "infeed",
+          "group": "p01",
+          "role": "solid"
+        },
+        {
+          "name": "bezel",
+          "listed": "p02",
+          "shape": "extrude",
+          "on": "panel",
+          "group": "p02",
+          "role": "solid"
+        },
+        {
+          "name": "screen",
+          "listed": "p02",
+          "shape": "extrude",
+          "on": "bezel",
+          "group": "p02",
+          "role": "solid"
+        },
+        {
+          "name": "button_0",
+          "listed": "p03",
+          "shape": "lathe",
+          "on": "panel",
+          "group": "p03",
+          "role": "solid"
+        },
+        {
+          "name": "button_1",
+          "listed": "p03",
+          "shape": "lathe",
+          "on": "panel",
+          "group": "p03",
+          "role": "solid"
+        },
+        {
+          "name": "button_2",
+          "listed": "p03",
+          "shape": "lathe",
+          "on": "panel",
+          "group": "p03",
+          "role": "solid"
+        },
+        {
+          "name": "estop_collar",
+          "listed": "p04",
+          "shape": "lathe",
+          "on": "panel",
+          "group": "p04",
+          "role": "solid"
+        },
+        {
+          "name": "estop",
+          "listed": "p04",
+          "shape": "lathe",
+          "on": "estop_collar",
+          "group": "p04",
+          "role": "solid"
+        },
+        {
+          "name": "stack_base",
+          "listed": "s01",
+          "shape": "lathe",
+          "on": "infeed",
+          "group": "s01",
+          "role": "solid"
+        },
+        {
+          "name": "stack_lamp_0",
+          "listed": "s01",
+          "shape": "lathe",
+          "on": "stack_base",
+          "group": "s01",
+          "role": "solid"
+        },
+        {
+          "name": "stack_lamp_1",
+          "listed": "s01",
+          "shape": "lathe",
+          "on": "stack_lamp_0",
+          "group": "s01",
+          "role": "solid"
+        },
+        {
+          "name": "stack_lamp_2",
+          "listed": "s01",
+          "shape": "lathe",
+          "on": "stack_lamp_1",
+          "group": "s01",
+          "role": "solid"
+        },
+        {
+          "name": "stack_cap",
+          "listed": "s01",
+          "shape": "lathe",
+          "on": "stack_lamp_2",
+          "group": "s01",
+          "role": "solid"
+        },
+        {
+          "name": "shelf",
+          "listed": "k01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "k01",
+          "role": "solid"
+        },
+        {
+          "name": "shelf_leg_0",
+          "listed": "k01",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k01",
+          "role": "solid"
+        },
+        {
+          "name": "shelf_leg_1",
+          "listed": "k01",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k01",
+          "role": "solid"
+        },
+        {
+          "name": "shelf_leg_2",
+          "listed": "k01",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k01",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_0",
+          "listed": "k02",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k02",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_1",
+          "listed": "k02",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k02",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_2",
+          "listed": "k02",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k02",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_3",
+          "listed": "k02",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k02",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_4",
+          "listed": "k02",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k02",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_5",
+          "listed": "k02",
+          "shape": "extrude",
+          "on": "shelf",
+          "group": "k02",
+          "role": "solid"
+        },
+        {
+          "name": "label_0",
+          "listed": "k04",
+          "shape": "extrude",
+          "on": "pocket_0",
+          "group": "k04",
+          "role": "solid"
+        },
+        {
+          "name": "label_1",
+          "listed": "k04",
+          "shape": "extrude",
+          "on": "pocket_1",
+          "group": "k04",
+          "role": "solid"
+        },
+        {
+          "name": "label_2",
+          "listed": "k04",
+          "shape": "extrude",
+          "on": "pocket_2",
+          "group": "k04",
+          "role": "solid"
+        },
+        {
+          "name": "label_3",
+          "listed": "k04",
+          "shape": "extrude",
+          "on": "pocket_3",
+          "group": "k04",
+          "role": "solid"
+        },
+        {
+          "name": "label_4",
+          "listed": "k04",
+          "shape": "extrude",
+          "on": "pocket_4",
+          "group": "k04",
+          "role": "solid"
+        },
+        {
+          "name": "label_5",
+          "listed": "k04",
+          "shape": "extrude",
+          "on": "pocket_5",
+          "group": "k04",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_light_0",
+          "listed": "k05",
+          "shape": "lathe",
+          "on": "spine",
+          "group": "k05",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_light_1",
+          "listed": "k05",
+          "shape": "lathe",
+          "on": "spine",
+          "group": "k05",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_light_2",
+          "listed": "k05",
+          "shape": "lathe",
+          "on": "spine",
+          "group": "k05",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_light_3",
+          "listed": "k05",
+          "shape": "lathe",
+          "on": "spine",
+          "group": "k05",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_light_4",
+          "listed": "k05",
+          "shape": "lathe",
+          "on": "spine",
+          "group": "k05",
+          "role": "solid"
+        },
+        {
+          "name": "pocket_light_5",
+          "listed": "k05",
+          "shape": "lathe",
+          "on": "spine",
+          "group": "k05",
+          "role": "solid"
+        },
+        {
+          "name": "take_bed",
+          "listed": "w01",
+          "shape": "extrude",
+          "on": "spine",
+          "group": "w01",
+          "role": "solid"
+        },
+        {
+          "name": "take_belt",
+          "listed": "w01",
+          "shape": "extrude",
+          "on": "take_bed",
+          "group": "w01",
+          "role": "solid"
+        },
+        {
+          "name": "take_leg_0",
+          "listed": "w01",
+          "shape": "extrude",
+          "on": "take_bed",
+          "group": "w01",
+          "role": "solid"
+        },
+        {
+          "name": "take_leg_1",
+          "listed": "w01",
+          "shape": "extrude",
+          "on": "take_bed",
+          "group": "w01",
+          "role": "solid"
+        },
+        {
+          "name": "take_leg_2",
+          "listed": "w01",
+          "shape": "extrude",
+          "on": "take_bed",
+          "group": "w01",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_mag_0",
+          "listed": "x01",
+          "shape": "extrude",
+          "on": "belt",
+          "group": "x01",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_mag_1",
+          "listed": "x01",
+          "shape": "extrude",
+          "on": "parcel_mag_0",
+          "group": "x01",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_mag_2",
+          "listed": "x01",
+          "shape": "extrude",
+          "on": "parcel_mag_1",
+          "group": "x01",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_pocket_0",
+          "listed": "x02",
+          "shape": "extrude",
+          "on": "pocket_0",
+          "group": "x02",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_pocket_1",
+          "listed": "x02",
+          "shape": "extrude",
+          "on": "pocket_1",
+          "group": "x02",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_pocket_2",
+          "listed": "x02",
+          "shape": "extrude",
+          "on": "pocket_3",
+          "group": "x02",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_pocket_3",
+          "listed": "x02",
+          "shape": "extrude",
+          "on": "pocket_4",
+          "group": "x02",
+          "role": "solid"
+        },
+        {
+          "name": "parcel_take",
+          "listed": "x03",
+          "shape": "extrude",
+          "on": "take_belt",
+          "group": "x03",
+          "role": "solid"
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "A multi-pocket parcel sorter, a toy of the same machine: a plinth on levelling feet, a spine cabinet carrying a belt between guide rails, a feeder magazine with a stack of parcels, a C-frame scanner with a beacon, six pushers, six labelled pockets (four holding a parcel), a takeaway belt under the pockets, and an infeed cabinet with a door, an operator panel (screen, three buttons, an emergency stop) and a stack light.",
+      "size_class": "hero",
+      "measured": {
+        "kind": "letter sorter",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 3.573,
+          "d": 1.293
+        },
+        "bounds": {
+          "X0": -1.813,
+          "X1": 1.76,
+          "Z0": -0.58,
+          "Z1": 0.713
+        },
+        "heights": {
+          "top": 1.417
+        },
+        "surfaces": [],
+        "slots": [
+          "Belt",
+          "Control",
+          "Lens",
+          "Paint",
+          "Parcel",
+          "Plate",
+          "Rubber",
+          "Screen",
+          "Steel"
+        ],
+        "tris": 35150,
+        "export": {
+          "position_bits": null
+        },
+        "hosts": [
+          "base"
+        ]
+      },
+      "view": {
+        "nearest_m": 4.0,
+        "why": "A viewer frames one step at a time from the front or side of a machine; the nearest a camera gets to any machine on this floor is taken as 4 m, the same modelling choice for every machine drawn in this style, to be measured in use.",
+        "hidden": [
+          "bottom"
+        ],
+        "hidden_why": "it stands on the factory floor, so its underside is never seen",
+        "farthest_m": 30.0,
+        "farthest_why": "The wide shot frames the whole floor; its far corner is taken as 30 m (the same choice for every machine in this style)."
+      }
+    }
+  }
+}

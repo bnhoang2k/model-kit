@@ -92,6 +92,7 @@ from .records import (
     Window,
     seat_windows,
 )
+from .stage import Stage, StageCamera, StageLight, check_stage, load_stage
 
 __all__ = [
     "AUTHORING",
@@ -163,6 +164,9 @@ __all__ = [
     "SitSpec",
     "Smooth",
     "SoftForm",
+    "Stage",
+    "StageCamera",
+    "StageLight",
     "Stand",
     "Station",
     "Target",
@@ -172,11 +176,13 @@ __all__ = [
     "Window",
     "anchor",
     "check_connectors",
+    "check_stage",
     "check_stands",
     "load_clips",
     "load_layout",
     "load_layouts",
     "load_pack",
+    "load_stage",
     "parse_view",
     "seat_windows",
 ]

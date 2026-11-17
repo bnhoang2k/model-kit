@@ -282,6 +282,149 @@
         "farthest_m": 50.0,
         "farthest_why": "an estimate from how it is used, to be confirmed: the far end of the backdrop of many trees seen from the scene's camera; the README says only where the backdrop begins"
       }
+    },
+    "Redbud_Cards": {
+      "frame": {
+        "axes": "gltf",
+        "origin": "centre of the base"
+      },
+      "recipe": {
+        "kind": "branching",
+        "source": "card copy of Redbud: redbud.rules.json, seed 6, 5.0 m"
+      },
+      "listed": [
+        {
+          "id": "trunk_roots",
+          "text": "Trunk and Roots: trunk: the continuation chain from the seedling: at each fork it runs on through the thickest child; structural roots at the trunk base: 5, flaring into the soil",
+          "source": "redbud.rules.json: trunk.chain, roots.flares",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "leaders",
+          "text": "Leaders: leaders: chains seated on the trunk chain; a low fork gives several stems",
+          "source": "redbud.rules.json: leaders.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "branches",
+          "text": "Branches: branches: chains seated on a leader",
+          "source": "redbud.rules.json: branches.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "twigs",
+          "text": "Twigs: twigs: chains seated on a branch; slender and zigzag, from the relay of a side bud each year",
+          "source": "redbud.rules.json: twigs.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "shoots",
+          "text": "Shoots: shoots: every chain of a higher order: the youngest shoots, which carry most leaves",
+          "source": "redbud.rules.json: shoots.chain",
+          "min_thickness": 0.0017854640520828591
+        },
+        {
+          "id": "cards_leaf",
+          "text": "leaf cards, shade Leaf: leaves on the current year: 1: a deciduous tree carries leaves only on the current year's shoots; arrangement: two-ranked (orthodistichous), 180 degrees from one leaf to the next; leaves at a node: 1 (alternate); blade angle beta: a=2.1984, b=2.2862 on t = 2 theta / pi (numpy order): Cercis siliquastrum, a same-genus stand-in (no Cercis canadensis value was found); blade outline and length: heart-shaped, as wide as long; 0.07 to 0.12 m long; petiole length: 0.35 of the blade length",
+          "source": "redbud.rules.json: leaves.season, leaves.arrangement, leaves.per-node, leaves.blade-angle, leaves.blade, leaves.petiole",
+          "min_thickness": 0.0
+        }
+      ],
+      "parts": [
+        {
+          "name": "Trunk_Roots",
+          "listed": "trunk_roots",
+          "shape": "tube",
+          "on": null,
+          "group": "Trunk_Roots",
+          "role": "solid"
+        },
+        {
+          "name": "Leaders",
+          "listed": "leaders",
+          "shape": "tube",
+          "on": "Trunk_Roots",
+          "group": "Leaders",
+          "role": "solid"
+        },
+        {
+          "name": "Branches",
+          "listed": "branches",
+          "shape": "tube",
+          "on": "Leaders",
+          "group": "Branches",
+          "role": "solid"
+        },
+        {
+          "name": "Twigs",
+          "listed": "twigs",
+          "shape": "tube",
+          "on": "Branches",
+          "group": "Twigs",
+          "role": "skip_outline"
+        },
+        {
+          "name": "Shoots",
+          "listed": "shoots",
+          "shape": "tube",
+          "on": "Twigs",
+          "group": "Shoots",
+          "role": "skip_outline"
+        },
+        {
+          "name": "Cards_Leaf",
+          "listed": "cards_leaf",
+          "shape": "leaf",
+          "on": "Trunk_Roots",
+          "group": "Cards_Leaf",
+          "role": "skip_outline"
+        }
+      ],
+      "uses": [],
+      "holds": [],
+      "seats": [],
+      "mounts": [],
+      "done": "At the page camera the same loose dome of leaf clusters, drawn as leaf cards on the light wood of Redbud (seed 6): the crown reads as clumps with the dark limbs showing between them. Every card sits on a leaf ball over its shoots.",
+      "size_class": "piece",
+      "measured": {
+        "kind": "tree",
+        "zones": [
+          "d"
+        ],
+        "snap": "free",
+        "foot": {
+          "w": 3.5184,
+          "d": 2.9623
+        },
+        "bounds": {
+          "X0": -1.7166,
+          "X1": 1.8017,
+          "Z0": -1.5327,
+          "Z1": 1.4296
+        },
+        "heights": {
+          "top": 2.5004
+        },
+        "surfaces": [],
+        "slots": [
+          "Bark",
+          "Redbud_Cards_Leaf_Cards",
+          "Twig"
+        ],
+        "tris": 40008,
+        "export": {
+          "position_bits": 14
+        }
+      },
+      "view": {
+        "nearest_m": 10.0,
+        "why": "proposed from a scene's close-up on one building with trees beside it, where a tree is seen from about 10 m; not measured",
+        "farthest_m": 70.0,
+        "farthest_why": "proposed from the same scene's orthographic overview, where the trees are seen from about 70 m; not measured"
+      },
+      "outlined": false,
+      "outlined_why": "the shipping look draws it without lines: an outline on every leaf card turns the crown solid ink, as for the full tree (README, Taste read)",
+      "cards_of": "Redbud"
     }
   }
 }

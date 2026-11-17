@@ -143,6 +143,7 @@ def _leaf_units(ctx: SceneCtx, g: Grown) -> list[PlantUnit]:
 class LimbSeat:
     name = NAME
     kinds: frozenset[str] = KINDS
+    scope = "piece"
 
     def plants(self, ctx: SceneCtx) -> list[PlantUnit]:
         return ([u for g in grown(ctx) for u in _limb_units(ctx, g)]

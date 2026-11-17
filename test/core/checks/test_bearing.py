@@ -11,6 +11,7 @@ from model_kit.core.allow import Allowlist
 from model_kit.core.checks import bearing, pieces
 from model_kit.core.checks.bearing import Bearing, depth_in, hull_2d
 from model_kit.core.checks.crossings import Crossings
+from model_kit.core.checks.floaters import Floaters
 from model_kit.core.errors import ManifestError
 from model_kit.core.metagate import Unmeasured, run_gate
 from model_kit.core.scene import PieceGeom, load_scene, piece_key
@@ -48,8 +49,24 @@ from .bearing_scenes import (
     tall_post,
     wedge_on_block,
 )
-from .piece_scenes import TOUCH, make_ctx, plants_caught, refuses_the_core
+from .piece_scenes import (
+    TOUCH,
+    make_ctx,
+    plants_caught,
+    refuses_the_core,
+    tried_and_caught,
+)
 from .sight_scenes import unviewed, viewed
+from .support_scenes import (
+    BRIDGES,
+    SUPPORT_TOUCH,
+    bench_ctx,
+    bench_parts,
+    pallet_ctx,
+    pallet_parts,
+    raised,
+    shortened,
+)
 
 REGRESSIONS = Path(__file__).resolve().parents[1] / "fixtures" / "regressions"
 BARS = Path(__file__).resolve().parents[3] / "bars"
@@ -1247,3 +1264,165 @@ def test_a_sink_plan_with_no_finite_level_builds_no_plant(monkeypatch):
         for plant in unit.candidates:
             geometry = plant.ctx.pieces[piece_key("kit", "Thing")].parts
             assert all(np.isfinite(tris).all() for tris in geometry.values())
+
+
+# --- a part that rests on several supports ---------------------------------------------------
+
+# the part that is slid, its supports, and the outer support, for each bridging piece
+_TIPPING = {"pallet": ("top_1", ("stringer_1", "stringer_2", "stringer_3"), "stringer_3"),
+            "bench": ("seat", ("trestle_l", "trestle_r"), "trestle_r")}
+
+
+def _slid_past_the_outer_support(piece):
+    """The piece with its bridging part slid +x until its centre of mass is `CALIBRATION_FAIL`
+    contact lengths past the outer support's far x edge (the seat stays on that support), worked
+    out from the fixture's own boxes."""
+    make, parts_of = BRIDGES[piece]
+    parts = parts_of()
+    part, _, outer = _TIPPING[piece]
+    far = float(parts[outer].reshape(-1, 3)[:, 0].max())
+    shift = far + CALIBRATION_FAIL * SUPPORT_TOUCH - float(geom.centre_of_mass(parts[part])[0])
+    return make({part: parts[part] + np.array([shift, 0.0, 0.0])})
+
+
+def _bridging(ctx):
+    """The bridging parts of `kit:Thing` and their supports, from the manifest."""
+    view = next(pieces.measured_pieces(ctx, {"assembly"}))
+    return {p.name: p.rests_on for p in view.parts if p.rests_on}
+
+
+@pytest.mark.parametrize("piece", sorted(BRIDGES))
+def test_an_honest_bridging_piece_passes_bearing(piece):
+    ctx = BRIDGES[piece][0]()
+    assert Bearing().run(ctx) == []
+    text = lines(ctx)
+    assert any("rests on several supports: no single surface holds its whole seat; seat rule"
+               in line for line in text)
+    assert run_gate([Floaters(), Bearing()], ctx, None).status == "passed"
+
+
+@pytest.mark.parametrize("piece", sorted(_TIPPING))
+def test_a_bridging_part_that_would_tip_names_every_support(piece):
+    part, supports, _ = _TIPPING[piece]
+    moved = _slid_past_the_outer_support(piece)
+    assert f"{THING} {part} tips off {', '.join(supports)}" in {f.item for f in findings(moved)}
+
+
+@pytest.mark.parametrize("piece", sorted(_TIPPING))
+def test_a_scoped_run_returns_the_tips_off_item(piece):
+    part, supports, _ = _TIPPING[piece]
+    moved = _slid_past_the_outer_support(piece)
+    item = f"{THING} {part} tips off {', '.join(supports)}"
+    assert [f.item for f in findings(moved, only={item})] == [item]
+
+
+def test_a_bridging_part_sunk_into_one_support_is_judged_per_support():
+    depth = CALIBRATION_FAIL * SUPPORT_TOUCH
+    bench = bench_ctx({"trestle_l": raised(bench_parts()["trestle_l"], depth)})
+    sunk = [f.item for f in findings(bench) if " sinks into " in f.item]
+    assert any(i.startswith(f"{THING} seat sinks into trestle_l") for i in sunk)
+    assert not any("trestle_r" in i for i in sunk)
+    pallet = pallet_ctx({"stringer_2": raised(pallet_parts()["stringer_2"], depth)})
+    sunk = [f.item for f in findings(pallet) if f.item.startswith(f"{THING} top_1 sinks")]
+    assert any(i.startswith(f"{THING} top_1 sinks into stringer_2") for i in sunk)
+    assert not any("stringer_1" in i or "stringer_3" in i for i in sunk)
+
+
+def test_a_bonded_bridging_part_skips_rest_and_sink():
+    glued = bond(bench_ctx())
+    assert findings(glued) == []
+    text = lines(glued)
+    assert any("held bonded" in x and "rest rule" in x and "seat" in x for x in text)
+    assert any("held bonded" in x and "sink rule" in x and "seat" in x for x in text)
+    short = bond(bench_ctx({"trestle_r": shortened(bench_parts()["trestle_r"], 0.01)}))
+    assert f"{THING} seat off trestle_r" in {f.item for f in Floaters().run(short)}
+
+
+@pytest.mark.parametrize("piece", sorted(BRIDGES))
+def test_bridging_plants_are_caught_on_two_pieces_bearing(piece):
+    ctx = BRIDGES[piece][0]()
+    caught = tried_and_caught(Bearing(), ctx)
+    parts = BRIDGES[piece][1]()
+    named = _bridging(ctx)
+    small = min(named, key=lambda n: float(np.linalg.norm(np.ptp(parts[n].reshape(-1, 3), axis=0))))
+    assert f"{THING} {small} tips off {', '.join(named[small])}" in caught
+    assert any(i.startswith(f"{THING} {small} sinks into {named[small][0]}") for i in caught)
+
+
+def test_a_bridging_support_with_no_geometry_raises():
+    ctx = bench_ctx(parts={"trestle_r": np.zeros((0, 3, 3))})
+    with pytest.raises(ManifestError, match="rests on 'trestle_r', which has no geometry"):
+        Bearing().run(ctx)
+
+
+def test_a_piece_with_no_bridging_part_gets_the_same_bearing_units():
+    assert [u.item for u in Bearing().plants(stack())] == [
+        "kit:Thing block tips off slab", "kit:Thing block overhangs slab",
+        "kit:Thing block sinks into slab 42.6 mm"]
+
+
+def solid_part_names(ctx) -> list[str]:
+    return [p.name for view in pieces.contact_pieces(ctx, Bearing.kinds)
+            for p in view.parts if p.solid and len(p.tris)]
+
+
+def same_geometry(a, b) -> bool:
+    return a.pieces.keys() == b.pieces.keys() and all(
+        a.pieces[k].parts.keys() == b.pieces[k].parts.keys()
+        and all(np.array_equal(a.pieces[k].parts[n], b.pieces[k].parts[n])
+                for n in a.pieces[k].parts)
+        for k in a.pieces)
+
+
+def test_a_real_run_and_its_plants_plan_each_part_once(monkeypatch):
+    ctx = stack()
+    calls = []
+    real = bearing._plan_part
+    monkeypatch.setattr(bearing, "_plan_part",
+                        lambda piece, part: calls.append(part.name) or real(piece, part))
+    check = Bearing()
+    check.run(ctx)
+    check.coverage(ctx)
+    check.plants(ctx)
+    assert sorted(calls) == sorted(solid_part_names(ctx))
+
+
+@pytest.mark.parametrize("make", [
+    stack, tabletop_on_legs, hanging_clamp, lambda: bolted_post(sunk=0.012), wedge_on_block])
+def test_plants_after_a_real_run_equal_plants_of_a_fresh_check(make):
+    ctx = make()
+    used = Bearing()
+    used.run(ctx)
+    used_plants, fresh_plants = used.plants(ctx), Bearing().plants(ctx)
+    assert used_plants
+    for mine, fresh in zip(used_plants, fresh_plants, strict=True):
+        assert mine.item == fresh.item
+        assert [p.label for p in mine.candidates] == [p.label for p in fresh.candidates]
+        for a, b in zip(mine.candidates, fresh.candidates, strict=True):
+            assert same_geometry(a.ctx, b.ctx)
+
+
+def _builds(monkeypatch, scope) -> int:
+    from model_kit.core.checks.coverage import Coverage
+    from model_kit.core.errors import BlindCheck
+    count = [0]
+    original = bearing._Piece.__init__
+
+    def counted(self, *args, **kwargs):
+        count[0] += 1
+        original(self, *args, **kwargs)
+
+    monkeypatch.setattr(bearing._Piece, "__init__", counted)
+    check = Bearing()
+    try:
+        run_gate([check, Coverage([check], scope)], stack(), None, scope=scope)
+    except BlindCheck:
+        pass
+    return count[0]
+
+
+def test_a_run_scoped_to_every_piece_builds_no_more_plans_than_the_full_run(monkeypatch):
+    from model_kit.core.scope import Scope
+    keys = frozenset(stack().pieces)
+    full = _builds(monkeypatch, None)
+    assert _builds(monkeypatch, Scope(keys)) <= full

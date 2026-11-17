@@ -4,11 +4,13 @@ import json
 import struct
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from model_kit.core.errors import ManifestError
 from model_kit.core.glb import (
     GlbNode,
+    glb_mesh_attributes,
     glb_nodes,
     node_name,
     nodes_from_json,
@@ -112,3 +114,68 @@ def test_a_node_table_json_may_hold_a_duplicate_name(tmp_path):
 
 def test_a_parts_node_is_named_piece_slash_part():
     assert node_name("Lamp", "shade") == "Lamp/shade"
+
+
+def test_glb_mesh_attributes_reads_strided_attributes_and_joins_primitives(tmp_path):
+    # Two primitives sharing one index accessor; each has interleaved POSITION and TEXCOORD_0
+    # (stride 20), and the second's indices must shift past the first's three vertices.
+    verts = np.array([[0, 0, 0, 0, 0], [1, 0, 0, 1, 0], [0, 1, 0, 0, 1]], dtype="<f4")
+    second = verts + np.array([5, 0, 0, 0, 0], dtype="<f4")
+    blob = verts.tobytes() + second.tobytes() + np.array([0, 1, 2], dtype="<u2").tobytes()
+    js = {
+        "asset": {"version": "2.0"},
+        "meshes": [{"name": "m", "primitives": [
+            {"attributes": {"POSITION": 0, "TEXCOORD_0": 1}, "indices": 4},
+            {"attributes": {"POSITION": 2, "TEXCOORD_0": 3}, "indices": 4}]}],
+        "nodes": [{"name": "a/b", "mesh": 0}],
+        "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": 60, "byteStride": 20},
+                        {"buffer": 0, "byteOffset": 60, "byteLength": 60, "byteStride": 20},
+                        {"buffer": 0, "byteOffset": 120, "byteLength": 6}],
+        "accessors": [
+            {"bufferView": 0, "componentType": 5126, "count": 3, "type": "VEC3"},
+            {"bufferView": 0, "byteOffset": 12, "componentType": 5126, "count": 3,
+             "type": "VEC2"},
+            {"bufferView": 1, "componentType": 5126, "count": 3, "type": "VEC3"},
+            {"bufferView": 1, "byteOffset": 12, "componentType": 5126, "count": 3,
+             "type": "VEC2"},
+            {"bufferView": 2, "componentType": 5123, "count": 3, "type": "SCALAR"}],
+    }
+    path = write_glb(tmp_path / "m.glb", js, binary=blob)
+    got = glb_mesh_attributes(path, "a/b")
+    assert got["POSITION"].tolist() == verts[:, :3].tolist() + second[:, :3].tolist()
+    assert got["TEXCOORD_0"].tolist() == verts[:, 3:].tolist() * 2
+    assert got["indices"].tolist() == [0, 1, 2, 3, 4, 5]
+    with pytest.raises(ManifestError, match="nodes named 'nope'"):
+        glb_mesh_attributes(path, "nope")
+
+
+def _one_triangle(view_length: int, count: int, blob_cut: int = 0) -> tuple[dict, bytes]:
+    verts = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0]], dtype="<f4")
+    blob = verts.tobytes()[:len(verts.tobytes()) - blob_cut]
+    js = {"asset": {"version": "2.0"},
+          "meshes": [{"name": "m", "primitives": [{"attributes": {"POSITION": 0}}]}],
+          "nodes": [{"name": "a/b", "mesh": 0}],
+          "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": view_length}],
+          "accessors": [{"bufferView": 0, "componentType": 5126, "count": count,
+                         "type": "VEC3"}]}
+    return js, blob
+
+
+@pytest.mark.parametrize("view_length, count, blob_cut", [
+    (36, 4, 0),  # one vertex more than the view holds
+    (24, 3, 0),  # the view is shorter than the accessor
+    (36, 3, 12),  # the view runs past the BIN chunk
+])
+def test_an_accessor_past_its_buffer_raises(tmp_path, view_length, count, blob_cut):
+    """A short or malformed .glb raises, naming the accessor; it never reads memory past the
+    buffer (numpy's `as_strided` would)."""
+    js, blob = _one_triangle(view_length, count, blob_cut)
+    path = write_glb(tmp_path / "short.glb", js, binary=blob)
+    with pytest.raises(ManifestError, match="accessor 0 .* runs past"):
+        glb_mesh_attributes(path, "a/b")
+
+
+def test_an_accessor_that_ends_on_its_buffer_reads(tmp_path):
+    js, blob = _one_triangle(36, 3)
+    got = glb_mesh_attributes(write_glb(tmp_path / "t.glb", js, binary=blob), "a/b")
+    assert got["POSITION"].tolist() == [[0, 0, 0], [1, 0, 0], [0, 1, 0]]

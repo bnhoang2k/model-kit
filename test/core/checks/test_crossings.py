@@ -1,4 +1,5 @@
 import dataclasses
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -17,10 +18,13 @@ from ..shapes import box, cylinder
 from .bearing_scenes import SUNK_PIECES, sunk_post
 from .piece_scenes import (
     CROSS,
+    chunk_and_block,
     make_ctx,
     plants_caught,
     post_on_base,
     refuses_the_core,
+    sheet_and_knob,
+    strip_and_post,
     tried_and_caught,
 )
 
@@ -74,6 +78,35 @@ def test_a_plant_is_the_clean_parts_copy_sunk_two_limits_into_its_neighbour():
     parts = plant.ctx.pieces[piece_key("kit", "Thing")].parts
     assert len(parts) == 3  # a copy is added: the original parts stay
     assert [f.item for f in findings(plant.ctx, only=plant.scope)] == [unit.item]
+
+
+@pytest.mark.parametrize("scene,copied", [(sheet_and_knob, "knob_plant"),
+                                          (strip_and_post, "post_plant")])
+def test_the_plant_copies_the_cheapest_part_not_the_fewest_triangles(scene, copied):
+    ctx = make_ctx(scene())
+    (unit,) = Crossings().plants(ctx)
+    assert copied in unit.item
+    assert "sheet_plant" not in unit.item and "strip_plant" not in unit.item
+    assert plants_caught(Crossings(), ctx)
+
+
+@pytest.mark.parametrize("scene,item", [
+    (sheet_and_knob, "kit:Thing base x knob_plant"),
+    (chunk_and_block, "kit:Thing block_plant x slab"),  # the thin film makes the chunk dear
+])
+def test_the_cost_counts_the_hosts_samples_inside_the_copy(scene, item):
+    (unit,) = Crossings().plants(make_ctx(scene()))
+    assert unit.item == item
+
+
+def test_equal_parts_tie_to_the_first_in_part_order():
+    ctx = make_ctx({"left": box((-0.5, 0.0, -0.1), (-0.2, 0.004, 0.1)),
+                    "right": box((0.2, 0.0, -0.1), (0.5, 0.004, 0.1)),
+                    "base": box((-0.6, -0.05, -0.2), (0.6, 0.0, 0.2))})
+    (first,) = Crossings().plants(ctx)
+    (second,) = Crossings().plants(ctx)
+    assert "left_plant" in first.item
+    assert first.item == second.item
 
 
 def test_a_plant_cuts_by_the_planted_depth_so_the_limit_decides():
@@ -502,3 +535,61 @@ def test_the_shared_depth_of_a_tilted_strip_is_how_far_it_sank():
     (found,) = findings(_sunk_ctx("strip", 2.0))
     shared = float(found.detail.split("share ")[1].split(" ")[0])
     assert sank * 0.99 <= shared <= sank * 1.15
+
+
+# --- a pair whose points all leave along one way is flush ----------------------------------------
+
+
+def flush_pair():
+    """A thin sheet on a slab, its bottom face inside the slab's top face by float noise only."""
+    slab = crossings.solid_of(box((-1.0, -0.2, -1.0), (1.0, 0.0, 1.0)))
+    sheet = crossings.solid_of(box((-0.8, -geom.TIE_DISTANCE / 2, -0.8),
+                                   (0.8, 0.01, 0.8)))
+    return sheet, slab
+
+
+def every_fixture_pair():
+    """Each pair of solid parts in the scenes of this file."""
+    scenes = [joined(), make_ctx(post_on_base(lift=0.05)),
+              *(sunk_post(piece, share) for piece in SUNK_PIECES for share in (0.6, 1.4)),
+              make_ctx(cubes(0.1)), make_ctx(cubes(0.999)), make_ctx(cubes(1.0)),
+              *(_sunk_ctx(name, share) for name in SUNK_SCENES for share in (0.6, 1.4))]
+    for ctx in scenes:
+        for view in pieces.measured_pieces(ctx, Crossings.kinds):
+            made = crossings.made_of(view)
+            for i, j in pieces.box_overlaps(made.parts):
+                yield made.solids[made.parts[i].name], made.solids[made.parts[j].name]
+
+
+def test_all_leave_needs_one_way_shared_by_every_side():
+    a = SimpleNamespace(leaves=np.array([[True, False], [True, True]]))
+    b = SimpleNamespace(leaves=np.array([[True, True]]))
+    c = SimpleNamespace(leaves=np.array([[False, True]]))
+    assert crossings._all_leave([a, b])  # way 0 on both sides
+    assert not crossings._all_leave([a, c])  # a leaves by way 0 only, c by way 1 only
+    assert crossings._all_leave([b])  # one side holds every point
+
+
+def test_a_flush_pair_is_read_without_casting_a_ray(monkeypatch):
+    a, b = flush_pair()
+    monkeypatch.setattr(crossings, "shortest_exit", lambda *_: pytest.fail("a ray was cast"))
+    assert crossings.measure(a, b) == crossings.Cross(0.0, 0.0, 0.0)
+
+
+def test_the_flush_pair_would_cast_a_ray_without_the_shortcut(monkeypatch):
+    # Proof the fixture reaches the shortcut and not an early return of `measure`.
+    a, b = flush_pair()
+    monkeypatch.setattr(crossings, "_all_leave", lambda sides: False)
+    called = []
+    real = crossings.shortest_exit
+    monkeypatch.setattr(crossings, "shortest_exit",
+                        lambda *args: called.append(1) or real(*args))
+    assert crossings.measure(a, b) == crossings.Cross(0.0, 0.0, 0.0)
+    assert called
+
+
+def test_the_shortcut_never_changes_a_reading(monkeypatch):
+    pairs = [flush_pair(), *every_fixture_pair()]
+    fast = [crossings.measure(a, b) for a, b in pairs]
+    monkeypatch.setattr(crossings, "_all_leave", lambda sides: False)
+    assert fast == [crossings.measure(a, b) for a, b in pairs]

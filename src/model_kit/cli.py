@@ -1,4 +1,4 @@
-"""The `model-kit` command: init, guide, gate, sheet, profile and bars.
+"""The `model-kit` command: init, guide, gate, sheet, profile, bars and bake.
 
     model-kit init [--dir D]
     model-kit guide [--where]
@@ -6,6 +6,7 @@
     model-kit sheet <pack.pack.json> --piece P --style S [--bar auto|<slug>|none] ...
     model-kit profile <build.py> [--blend B] [--top 30] [-- args ...]
     model-kit bars [--root bars] [--check]
+    model-kit bake <scene> --stage FILE [--replace] [--compare [--lights FILE] [--compare-out DIR]]
 
 Exit codes: 0 done, 1 a finding (a failed or partial gate, a stale bars index), 2 cannot start
 or the run was not ok. A usage error prints the usage and exits 2. Nothing here falls back
@@ -20,7 +21,9 @@ import sys
 import tempfile
 from pathlib import Path
 
+from model_kit import bake as bake_module
 from model_kit import bars as bars_module
+from model_kit import compare as compare_module
 from model_kit import init as init_module
 from model_kit import sheet
 from model_kit.blender import runner
@@ -81,6 +84,25 @@ def _run_profile(args: argparse.Namespace) -> int:
     print(f"wrote {prof}")
     stats = pstats.Stats(str(prof), stream=sys.stdout)
     stats.sort_stats("cumulative").print_stats(args.top)
+    return 0
+
+
+def _run_bake(args: argparse.Namespace) -> int:
+    if (args.lights or args.compare_out) and not args.compare:
+        raise ManifestError("--lights and --compare-out go with --compare")
+    plan = bake_module.plan_bake(args.scene, args.stage)
+    if args.compare and plan.out.exists() and not args.replace:
+        print(f"comparing the existing {plan.out}")  # never rewrite a bake that is kept
+    else:
+        out = bake_module.run_bake(plan, replace=args.replace, timeout=bake_module.BAKE_TIMEOUT)
+        print(f"wrote {out}")
+    if args.compare:
+        rows = compare_module.compare(args.scene, args.stage, args.compare_out or (
+            args.scene.parent / "compare"), args.lights)
+        for camera, diff in rows:
+            mean = "no pixel covered in both" if diff.mean is None else f"{diff.mean:.4f}"
+            print(f"{camera} {mean} (covered in both {diff.both:.1%}, "
+                  f"in only one {diff.only_one:.1%})")
     return 0
 
 
@@ -155,6 +177,30 @@ def _parser() -> argparse.ArgumentParser:
     bars_p.add_argument("--check", action="store_true",
                         help="exit 1 if INDEX.md is stale; write nothing")
     bars_p.set_defaults(run=_run_bars)
+
+    bake_p = commands.add_parser(
+        "bake", help="bake a stage's light onto a lightmap UV of every still piece",
+        description="Place the stage's layout, find the faces its cameras see, and unwrap a "
+                    "lightmap UV on every still piece, and bake each light layer. Writes "
+                    "<scene>/bake/: the placed layout as <layout>.glb, one <layer>.exr per layer "
+                    "and bake.json. --compare then renders the stage cameras in Blender and in "
+                    "three.js and prints their difference.")
+    bake_p.add_argument("scene", type=Path, help="the scene folder")
+    bake_p.add_argument("--stage", required=True, type=Path, help="the stage file")
+    bake_p.add_argument("--replace", action="store_true",
+                        help="bake over an existing <scene>/bake, which is kept until the new "
+                             "bake succeeds (default: refuse)")
+    bake_p.add_argument("--compare", action="store_true",
+                        help="then render each stage camera in Blender and in headless Chromium "
+                             "and print the mean difference (sRGB, 0 to 1) per camera; the "
+                             "number is shown, never judged")
+    bake_p.add_argument("--lights", type=Path,
+                        help="with --compare: a JSON file of layer name to colour and strength "
+                             "(default: every layer white at 1)")
+    bake_p.add_argument("--compare-out", type=Path,
+                        help="with --compare: where the two pictures go (default: compare/ "
+                             "beside the scene folder)")
+    bake_p.set_defaults(run=_run_bake)
     return parser
 
 

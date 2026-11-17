@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>model-kit compare</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="importmap">{"imports": {"three": "./vendor/three.module.min.js"}}</script>
+<style>html, body { margin: 0; background: #000; }</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+<script type="module">
+// Renders each stage camera of a bake as three.js shows it, for `model-kit bake --compare`.
+// `window.renderCompare(config)` returns one RGBA PNG data URL per camera id, the area lights it
+// has no stand-in for, and how many of the bake's parts got a light map (`applied` of `baked`).
+//   config: {bake: url of bake.json, values: {layer: {color, strength}}, lights: [stage lights],
+//            cameras: [{id, position, target, fov_deg, width, height}]}
+import * as THREE from 'three';
+import { STRENGTH_PER_THREE, applyBake, loadBake, loadBakeScene } from './bake-mixer.js';
+
+// Each live stand-in is lit at the three.js intensity of its layer's Blender strength, by the
+// mixer's own factors (STRENGTH_PER_THREE: sun measured, point matched to 1%, spot and
+// hemisphere derived). An area light has no live stand-in here and is listed in `skipped`.
+const three = (kind, strength) => strength / STRENGTH_PER_THREE[kind];
+
+function liveLights(lights, values) {
+  const made = [];
+  const skipped = [];
+  for (const light of lights) {
+    const { color = [1, 1, 1], strength = 1 } = values[light.layer] || {};
+    const c = new THREE.Color().setRGB(color[0], color[1], color[2], THREE.LinearSRGBColorSpace);
+    const at = new THREE.Vector3(...light.position);
+    const aim = light.direction ? new THREE.Vector3(...light.direction) : null;
+    let one = null;
+    if (light.kind === 'sun') {
+      one = new THREE.DirectionalLight(c, three('sun', strength));
+    } else if (light.kind === 'point') {
+      one = new THREE.PointLight(c, three('point', strength), 0, 2);
+    } else if (light.kind === 'spot') {
+      one = new THREE.SpotLight(c, three('spot', strength), 0, THREE.MathUtils.degToRad(light.cone_deg), light.blend, 2);
+    } else if (light.kind === 'hemisphere') {
+      const black = new THREE.Color(0, 0, 0);
+      const sky = light.sky_ground === 'sky';
+      one = new THREE.HemisphereLight(sky ? c : black, sky ? black : c, three('hemisphere', strength));
+    } else {
+      skipped.push(light.id);
+    }
+    if (!one) continue;
+    if (light.kind !== 'hemisphere') one.position.copy(at);
+    if (one.target) {
+      one.target.position.copy(at).add(aim);
+      made.push(one.target);
+    }
+    made.push(one);
+  }
+  return { made, skipped };
+}
+
+window.renderCompare = async (config) => {
+  const canvas = document.getElementById('view');
+  // No background: a pixel the scene does not cover stays alpha 0, as Blender's transparent film
+  // leaves it, so the comparison measures only pixels both sides cover.
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.NoToneMapping;
+  const bake = await loadBake(config.bake, renderer);
+  const placed = await loadBakeScene(config.bake, bake);
+  const { made, skipped } = liveLights(config.lights, config.values);
+  const root = new THREE.Scene();
+  root.add(placed, ...made);
+  bake.values = config.values;
+  const applied = applyBake(root, bake);
+  const baked = Object.keys(bake.info.uv_channel).length;
+  const pictures = {};
+  for (const cam of config.cameras) {
+    renderer.setSize(cam.width, cam.height, false);
+    const camera = new THREE.PerspectiveCamera(cam.fov_deg, cam.width / cam.height, 0.01, 1000);
+    camera.position.set(...cam.position);
+    const forward = new THREE.Vector3(...cam.target).sub(camera.position).normalize();
+    // looking straight up or down: the Blender side takes -Z as up there, so does this side
+    camera.up.set(...(Math.abs(forward.y) > 0.999 ? [0, 0, -1] : [0, 1, 0]));
+    camera.lookAt(...cam.target);
+    renderer.render(root, camera);
+    pictures[cam.id] = canvas.toDataURL('image/png');
+  }
+  return { pictures, skipped, applied, baked };
+};
+window.compareReady = true;
+</script>
+</body>
+</html>

@@ -283,6 +283,7 @@ def _measured_pairs(view: PieceView) -> list[tuple[Pair, np.ndarray, np.ndarray,
 class MirrorExact:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

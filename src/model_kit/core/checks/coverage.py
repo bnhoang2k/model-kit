@@ -15,12 +15,15 @@ Two rules.
   `seat_windows`) must be on that piece. A contact at any depth counts. The item is
   `<clip> <pack>:<piece> no-hold`, one per clip and piece, naming the first frame.
 
-`Coverage(others)` takes the other checks of the run, in the order they ran; `gate.build_checks`
-builds it last. The scene's plants, as units built from the scene alone (never from the scan or
-the part check that judges them): a copy with one more exported mesh in a piece no manifest
-lists (no check can reach it), and, per clip and piece with a closed part, a body vertex sunk into
-that piece with its holds and seat taken away (`sunk_pieces`; a piece never shown in
-the clip is not applicable). A clip the scan has no data for (no samples, no body shells, a part
+`Coverage(others, scope)` takes the other checks of the run, in the order they ran;
+`gate.build_checks` builds it last. In a scoped run (`core.scope`) a check that judges each piece
+alone is asked about the scoped scene, and every other check about the whole scene; the parts of
+the pieces the scope drops are not asked for. A piece no pack lists is never dropped, so the
+unlisted-mesh plant still applies. The scene's plants, as units built from the scene alone
+(never from the scan or the part check that judges them): a copy with one more exported mesh in a
+piece no manifest lists (no check can reach it), and, per clip and piece with a closed part, a body
+vertex sunk into that piece with its holds and seat taken away (`sunk_pieces`; a piece never shown
+in the clip is not applicable). A clip the scan has no data for (no samples, no body shells, a part
 with no inside) is `Unmeasured`; a clip that places no piece has no contact to find, and says so in
 a plain line.
 
@@ -48,8 +51,17 @@ from model_kit.core.checks.overlap import (
 )
 from model_kit.core.checks.pieces import free_name
 from model_kit.core.manifest import Clip, anchor
-from model_kit.core.metagate import Check, Finding, Measures, Plant, PlantUnit, Unmeasured
+from model_kit.core.metagate import (
+    Check,
+    Finding,
+    Measures,
+    Plant,
+    PlantUnit,
+    Unmeasured,
+    scope_of,
+)
 from model_kit.core.scene import PieceGeom, SceneCtx, part_key, piece_key
+from model_kit.core.scope import Scope
 
 NAME = "coverage"
 NO_HOLD = "no-hold"
@@ -203,23 +215,32 @@ def sunk_pieces(ctx: SceneCtx, clip: Clip) -> list[SunkPiece]:
 class Coverage:
     name = NAME
     kinds: frozenset[str] = frozenset()  # a scene check: it measures no piece's recipe
+    scope = "split"
 
-    def __init__(self, others: Iterable[Check] = ()) -> None:
+    def __init__(self, others: Iterable[Check] = (), scope: Scope | None = None) -> None:
         self.others = tuple(others)
+        self._scope = scope  # `scope` is the class's own kind marker
         self._scanned: tuple[SceneCtx, dict[str, Contacts]] | None = None
 
     # --- the exported parts ---------------------------------------------------------------
 
     def _measured(self, ctx: SceneCtx) -> set[str]:
+        """The parts the other checks measured. In a scoped run, a check that judges each piece
+        alone is asked about the scoped scene, the rest about `ctx`. The scoped branch is there so
+        a piece check never measures dropped pieces (cost). `Scope.scene` gives the scene `run_gate`
+        uses, so a check that caches on the scene does not rebuild."""
+        scoped = ctx if self._scope is None else self._scope.scene(ctx)
         out: set[str] = set()
         for other in self.others:
             if isinstance(other, Measures):
-                out |= other.measured(ctx)
+                out |= other.measured(scoped if scope_of(other) == "piece" else ctx)
         return out
 
     def _unmeasured_parts(self, ctx: SceneCtx) -> list[str]:
+        dropped = set() if self._scope is None else self._scope.dropped(ctx)
         exported = {part_key(*key.partition(":")[::2], part)
-                    for key, geom in ctx.pieces.items() for part in geom.parts}
+                    for key, geom in ctx.pieces.items() if key not in dropped
+                    for part in geom.parts}
         return sorted(exported - self._measured(ctx))
 
     # --- the contacts ---------------------------------------------------------------------

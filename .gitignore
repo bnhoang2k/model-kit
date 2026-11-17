@@ -1,3 +1,5 @@
 __pycache__/
 .venv/
 dist/
+bake.partial/
+bake.old/

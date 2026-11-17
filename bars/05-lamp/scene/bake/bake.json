@@ -1,0 +1,144 @@
+{
+ "bake": 1,
+ "layout": "desk",
+ "mode": "indirect",
+ "size": 1638,
+ "uv_channel": {
+  "desk/top": 0,
+  "lamp/arm_lower": 0,
+  "lamp/arm_upper": 0,
+  "lamp/base": 0,
+  "lamp/cable": 0,
+  "lamp/plug": 0,
+  "lamp/shade": 0,
+  "strip/body": 0,
+  "strip/logo": 0,
+  "strip/switch": 0
+ },
+ "unseen": [
+  "lamp/blade_hot",
+  "lamp/blade_neutral"
+ ],
+ "live": [],
+ "format": "exr-half-zip",
+ "units": "irradiance/pi",
+ "samples": 256,
+ "seed": 1,
+ "blender": "5.2.2 LTS",
+ "layers": {
+  "window": {
+   "lights": [
+    "window"
+   ],
+   "picture": "window.exr",
+   "seed": 1,
+   "noise": {
+    "desk": 2.0352594219730236e-05,
+    "lamp": 4.832168997381814e-05,
+    "strip": 5.60505322937388e-05
+   },
+   "error": {
+    "desk": 2.931443094876139e-05,
+    "lamp": 4.7122447116356086e-05,
+    "strip": 6.509619803300033e-05
+   },
+   "baked_lights": {
+    "window": {
+     "kind": "area",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "strength": 1.0
+    }
+   }
+  },
+  "sky": {
+   "lights": [
+    "sky"
+   ],
+   "picture": "sky.exr",
+   "seed": 3,
+   "noise": {
+    "desk": 0.0014591400977224112,
+    "lamp": 0.0028411445673555136,
+    "strip": 0.0035806684754788876
+   },
+   "error": {
+    "desk": 0.0018035504919787094,
+    "lamp": 0.002782420537041447,
+    "strip": 0.003966464212897169
+   },
+   "baked_lights": {
+    "sky": {
+     "kind": "hemisphere",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "strength": 1.0,
+     "half": "sky"
+    }
+   }
+  },
+  "ground": {
+   "lights": [
+    "ground"
+   ],
+   "picture": "ground.exr",
+   "seed": 5,
+   "noise": {
+    "desk": 0.0006114666466601193,
+    "lamp": 0.0002907042216975242,
+    "strip": 0.0003918502770829946
+   },
+   "error": {
+    "desk": 0.0005377467030221777,
+    "lamp": 0.0002531769300567019,
+    "strip": 0.0003561498448294257
+   },
+   "baked_lights": {
+    "ground": {
+     "kind": "hemisphere",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "strength": 1.0,
+     "half": "ground"
+    }
+   }
+  },
+  "bulb": {
+   "lights": [
+    "bulb"
+   ],
+   "picture": "bulb.exr",
+   "seed": 7,
+   "noise": {
+    "desk": 0.0010581680107861757,
+    "lamp": 0.00035807385575026274,
+    "strip": 0.00012631936988327652
+   },
+   "error": {
+    "desk": 0.0009539556619157283,
+    "lamp": 0.00031082610949931066,
+    "strip": 0.00010925406954505368
+   },
+   "baked_lights": {
+    "bulb": {
+     "kind": "point",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "strength": 1.0
+    }
+   }
+  }
+ }
+}

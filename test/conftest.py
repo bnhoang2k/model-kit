@@ -15,6 +15,16 @@ def pytest_collection_modifyitems(config, items):
             if missing:
                 item.add_marker(pytest.mark.skip(
                     reason=f"input not in this copy of the repository: {', '.join(missing)}"))
+    # A test marked `browser` needs Playwright and a Chromium that starts here.
+    browser = [item for item in items if item.get_closest_marker("browser") is not None]
+    if browser:
+        from model_kit.compare import chromium_available
+
+        if not chromium_available():
+            skip = pytest.mark.skip(reason="needs Playwright's Chromium: uv sync --extra browser, "
+                                           "then playwright install chromium")
+            for item in browser:
+                item.add_marker(skip)
     if os.environ.get("MODEL_KIT_BLENDER"):
         return
     skip = pytest.mark.skip(reason="set MODEL_KIT_BLENDER to run Blender tests")

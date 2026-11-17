@@ -328,6 +328,9 @@ class Part(PartKind):
     """The part is a bolt, screw or pin; its `on` names the part it fastens into."""
     retains: tuple[str, ...] = field(default=(), metadata={"tag": True})
     """Parts of the same piece this part holds down or in (a string tree, a strap, a jaw)."""
+    rests_on: tuple[str, ...] = field(default=(), metadata={"tag": True})
+    """Two or more parts of the same piece this part rests on at once (a lead across two
+    shelves). One support is `on`; a part has `on` or `rests_on`, never both."""
 
     def __post_init__(self) -> None:
         self.validate(f"part {self.name!r}")
@@ -342,6 +345,8 @@ class Part(PartKind):
             raise RecordError(where, "role", why)
         if self.name in self.retains:
             raise RecordError(where, "retains", f"part {self.name!r} cannot retain itself")
+        if (why := rests_on_problem(self)) is not None:
+            raise RecordError(where, "rests_on", why)
         if (why := decal_problem(self)) is not None:
             raise RecordError(where, "on" if self.on is None else "role", why)
 
@@ -349,6 +354,30 @@ class Part(PartKind):
 PART_TAGGED: tuple[str, ...] = tuple(f.name for f in fields(Part) if f.metadata.get("tag") is True)
 """The `Part` fields the Blender builder writes as custom properties and reads back, in field
 order. Predicates (`printed`, `solid`, ...) are properties, not fields, so they are not here."""
+
+
+def rests_on_problem(part: Part) -> str | None:
+    """Why a part's `rests_on` is refused, or None. An empty `rests_on` is always legal."""
+    if not part.rests_on:
+        return None
+    name = part.name
+    if len(part.rests_on) == 1:
+        return f"part {name!r} names one support: use `on` for one support"
+    if part.on is not None:
+        return (f"part {name!r} has both `on` and `rests_on`: name one host with `on` or two or "
+                f"more supports with `rests_on`")
+    if name in part.rests_on:
+        return f"part {name!r} cannot rest on itself"
+    for dup in part.rests_on:
+        if part.rests_on.count(dup) > 1:
+            return f"part {name!r} names {dup!r} twice"
+    if part.fastener:
+        return (f"part {name!r} is a fastener: it fastens into one host, so it takes `on`, "
+                f"not `rests_on`")
+    if part.shape == DECAL_SHAPE:
+        return (f"part {name!r} is a decal: it is printed on one host, so it takes `on`, "
+                f"not `rests_on`")
+    return None
 
 
 def decal_problem(part: Part) -> str | None:
@@ -634,6 +663,9 @@ class Piece:
     open surface is `Part.open_surface`."""
     outlined_why: str = ""
     """How the shipping look draws the piece without lines. Needed when `outlined` is false."""
+    cards_of: str = ""
+    """A card copy of a grown tree: the name of the branching piece of the same pack it copies.
+    The card piece shares that piece's skeleton and has none of its own."""
 
 
 @dataclass(frozen=True)

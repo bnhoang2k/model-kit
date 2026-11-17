@@ -1,24 +1,42 @@
 """The meta-gate: the real checks run first, then every check's planted fault, and a check that
 cannot see its plant stops the run. A check that passes on a known fault would pass on anything,
-so its silence on the real build means nothing. Then the verdict prints.
+so its silence on the real build means nothing. A blind run still tries every plant of every
+check and keeps its findings: `BlindCheck` lists every blind item and carries the verdict, and
+the gate command prints those lines before it stops. Then the verdict prints.
 
 A plant is scoped. It names the items it planted (`Plant.scope`, at least its own item), and
 the meta-gate measures only those items on the planted copy. The finding must still be on the
 plant's item. The real run measures every item. So the plants cost one item each, not the
 whole check, and a plant whose fault shows only on another item is still blind.
 
-A check builds plants as units (`PlantUnit`), from geometry only and blind to its own verdict.
+A check builds plants as units (`PlantUnit`), from geometry or its record, never from its own
+verdict on the planted copy. A check may use its real verdict to choose where to plant: a plant
+on an item that already fails is caught trivially and proves nothing (`lightmap-density` plants on
+a placement whose real data passes).
 A unit holds one item and the candidate plants to try, in order. `run_gate` runs the real checks
 first and skips a unit whose item already has a real finding. Otherwise it accepts the first
-candidate the check catches, and raises `BlindCheck` when it catches none: a check that cannot
-see its plant stops the run. A unit that does not apply says why (`PlantUnit.not_applicable`),
-and the gate prints that reason as a coverage line.
+candidate the check catches. A unit none of whose candidates is caught is blind. `run_gate` still
+tries every unit, then raises `BlindCheck` once, with the verdict and every blind item. A unit
+that does not apply says why (`PlantUnit.not_applicable`), and the gate prints that reason as a
+coverage line.
+
+A scoped run (`run_gate(..., scope=...)`, see `core.scope`) measures only the named pieces in
+the checks marked `scope = "piece"` (`scope_of`): they judge each piece alone. Every other check
+reads the whole scene and runs on it. The first coverage line is an `Unmeasured`, so a scoped run
+is `partial`, never `passed`: a gate on the whole scene is the pass.
 
 A plant can also name the samples it touched (`Plant.samples`, indexes into the clip's
 samples). A check that works per sample measures just those; empty means every sample. Items
 and samples are apart: items are what findings name, samples are how much of a clip to read.
 
-Output: failure and coverage lines to stderr, then exactly one
+Each check is timed in three phases: its real run, its coverage and its plants. `run_gate` reads
+an injected clock around each and keeps the result in `Verdict.timings`; `emit_lines` prints one
+`time:` line per check to stderr, after the coverage lines. A caller can pass `on_timing` to
+hear each timing the moment its phase ends. Timing is recorded, never judged: no time passes or
+fails a run. The gate command writes the log, not this module.
+
+Output: coverage, time, allowed and failure lines to stderr, in that order so the failures are
+the last lines above the status (`emit_lines`), then exactly one
 stdout line (`passed`, `partial` or `failed: n`). Exit 0 passed, 1 failed or partial,
 2 cannot start.
 
@@ -39,7 +57,8 @@ check, a layout check) has no hook.
 from __future__ import annotations
 
 import sys
-from collections.abc import Collection, Iterable
+import time
+from collections.abc import Callable, Collection, Iterable
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
@@ -47,6 +66,7 @@ from .errors import BlindCheck, ManifestError
 
 if TYPE_CHECKING:
     from .allow import Allowlist
+    from .scope import Scope
 
 
 class Unmeasured(str):
@@ -118,6 +138,8 @@ class Check(Protocol):
     written earlier have none; a newer check must (a test fails one without)."""
     source: str = ""
     """Where the fact and its numbers come from: a link or a citation. Optional like `principle`."""
+    scope: Literal["piece", "scene", "split"] = "scene"
+    """How a scoped run treats the check (`scope_of`). Optional: the default is `scene`."""
 
     def plants(self, ctx: Any) -> Iterable[PlantUnit]:
         """The plant units, from geometry only."""
@@ -135,11 +157,26 @@ class Check(Protocol):
         ...
 
 
+def scope_of(check: Any) -> Literal["piece", "scene", "split"]:
+    """How a scoped run treats a check. `piece`: it judges each piece alone, so a scoped run
+    measures only the named pieces. `scene` (the default): it reads the whole scene. `split`:
+    coverage, which reads the whole scene but must not report a dropped piece as unmeasured."""
+    return getattr(check, "scope", "scene")
+
+
 @runtime_checkable
 class Measures(Protocol):
     """The optional hook of a check that measures parts: the part keys it measured in `ctx`."""
 
     def measured(self, ctx: Any) -> set[str]: ...
+
+
+@dataclass(frozen=True)
+class Timing:
+    """Seconds one phase of one check took: its real run, its coverage or its plants."""
+    check: str
+    phase: Literal["real", "coverage", "plants"]
+    seconds: float
 
 
 @dataclass
@@ -149,37 +186,77 @@ class Verdict:
     lines: list[str]
     coverage: list[str]
     allowed: list[str] = field(default_factory=list)
+    timings: list[Timing] = field(default_factory=list)
 
 
 EXIT = {"passed": 0, "failed": 1, "partial": 1}
 
 
-def run_gate(checks: list[Check], ctx: Any, allow: Allowlist | None) -> Verdict:
-    """Run the real checks, then every plant unit (raises `BlindCheck` on a unit none of whose
-    candidates is caught). A unit whose item already has a real finding is skipped."""
+def run_gate(checks: list[Check], ctx: Any, allow: Allowlist | None,
+             clock: Callable[[], float] = time.perf_counter, *,
+             scope: Scope | None = None,
+             on_timing: Callable[[Timing], None] | None = None) -> Verdict:
+    """Run the real checks, then every plant unit. A unit whose item already has a real finding
+    is skipped. Every unit is tried; when any is blind (none of its candidates is caught), the run
+    raises one `BlindCheck` that lists them all and carries the verdict the run would have had.
+    With `scope`, each `piece` check runs its real run, coverage and plants on `scope.scene(ctx)`,
+    built once; every other check runs on `ctx`. `scope.line()` leads the coverage, so the run is
+    `partial`. The allowlist hears every check as having run, but a line whose pattern matches a
+    `piece` or `split` check is never judged stale, because the full run may use it.
+    `Verdict.timings` holds the real, coverage and plants seconds of each check, read from
+    `clock`. `on_timing` hears each `Timing` the moment its phase ends, in the order of
+    `Verdict.timings`, so a run that stops keeps the phases that ended."""
     if not checks:
         return Verdict("partial", 0, ["no checks ran"], [])
-    real = {id(check): check.run(ctx) for check in checks}
-    coverage: list[str] = []
+    timings: list[Timing] = []
+
+    def timed(check: Check, phase: str, start: float) -> None:
+        timing = Timing(check.name, phase, clock() - start)
+        timings.append(timing)
+        if on_timing is not None:
+            on_timing(timing)
+
+    scoped = scope.scene(ctx) if scope is not None else ctx
+
+    def seen(check: Check) -> Any:
+        return scoped if scope_of(check) == "piece" else ctx
+
+    real = {}
     for check in checks:
-        coverage.extend(check.coverage(ctx))
+        start = clock()
+        real[id(check)] = check.run(seen(check))
+        timed(check, "real", start)
+    coverage: list[str] = [scope.line()] if scope is not None else []
+    blind: list[str] = []
+    for check in checks:
+        start = clock()
+        coverage.extend(check.coverage(seen(check)))
+        timed(check, "coverage", start)
         failing = {f.item for f in real[id(check)]}
-        for unit in check.plants(ctx):
+        start = clock()
+        for unit in check.plants(seen(check)):
             if unit.not_applicable:
                 coverage.append(f"{check.name}: not applicable ({unit.not_applicable}): "
                                 f"{unit.item}")
             elif unit.item not in failing and not any(
                     _caught(check, plant) for plant in unit.candidates):
-                raise BlindCheck(f"{check.name}: {unit.item}")
+                blind.append(f"{check.name}: {unit.item}")
+        timed(check, "plants", start)
     findings = [f for check in checks for f in real[id(check)]]
     allowed: list[str] = []
     if allow is not None:
         findings, allowed_pairs = allow.apply(findings)
         allowed = [f"allowed: {f.line()} (reason: {reason})" for f, reason in allowed_pairs]
-        findings = findings + allow.problems(ran=[check.name for check in checks])
+        spared = [check.name for check in checks
+                  if scope is not None and scope_of(check) != "scene"]
+        findings = findings + allow.problems(ran=[check.name for check in checks], spared=spared)
     unmeasured = any(isinstance(line, Unmeasured) for line in coverage)
     status = "partial" if unmeasured else "failed" if findings else "passed"
-    return Verdict(status, len(findings), [f.line() for f in findings], coverage, allowed)
+    verdict = Verdict(status, len(findings), [f.line() for f in findings], coverage, allowed,
+                      timings)
+    if blind:
+        raise BlindCheck("; ".join(blind), verdict=verdict, blind=tuple(blind))
+    return verdict
 
 
 def _caught(check: Check, plant: Plant) -> bool:
@@ -188,14 +265,24 @@ def _caught(check: Check, plant: Plant) -> bool:
     return any(f.item == plant.item for f in found)
 
 
-def emit(verdict: Verdict) -> int:
-    """Print failure, allowed and coverage lines to stderr and one status line to stdout."""
-    for line in verdict.lines:
-        print(line, file=sys.stderr)
-    for line in verdict.allowed:
-        print(line, file=sys.stderr)
+def emit_lines(verdict: Verdict) -> None:
+    """Print the stderr lines: coverage, time, allowed, then failures, so failures are last."""
     for line in verdict.coverage:
         print(f"coverage: {line}", file=sys.stderr)
+    seconds = {(t.check, t.phase): t.seconds for t in verdict.timings}
+    for name in dict.fromkeys(t.check for t in verdict.timings):
+        phases = " | ".join(f"{phase} {seconds[name, phase]:.1f} s"
+                            for phase in ("real", "coverage", "plants"))
+        print(f"time: {name} | {phases}", file=sys.stderr)
+    for line in verdict.allowed:
+        print(line, file=sys.stderr)
+    for line in verdict.lines:
+        print(line, file=sys.stderr)
+
+
+def emit(verdict: Verdict) -> int:
+    """Print the stderr lines (`emit_lines`) and one status line to stdout."""
+    emit_lines(verdict)
     status = "failed" if verdict.status == "passed" and verdict.failed > 0 else verdict.status
     print(f"failed: {verdict.failed}" if status == "failed" else status)
     return EXIT[status]

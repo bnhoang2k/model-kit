@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import math
 import tempfile
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -63,6 +63,21 @@ class SheetRow:
     height_m: float
     tris: int
     bounds_m: tuple[float, float, float, float]  # X0, X1, Z0, Z1 of the piece in metres (glTF)
+    cards: bool = False  # a card piece: its leaves are an image with an alpha cut
+
+
+EEVEE_NAMES = ("BLENDER_EEVEE", "BLENDER_EEVEE_NEXT")  # Blender 4.2 to 4.x names it _NEXT
+
+
+def eevee_engine(names: Iterable[str]) -> str:
+    """The render engine name for EEVEE among `names`, the engines this Blender offers."""
+    names = list(names)
+    for name in EEVEE_NAMES:
+        if name in names:
+            return name
+    raise ManifestError(
+        f"this Blender offers no EEVEE render engine (looked for {list(EEVEE_NAMES)}; it has "
+        f"{names}), and a card piece's sheet row needs it to cut the leaf cards by alpha")
 
 
 def _piece_row(label: str, pack_path: Path, glb: Path, style_path: Path, piece: str) -> tuple[
@@ -89,7 +104,8 @@ def _piece_row(label: str, pack_path: Path, glb: Path, style_path: Path, piece: 
     height_m = float(measured["heights"]["top"]) * mpu
     return (SheetRow(f"{label}\n{height_m:.1f} m tall\n{int(measured['tris'])} tris", glb, piece,
                      mpu, height_m, int(measured["tris"]),
-                     tuple(float(bounds[k]) * mpu for k in edges)), piece_class(item))
+                     tuple(float(bounds[k]) * mpu for k in edges), bool(item.cards_of)),
+            piece_class(item))
 
 
 def _glb_for(pack_path: Path) -> Path:
@@ -285,7 +301,7 @@ def make_sheet(pack_path: Path, piece: str, style_path: Path, *, bar: str = "aut
     with tempfile.TemporaryDirectory(prefix="model-kit-sheet-") as tmp:
         spec = {
             "rows": [{"glb": str(r.glb), "root": r.root, "metres_per_unit": r.metres_per_unit,
-                      "height_m": r.height_m, "bounds_m": list(r.bounds_m),
+                      "height_m": r.height_m, "bounds_m": list(r.bounds_m), "cards": r.cards,
                       "posts": [list(post_spot(r, v[1])) for v in resolved],
                       "targets": [list(target_xz(r, v[1])) for v in resolved]}
                      for r in rows],

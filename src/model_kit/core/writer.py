@@ -152,6 +152,8 @@ def _part_json(p) -> dict:
         out["fastener"] = True
     if p.retains:
         out["retains"] = list(p.retains)
+    if p.rests_on:
+        out["rests_on"] = list(p.rests_on)
     return out
 
 
@@ -244,6 +246,8 @@ def _piece_json(p: Piece) -> dict:
                             "farthest_why": p.view.farthest_why}
     if not p.outlined:
         out |= {"outlined": False, "outlined_why": p.outlined_why}
+    if p.cards_of:
+        out["cards_of"] = p.cards_of
     if p.keep_off:
         out["keep_off"] = [{"id": k.id, "point": _vec(k.point), "radius": k.radius,
                             "why": k.why} for k in p.keep_off]

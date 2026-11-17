@@ -264,6 +264,7 @@ def _unit(ctx: SceneCtx, view: PieceView, judge: _Judge, limit: float) -> PlantU
 class MarkingsFlush:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

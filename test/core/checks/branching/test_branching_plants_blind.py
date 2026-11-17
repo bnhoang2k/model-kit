@@ -46,6 +46,8 @@ from .branching_scene import (
     PACK,
     PIECE,
     bud_ctx,
+    bud_tree,
+    card_ctx,
     grown_ctx,
     make_skeleton,
     small_leaves,
@@ -72,6 +74,11 @@ def ranged(index):
     return lambda: piece_scene(RANGE_SPECIES[index], 1)
 
 
+def card(species):
+    """A card copy of the tiny tree, beside its source: the check judges both."""
+    return lambda: card_ctx(bud_tree(species, 1, 1.5))
+
+
 def seedling(species):
     return lambda: bud_ctx(species, 1, 0.5)
 
@@ -87,6 +94,8 @@ TWO_PIECES = {
     "limb-seat": (LimbSeat, {BUDS: bud("tiny-buds"), SPIRAL: bud("tiny-spiral")}),
     "floor-organic": (FloorOrganic, {BUDS: bud("tiny-buds"), SPIRAL: bud("tiny-spiral")}),
     "skeleton-match": (SkeletonMatch, {BUDS: bud("tiny-buds"), SPIRAL: bud("tiny-spiral")}),
+    "floor-organic cards": (FloorOrganic, {BUDS: card("tiny-buds"), SPIRAL: card("tiny-spiral")}),
+    "skeleton-match cards": (SkeletonMatch, {BUDS: card("tiny-buds"), SPIRAL: card("tiny-spiral")}),
     "leaf-angle": (LeafAngle, {BUDS: tree(0), SPIRAL: tree(1)}),
     "taper": (Taper, {BUDS: tree(0), SPIRAL: tree(1)}),
     "reference-range": (ReferenceRange, {BUDS: ranged(0), SPIRAL: ranged(1)}),
@@ -138,8 +147,12 @@ CASES = {
     "floor leaf": (FloorOrganic, patched(floor, "_leaf_low", lambda sk, f: 0.0),
                    bud("tiny-spiral")),
     "floor free limb": (FloorOrganic, patched(floor, "_low_past", lambda *a: np.inf), leafless),
+    "floor card": (FloorOrganic, patched(floor, "_card_lows", lambda tris: np.zeros(len(tris) // 2)),
+                   card("tiny-spiral")),
     "skeleton-match": (SkeletonMatch, patched(skeleton_match, "_part_findings", nothing),
                        bud("tiny-buds")),
+    "skeleton-match card": (SkeletonMatch, patched(skeleton_match, "_part_findings", nothing),
+                            card("tiny-buds")),
     "taper": (Taper, patched(taper, "_findings", nothing), tree(0)),
     "leaf-angle third": (LeafAngle, without(leaf_angle, "_findings", lambda i: " third." in i),
                          tree(0)),
@@ -234,7 +247,10 @@ NEVER = {
     "limb-seat": (LimbSeat, limb_seat, ("_limb_findings", "_leaf_findings", "_allowance")),
     "floor-organic": (FloorOrganic, floor, ("_limb_findings", "_findings", "_low_past", "_leaf_low",
                                             "_leaf_bounds")),
+    "floor-organic cards": (FloorOrganic, floor, ("_limb_findings", "_findings", "_card_findings",
+                                                  "_card_lows", "_low_past", "_leaf_low")),
     "skeleton-match": (SkeletonMatch, skeleton_match, ("_part_findings", "matched", "_far")),
+    "skeleton-match cards": (SkeletonMatch, skeleton_match, ("_part_findings", "matched", "_far")),
     "taper": (Taper, taper, ("_findings", "fit", "fits")),
     "leaf-angle": (LeafAngle, leaf_angle, ("_findings", "blade_angles", "spreads", "spread_of")),
     "reference-range": (ReferenceRange, reference_range, ("_share_findings", "_stale_findings",

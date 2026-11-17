@@ -1,0 +1,26 @@
+{
+  "stage": 1,
+  "layout": "desk",
+  "mode": "indirect",
+  "texels_per_m": 256,
+  "placement_texels_per_m": {"lamp": 1024, "desk": 512},
+  "samples": 256,
+  "seed": 1,
+  "layers": ["window", "sky", "ground", "bulb"],
+  "live": [],
+  "lights": {
+    "window": {"kind": "area", "position": [-1.1, 1.085, 0.65], "direction": [1.2, -1.1, -0.9],
+               "size": [1.2, 1.2], "layer": "window"},
+    "sky": {"kind": "hemisphere", "position": [0, 1, 0], "sky_ground": "sky", "layer": "sky"},
+    "ground": {"kind": "hemisphere", "position": [0, 1, 0], "sky_ground": "ground",
+               "layer": "ground"},
+    "bulb": {"kind": "point", "position": [0.3785, 0.2395, -0.0003], "radius_m": 0.012,
+             "layer": "bulb"}
+  },
+  "cameras": {
+    "near": {"position": [0.3785, 0.4895, 0.4333], "target": [0.3785, 0.2395, 0.0],
+             "fov_deg": 50, "aspect": 1.5},
+    "far": {"position": [0.1, 0.65, 0.8758], "target": [0.1, 0.0, -0.25],
+            "fov_deg": 50, "aspect": 1.5}
+  }
+}

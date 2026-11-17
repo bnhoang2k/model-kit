@@ -181,6 +181,7 @@ def _far_item(item: str, distance: float) -> str:
 class Detail:
     name = NAME
     kinds: frozenset[str] = frozenset({"assembly", "branching"})
+    scope = "piece"
     principle = PRINCIPLE
     source = SOURCE
 

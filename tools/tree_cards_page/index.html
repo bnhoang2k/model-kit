@@ -1,0 +1,204 @@
+<!doctype html>
+<!--
+  The redbud bar's full tree beside its card copy, in three.js, at the bar's page camera.
+
+  Serve it from the repo root with a static server, then open the page:
+      python3 -m http.server 8000
+      http://localhost:8000/tools/tree_cards_page/index.html
+  It reads bars/02-redbud/redbud.glb (both pieces, Draco; the card piece's leaf image is inside
+  the .glb) and bars/02-redbud/style.json (the page camera's turn and tilt).
+
+  Layout: the two crowns are measured on the camera's right and up axes. They sit side by side on a
+  landscape screen and stacked on a portrait one, never overlapping, and the view is fitted so both
+  show whole. It refits on resize.
+
+  The leaf cards and their rules are ported from Razel's "Just a simple tree",
+  github.com/MikeFernandez-Pro/just-a-simple-tree, MIT License, Copyright (c) 2026 Mike Fernandez.
+  The MIT permission notice is in src/model_kit/core/grow/cards.py.
+-->
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redbud and its card copy</title>
+<style>
+  /* background: the sheet's paper, PAPER in src/model_kit/blender/sheet_render.py */
+  html,body{margin:0;height:100%;background:#f6f5f1;font:14px/1.3 system-ui,sans-serif;color:#222;
+            overflow:hidden}
+  .panel{background:#fffc;border-radius:6px;pointer-events:none}
+  #top{position:fixed;left:12px;right:12px;top:10px;display:flex;justify-content:space-between;
+       align-items:flex-start;gap:8px;pointer-events:none}
+  #hud{padding:8px 10px;overflow-wrap:anywhere;min-width:0}
+  #credit{max-width:46ch;padding:6px 10px;font-size:12px}
+  #labs{position:fixed;left:12px;right:12px;bottom:10px;display:flex;gap:8px;pointer-events:none}
+  .lab{flex:1;text-align:center;font-weight:600;padding:4px 8px}
+  body.portrait #labs{flex-direction:column;align-items:flex-start;right:auto}
+  body.portrait .lab{flex:none;text-align:left}
+  @media (max-width:700px){
+    #top{flex-direction:column;right:auto}
+  }
+</style>
+<script type="importmap">{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="top">
+  <div id="hud" class="panel">loading...</div>
+  <div id="credit" class="panel">Leaf cards ported from Razel's "Just a simple tree" (Mike Fernandez,
+    MIT License, 2026): github.com/MikeFernandez-Pro/just-a-simple-tree</div>
+</div>
+<div id="labs">
+  <div class="lab panel">Redbud (full)</div>
+  <div class="lab panel">Redbud_Cards (leaf cards + light wood)</div>
+</div>
+<script type="module">
+const hud = document.getElementById('hud')
+try {
+  await main()
+} catch (err) {
+  hud.textContent = err.message || String(err)
+}
+
+async function main() {
+  const THREE = await import('three')
+  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js')
+  const { DRACOLoader } = await import('three/addons/loaders/DRACOLoader.js')
+  const { OrbitControls } = await import('three/addons/controls/OrbitControls.js')
+
+  const BAR = '../../bars/02-redbud/'
+  const load = async (url, what) => {
+    try { return await what() } catch (err) { throw new Error(`cannot load ${url}: ${err.message || err}`) }
+  }
+  const style = await load(BAR + 'style.json', async () => {
+    const r = await fetch(BAR + 'style.json')
+    if (!r.ok) throw new Error(`HTTP ${r.status}`)
+    return r.json()
+  })
+  const page = style.page_camera                       // ortho, turn_deg, tilt_deg
+  const upm = style.units_per_metre                    // model units per metre
+  if (!page || page.turn_deg === undefined || page.tilt_deg === undefined) {
+    throw new Error(`${BAR}style.json has no page_camera with turn_deg and tilt_deg`)
+  }
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setPixelRatio(devicePixelRatio)
+  renderer.setSize(innerWidth, innerHeight)
+  document.body.appendChild(renderer.domElement)
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color(0xf6f5f1)  // the sheet's paper: PAPER in src/model_kit/blender/sheet_render.py, sRGB (246, 245, 241)
+  scene.add(new THREE.HemisphereLight(0xdfeaff, 0x4a3f30, 1.1))
+  const sun = new THREE.DirectionalLight(0xfff3dd, 2.2)
+  sun.position.set(-3, 5, 4)
+  scene.add(sun)
+
+  const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/')
+  const gltf = await load(BAR + 'redbud.glb', () =>
+    new GLTFLoader().setDRACOLoader(draco).loadAsync(BAR + 'redbud.glb'))
+
+  // each piece alone, base at the origin; the pack's spacing is dropped
+  const stats = {}
+  const place = (name) => {
+    const piece = gltf.scene.getObjectByName(name)
+    if (!piece) throw new Error(`the .glb has no piece named ${name}`)
+    let v = 0, t = 0
+    piece.traverse(o => {
+      if (!o.isMesh) return
+      v += o.geometry.attributes.position.count
+      t += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3
+      if (o.material && o.material.map) {                // the leaf cards
+        o.material.side = THREE.DoubleSide
+        // sample the leaf texture with anisotropic filtering: a slanted card then picks its mip
+        // from the short axis of its footprint, not the long one
+        o.material.map.anisotropy = renderer.capabilities.getMaxAnisotropy()
+        o.material.map.needsUpdate = true
+        // Razel: both faces of a card take its clump's normal; three flips it on the back face
+        o.material.onBeforeCompile = (s) => {
+          s.fragmentShader = s.fragmentShader.replace('#include <normal_fragment_begin>',
+            'float faceDirection = 1.0; vec3 normal = normalize( vNormal ); vec3 nonPerturbedNormal = normal;')
+        }
+      }
+    })
+    piece.position.set(0, 0, 0)
+    stats[name] = { v, t }
+    const holder = new THREE.Group()
+    holder.add(piece)
+    scene.add(holder)
+    return holder
+  }
+  const full = place('Redbud'), cards = place('Redbud_Cards')
+
+  // the style's page camera: ortho, turn from +Z, tilt as elevation
+  const turn = THREE.MathUtils.degToRad(page.turn_deg), tilt = THREE.MathUtils.degToRad(page.tilt_deg)
+  const dir = new THREE.Vector3(Math.sin(turn) * Math.cos(tilt), Math.sin(tilt), Math.cos(turn) * Math.cos(tilt))
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, -50 * upm, 50 * upm)
+  cam.position.copy(dir).multiplyScalar(10 * upm)
+  cam.lookAt(0, 0, 0)
+  cam.updateMatrixWorld()
+  const right = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0)
+  const up = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1)
+
+  // a piece's extent on the camera's right and up axes, measured with the piece at the origin
+  const extent = (holder) => {
+    const b = new THREE.Box3().setFromObject(holder), p = new THREE.Vector3()
+    const e = { r0: Infinity, r1: -Infinity, u0: Infinity, u1: -Infinity }
+    for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) for (const z of [b.min.z, b.max.z]) {
+      p.set(x, y, z)
+      e.r0 = Math.min(e.r0, p.dot(right)); e.r1 = Math.max(e.r1, p.dot(right))
+      e.u0 = Math.min(e.u0, p.dot(up)); e.u1 = Math.max(e.u1, p.dot(up))
+    }
+    return e
+  }
+  const ef = extent(full), ec = extent(cards)
+  const GAP = 0.5 * upm   // 0.5 m between the crowns, in model units
+  const MARGIN = 1.12
+  const controls = new OrbitControls(cam, renderer.domElement)
+
+  const layout = () => {
+    const aspect = innerWidth / innerHeight
+    const portrait = aspect < 1
+    document.body.classList.toggle('portrait', portrait)
+    // shift along the right axis (side by side) or the up axis (stacked, the full tree on top)
+    let sf, sc, axis
+    if (portrait) {
+      axis = up
+      sc = -ec.u1 - GAP / 2
+      sf = -ef.u0 + GAP / 2
+    } else {
+      axis = right
+      sf = -ef.r1 - GAP / 2
+      sc = -ec.r0 + GAP / 2
+    }
+    full.position.copy(axis).multiplyScalar(sf)
+    cards.position.copy(axis).multiplyScalar(sc)
+    const shifted = (e, s) => portrait
+      ? { r0: e.r0, r1: e.r1, u0: e.u0 + s, u1: e.u1 + s }
+      : { r0: e.r0 + s, r1: e.r1 + s, u0: e.u0, u1: e.u1 }
+    const a = shifted(ef, sf), b = shifted(ec, sc)
+    const r0 = Math.min(a.r0, b.r0), r1 = Math.max(a.r1, b.r1)
+    const u0 = Math.min(a.u0, b.u0), u1 = Math.max(a.u1, b.u1)
+    // the text panels cover the top and bottom edges: fit the crowns in the screen between them
+    const topPx = document.getElementById('top').getBoundingClientRect().bottom + 8
+    const botPx = innerHeight - document.getElementById('labs').getBoundingClientRect().top + 8
+    const usable = Math.max(innerHeight - topPx - botPx, innerHeight * 0.3)
+    const half = Math.max((u1 - u0) / 2 * innerHeight / usable, (r1 - r0) / 2 / aspect) * MARGIN
+    cam.left = -half * aspect; cam.right = half * aspect; cam.top = half; cam.bottom = -half
+    cam.updateProjectionMatrix()
+    // move the crowns' centre to the middle of that usable band: down by d pixels on screen
+    const d = (topPx - botPx) / 2, perPx = 2 * half / innerHeight
+    const target = new THREE.Vector3().addScaledVector(right, (r0 + r1) / 2)
+      .addScaledVector(up, (u0 + u1) / 2 + d * perPx)
+    cam.position.copy(target).addScaledVector(dir, 10 * upm)
+    cam.lookAt(target)
+    controls.target.copy(target); controls.update()
+    renderer.setSize(innerWidth, innerHeight)
+  }
+  layout()
+
+  const fmt = n => Math.round(n).toLocaleString()
+  hud.innerHTML =
+    `Redbud: ${fmt(stats.Redbud.v)} vertices, ${fmt(stats.Redbud.t)} triangles<br>` +
+    `Redbud_Cards: ${fmt(stats.Redbud_Cards.v)} vertices, ${fmt(stats.Redbud_Cards.t)} triangles`
+  window.__ready = true
+  Object.assign(window, { __cam: cam, __stats: stats })
+
+  addEventListener('resize', layout)
+  renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, cam) })
+}
+</script></body></html>

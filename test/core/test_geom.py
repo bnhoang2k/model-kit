@@ -18,6 +18,7 @@ from model_kit.core.geom import (
     self_crossings,
     self_cuts,
     signed_volume,
+    surface_area,
     surface_gap,
     transform,
     tri_tri_cut,
@@ -1146,3 +1147,7 @@ def test_two_sides_move_one_way_and_its_reverse():
     sides = [geom.Exit(big, held_small, ways), geom.Exit(small, held_big, -ways)]
     assert geom.shortest_exit(sides, 0.01) == pytest.approx(0.3)
     assert geom.shortest_exit(sides[:1], 0.01) == pytest.approx(0.3)
+
+
+def test_surface_area_of_a_unit_cube_is_6():
+    assert surface_area(box((0, 0, 0), (1, 1, 1))) == pytest.approx(6.0)

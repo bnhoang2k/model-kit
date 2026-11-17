@@ -259,3 +259,10 @@ def test_montage_without_pillow_says_how_to_get_it(tmp_path, monkeypatch):
     monkeypatch.delitem(sys.modules, "PIL.Image", raising=False)
     with pytest.raises(ManifestError, match=r"pip install 'model-kit\[sheet\]'"):
         sheet.montage([[tmp_path / "a.png"]], ["a"], ["x"], "t", tmp_path / "o.png")
+
+
+def test_eevee_engine_takes_whichever_name_this_blender_has():
+    assert sheet.eevee_engine(["BLENDER_WORKBENCH", "BLENDER_EEVEE", "CYCLES"]) == "BLENDER_EEVEE"
+    assert sheet.eevee_engine(["BLENDER_EEVEE_NEXT", "CYCLES"]) == "BLENDER_EEVEE_NEXT"
+    with pytest.raises(ManifestError, match="no EEVEE render engine"):
+        sheet.eevee_engine(["BLENDER_WORKBENCH", "CYCLES"])

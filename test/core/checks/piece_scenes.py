@@ -10,12 +10,14 @@ import json
 import tempfile
 from pathlib import Path
 
+import numpy as np
+
 from model_kit.core.manifest import Pack, Recipe, load_pack
 from model_kit.core.scene import PieceGeom, SceneCtx, piece_key
 from model_kit.core.tolerances import CROSS_OF_PART_THICKNESS
 from model_kit.core.units import Style
 
-from ..shapes import box
+from ..shapes import box, cylinder
 from .sight_scenes import view_json
 
 STYLE = Style(
@@ -90,6 +92,49 @@ def post_on_base(sink=0.0, lift=0.0):
     }
 
 
+def sheet_and_knob():
+    """A base slab with a thin sheet (12 triangles, very many samples) and a knob (192
+    triangles, few samples) on it. Fewest triangles is the most samples here."""
+    return {"sheet": box((0.2, 0.0, -0.15), (0.5, 0.004, 0.15)),
+            "knob": cylinder((-0.3, 0.0), 0.03, 0.0, 0.06, sides=48),
+            "base": box((-0.6, -0.05, -0.2), (0.6, 0.0, 0.2))}
+
+
+def strip_and_post():
+    """A long thin strip and a round post on a base: the second piece of the cost guard."""
+    return {"strip": box((-0.3, 0.0, 0.1), (0.3, 0.05, 0.102)),
+            "post": cylinder((0.0, -0.1), 0.02, 0.0, 0.08, sides=32),
+            "base": box((-0.4, -0.04, -0.2), (0.4, 0.0, 0.2))}
+
+
+def chunk_and_block():
+    """A small chunky part on a very thin film, and a mid-sized part on a thick slab. By its own
+    spacing the chunk is the cheapest part (about 94 samples, the block about 257). Against its
+    thin host the chunk needs the film's fine spacing (about 192,000), so the block is cheapest."""
+    return {"film": box((-0.6, -0.002, -0.2), (-0.2, 0.0, 0.2)),
+            "chunk": box((-0.5, 0.0, -0.05), (-0.4, 0.1, 0.05)),
+            "slab": box((0.2, -0.1, -0.2), (0.6, 0.0, 0.2)),
+            "block": box((0.3, 0.0, -0.05), (0.5, 0.06, 0.05))}
+
+
+def two_pieces(sink: float = 0.0, decal: bool = False) -> SceneCtx:
+    """A scene with two assembly pieces, `kit:Thing` and `kit:Other`, each `post_on_base(sink)`.
+    With `decal`, each also has a part `label` of role `decal` (no crossings run measures it)."""
+    parts = post_on_base(sink=sink)
+    if decal:
+        parts = {**parts, "label": box((-0.05, 0.02, -0.05), (0.05, 0.021, 0.05))}
+    specs = {"label": {"role": "decal", "shape": "decal"}} if decal else {}
+    names = ("Thing", "Other")
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "kit.pack.json"
+        path.write_text(json.dumps({"pack": "kit", "units_per_metre": 1.0, "pieces": {
+            name: piece_json(parts, specs, None) for name in names}}))
+        pack = load_pack(path, STYLE)
+    geoms = {piece_key("kit", name): PieceGeom(name, dict(parts)) for name in names}
+    return SceneCtx(style=STYLE, packs={"kit": pack}, clips={}, pieces=geoms, samples={},
+                    rigs={}, rig_of_clip={})
+
+
 def caught(check, plant) -> bool:
     """The check, run on just the plant's scope, reports on the plant's item."""
     return any(f.item == plant.item for f in check.run(plant.ctx, only=plant.scope))
@@ -146,3 +191,27 @@ def refuses_the_core(monkeypatch, module, *names):
         raise AssertionError("a plant called the check's own core")
     for name in names:
         monkeypatch.setattr(module, name, refuse)
+
+
+SLIVER = 2e-5  # the planted sliver: a shell sunk 0.02 mm inside another shell of the same part
+
+
+def sunk_panel_monitor(gap=SLIVER):
+    """A monitor whose `display` is one mesh of two shells: a slab and a screen panel whose back
+    sinks `gap` into the slab's front (a converted monitor model can carry this fault). Its
+    thickness at its centre reads that gap. The `stand` holds it from behind."""
+    slab = box((-0.27, 0.10, -0.075), (0.27, 0.36, -0.033))
+    panel = box((-0.25, 0.12, -0.033 - gap), (0.25, 0.34, -0.033 + 0.0007))
+    return ({"display": np.concatenate([slab, panel]),
+             "stand": box((-0.05, 0.0, -0.10), (0.05, 0.30, -0.075))},
+            {"display": {"on": "stand", "group": "a"}, "stand": {"group": "b"}})
+
+
+def sunk_sheet_base(gap=SLIVER):
+    """`post_on_base` whose `base` is one mesh of two shells: the slab and a sheet on its top
+    whose bottom sinks `gap` into it, so the base's thickness at its centre reads that gap."""
+    parts = post_on_base()
+    sheet = box((-0.09, 0.02 - gap, -0.09), (0.09, 0.0205, 0.09))
+    return ({**parts, "base": np.concatenate([parts["base"], sheet])},
+            {"post": {"on": "base", "group": "b"}, "base": {"group": "a"}})
+

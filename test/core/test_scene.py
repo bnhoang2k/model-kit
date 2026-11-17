@@ -105,6 +105,18 @@ def branching_ctx() -> SceneCtx:
                                skeletons={piece_key("shop", "Lamp"): small_tree()})
 
 
+def card_ctx() -> SceneCtx:
+    """`branching_ctx` with a card piece `Lamp_Cards` that copies the Lamp and has no skeleton."""
+    ctx = branching_ctx()
+    pack = ctx.packs["shop"]
+    card = dataclasses.replace(pack.pieces["Lamp"], name="Lamp_Cards", cards_of="Lamp",
+                               outlined=False, outlined_why="cards draw no lines")
+    pack = dataclasses.replace(pack, pieces={**pack.pieces, "Lamp_Cards": card})
+    geom = dataclasses.replace(ctx.pieces["shop:Lamp"], name="Lamp_Cards")
+    return dataclasses.replace(ctx, packs={"shop": pack},
+                               pieces={**ctx.pieces, "shop:Lamp_Cards": geom})
+
+
 def _same_arrays(a: dict, b: dict) -> None:
     assert sorted(a) == sorted(b)
     for key, value in a.items():
@@ -912,6 +924,26 @@ def test_skeleton_round_trip_in_scene(tmp_path):
     assert same_skeleton(back.skeletons["shop:Lamp"], ctx.skeletons["shop:Lamp"])
     # The geometry loop did not take the skeleton file for a piece.
     assert sorted(back.pieces) == sorted(ctx.pieces)
+
+
+def test_card_skeleton_aliased(tmp_path):
+    ctx = card_ctx()
+    save_scene(ctx, tmp_path / "scene")
+    assert not (tmp_path / "scene" / "pieces" / "shop" / "Lamp_Cards.skeleton.npz").exists()
+    back = load_scene(tmp_path / "scene")
+    assert sorted(back.skeletons) == ["shop:Lamp", "shop:Lamp_Cards"]
+    assert back.skeletons["shop:Lamp_Cards"] is back.skeletons["shop:Lamp"]
+    save_scene(back, tmp_path / "again")  # a loaded scene saves again with no card file
+    assert not (tmp_path / "again" / "pieces" / "shop" / "Lamp_Cards.skeleton.npz").exists()
+    assert sorted(load_scene(tmp_path / "again").skeletons) == ["shop:Lamp", "shop:Lamp_Cards"]
+
+
+def test_card_piece_own_skeleton_refused(tmp_path):
+    save_scene(card_ctx(), tmp_path / "scene")
+    folder = tmp_path / "scene" / "pieces" / "shop"
+    shutil.copy(folder / "Lamp.skeleton.npz", folder / "Lamp_Cards.skeleton.npz")
+    with pytest.raises(ManifestError, match=r"Lamp_Cards\.skeleton\.npz.*shop:Lamp_Cards.*shop:Lamp"):
+        load_scene(tmp_path / "scene")
 
 
 def test_a_scene_without_skeletons_has_none(tmp_path):

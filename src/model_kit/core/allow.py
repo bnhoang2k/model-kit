@@ -65,16 +65,20 @@ class Allowlist:
                 allowed.append((f, line.reason))
         return kept, allowed
 
-    def problems(self, ran: Collection[str] | None = None) -> list[Finding]:
+    def problems(self, ran: Collection[str] | None = None,
+                 spared: Collection[str] = ()) -> list[Finding]:
         """Call after `apply`: lines with no reason, malformed lines and lines that matched nothing.
 
         With `ran`, the names of the checks that ran, a line that matched nothing is stale only
-        when its `check` pattern matches one of them. None judges every line.
+        when its `check` pattern matches one of them. None judges every line. `spared` names the
+        checks that measured only part of their subject: a line whose pattern matches any of them
+        is never judged stale, because a full run may use it.
         """
         out = [Finding("allowlist", text, "allowlist line is not `check | item | reason`")
                for text in self._malformed]
         for ln in self._lines:
-            judged = ran is None or any(fnmatch.fnmatchcase(name, ln.check) for name in ran)
+            judged = (ran is None or any(fnmatch.fnmatchcase(name, ln.check) for name in ran)
+                      ) and not any(fnmatch.fnmatchcase(name, ln.check) for name in spared)
             if not ln.reason:
                 out.append(Finding("allowlist", ln.text, "allowlist line has no reason"))
             elif not ln.used and judged:

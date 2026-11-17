@@ -148,6 +148,153 @@
       "mesh": null
     },
     {
+      "name": "Redbud_Cards/Branches",
+      "parent": "Redbud_Cards",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Cards/Branches"
+    },
+    {
+      "name": "Redbud_Cards/Cards_Leaf",
+      "parent": "Redbud_Cards",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Cards/Cards_Leaf"
+    },
+    {
+      "name": "Redbud_Cards/Leaders",
+      "parent": "Redbud_Cards",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Cards/Leaders"
+    },
+    {
+      "name": "Redbud_Cards/Shoots",
+      "parent": "Redbud_Cards",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Cards/Shoots"
+    },
+    {
+      "name": "Redbud_Cards/Trunk_Roots",
+      "parent": "Redbud_Cards",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Cards/Trunk_Roots"
+    },
+    {
+      "name": "Redbud_Cards/Twigs",
+      "parent": "Redbud_Cards",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": "Redbud_Cards/Twigs"
+    },
+    {
+      "name": "Redbud_Cards",
+      "parent": null,
+      "translation": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mesh": null
+    },
+    {
       "name": "Redbud_Lite/Branches",
       "parent": "Redbud_Lite",
       "translation": [

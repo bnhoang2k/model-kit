@@ -60,3 +60,12 @@ def test_only_lines_for_checks_that_ran_are_judged_stale(tmp_path):
     assert stale == ["reach | arm_*", "* | anything"]
     assert [p.item for p in al.problems()] == [
         "must-touch | *", "reach | arm_*", "* | anything"]  # no `ran`: every line is judged
+
+
+def test_a_line_that_matches_a_spared_check_is_never_stale(tmp_path):
+    path = tmp_path / "a.allow"
+    path.write_text("c* | x | because\nreach | y | because\n")
+    al = Allowlist.load(path)
+    stale = [p.item for p in al.problems(ran=["crossings", "clearance", "reach"],
+                                         spared=["crossings"])]
+    assert stale == ["reach | y"]

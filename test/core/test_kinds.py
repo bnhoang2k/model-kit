@@ -66,6 +66,15 @@ def test_rules_md_names_every_kind_check(kind):
     assert len(set(_headings(kind))) == len(_headings(kind))
 
 
+def test_assembly_rules_md_intro_names_every_kindless_check():
+    """The intro lists the checks that declare no kind and so have no heading in any rules.md."""
+    text = (KINDS_DIR / "assembly" / "rules.md").read_text()
+    intro = text.split("\n## ", 1)[0]
+    named = {n for n in re.findall(r"`([^`]+)`", intro) if n in gate.CHECKS}
+    kindless = {n for n, c in gate.CHECKS.items() if not c.kinds}
+    assert sorted(named) == sorted(kindless)
+
+
 def test_branching_rules_md_names_its_checks():
     """even-cover and leonardo are taste-only: their headings carry the word, so not a check."""
     assert _headings("branching") == [

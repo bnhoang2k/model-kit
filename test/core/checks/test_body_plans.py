@@ -97,6 +97,10 @@ NOT_BODY = {
     "connectors": f"{NOT_LISTED}: it reads the pack's connector table",
     "export-hygiene": f"{NOT_LISTED}: it reads the packed file",
     "clearance": f"{NOT_LISTED}: it measures the gaps between the pieces of a layout",
+    "bake-files": f"{NOT_LISTED}: it reads the light bake's record and files",
+    "lightmap-overlap": f"{NOT_LISTED}: it reads the light bake's lightmap UV",
+    "seam-jump": f"{NOT_LISTED}: it reads the light bake's pictures at the lightmap seams",
+    "lightmap-density": f"{NOT_LISTED}: it reads the light bake's noise and error record",
     "coverage": f"{NOT_LISTED}: it is built from the other checks of a run and judges parts",
 }
 

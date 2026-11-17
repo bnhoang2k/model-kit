@@ -1,0 +1,22 @@
+{
+  "layout": "floor",
+  "frame": "gltf",
+  "placements": {
+    "sorter": {
+      "pack": "sorter_toy",
+      "piece": "Sorter",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "quaternion": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "stands": {}
+}

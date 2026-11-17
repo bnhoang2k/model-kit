@@ -619,7 +619,10 @@ from model_kit.core.manifest.records import PART_TAGGED
 # fails the script, so a new field forces the test to be extended.
 NON_DEFAULT = {"listed": "board", "group": "legs", "shape": "box", "on": "host",
                "role": "skip_outline", "fastener": True, "retains": ("host", "other")}
-assert set(NON_DEFAULT) == set(PART_TAGGED), (sorted(NON_DEFAULT), PART_TAGGED)
+# `on` and `fastener` cannot go with `rests_on` on one part, so `rests_on` has its own dict.
+BRIDGE = {"listed": "board", "group": "legs", "shape": "box", "role": "skip_outline",
+          "rests_on": ("host", "other")}
+assert set(NON_DEFAULT) | set(BRIDGE) == set(PART_TAGGED), (sorted(NON_DEFAULT), PART_TAGGED)
 assert sorted(build.PART_PROPS) == sorted(PART_TAGGED), build.PART_PROPS
 
 pack = build.PackBuilder("shop", 1.0, out_dir, 2.5, crease_deg=35)
@@ -630,19 +633,25 @@ for name, x in (("host", 0.0), ("other", 0.4)):
 bolt = made("foreign_bolt", bench, x=0.8)
 build.tag(bolt, "Bench", "bolt", **NON_DEFAULT)
 viamesh = build.slab("viamesh", 1.2, 1.4, 0, 0.2, -0.1, 0.1, mat, bench, props=dict(NON_DEFAULT))
+bridge = made("foreign_bridge", bench, x=2.0)
+build.tag(bridge, "Bench", "bridge", **BRIDGE)
+viabridge = build.slab("viabridge", 2.4, 2.6, 0, 0.2, -0.1, 0.1, mat, bench, props=dict(BRIDGE))
 plain = made("foreign_plain", bench, x=1.6)
 build.tag(plain, "Bench", "plain", listed="board", group="legs", shape="box")
 
-for ob in (bolt, viamesh):
+for ob, want in ((bolt, NON_DEFAULT), (viamesh, NON_DEFAULT), (bridge, BRIDGE),
+                 (viabridge, BRIDGE)):
     got = build._part("Bench", ob)
-    for key in PART_TAGGED:
-        print("ROUND", ob.name, key, getattr(got, key) == NON_DEFAULT[key])
-print("DEFAULTS", [k for k in ("fastener", "retains") if k in plain])
-print("PLAIN", build._part("Bench", plain).fastener, build._part("Bench", plain).retains)
+    for key in want:
+        print("ROUND", ob.name, key, getattr(got, key) == want[key])
+print("EXPECTED", 2 * len(NON_DEFAULT) + 2 * len(BRIDGE))
+print("DEFAULTS", [k for k in ("fastener", "retains", "rests_on") if k in plain])
+print("PLAIN", build._part("Bench", plain).fastener, build._part("Bench", plain).retains,
+      build._part("Bench", plain).rests_on)
 register(pack, bench)
 written = pack.finish(["Bench"])
 for p in written.pieces["Bench"].parts:
-    print("WRITTEN", p.name, p.fastener, list(p.retains))
+    print("WRITTEN", p.name, p.fastener, list(p.retains), list(p.rests_on))
 runner.done()
 """
 
@@ -665,16 +674,24 @@ def test_every_tagged_part_field_round_trips(tmp_path):
     assert result.ok, result.log
     lines = result.log.splitlines()
     rounds = [x for x in lines if x.startswith("ROUND ")]
-    assert len(rounds) == 2 * 7, result.log
+    expected = next(int(x.split()[1]) for x in lines if x.startswith("EXPECTED "))
+    assert len(rounds) == expected, result.log  # 2 * len(NON_DEFAULT) + 2 * len(BRIDGE)
     assert all(x.endswith(" True") for x in rounds), rounds
     assert "DEFAULTS []" in lines  # a default is not written
-    assert "PLAIN False ()" in lines
-    assert "WRITTEN bolt True ['host', 'other']" in lines
-    assert "WRITTEN viamesh True ['host', 'other']" in lines
-    assert "WRITTEN plain False []" in lines
+    assert "PLAIN False () ()" in lines
+    assert "WRITTEN bolt True ['host', 'other'] []" in lines
+    assert "WRITTEN viamesh True ['host', 'other'] []" in lines
+    assert "WRITTEN bridge False [] ['host', 'other']" in lines
+    assert "WRITTEN viabridge False [] ['host', 'other']" in lines
+    assert "WRITTEN plain False [] []" in lines
     pack = load_pack(out / "shop.pack.json", Style(UNITS, {}, {}))
     bolt = {p.name: p for p in pack.pieces["Bench"].parts}["bolt"]
     assert bolt.fastener is True and bolt.retains == ("host", "other")
+    bridge = {p.name: p for p in pack.pieces["Bench"].parts}["bridge"]
+    assert bridge.rests_on == ("host", "other")
+    nodes = {n["name"]: n for n in _glb_json(out / "shop.glb")["nodes"]}
+    assert nodes["Bench/bridge"]["extras"]["rests_on"] == ["host", "other"]
+    assert "rests_on" not in nodes["Bench/plain"].get("extras", {})
 
 
 def test_tag_refuses_a_taken_name(tmp_path):

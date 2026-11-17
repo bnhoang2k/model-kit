@@ -35,6 +35,11 @@ class Grown:
     def key(self) -> str:
         return piece_key(self.pack, self.name)
 
+    @property
+    def card(self) -> bool:
+        """Whether this is a card copy of another piece (it shares that piece's skeleton)."""
+        return bool(self.piece.cards_of)
+
     def item(self, rest: str) -> str:
         return part_key(self.pack, self.name, rest)
 
@@ -74,10 +79,14 @@ class Grown:
         return dataclasses.replace(ctx, skeletons={**ctx.skeletons, self.key: skeleton})
 
 
-def grown(ctx: SceneCtx, only: Collection[str] | None = None) -> Iterator[Grown]:
+def grown(ctx: SceneCtx, only: Collection[str] | None = None,
+          cards: bool = False) -> Iterator[Grown]:
     """Each branching piece that has a skeleton, in pack then piece order. With `only`, just
-    the pieces some item names."""
+    the pieces some item names. A card piece is skipped unless `cards` is true: the checks that
+    read only the skeleton judge its source."""
     for pack, name, piece in pieces_of_kind(ctx, KINDS):
+        if piece.cards_of and not cards:
+            continue
         sk = ctx.skeletons.get(piece_key(pack, name))
         if sk is None:
             continue
@@ -86,12 +95,18 @@ def grown(ctx: SceneCtx, only: Collection[str] | None = None) -> Iterator[Grown]
             yield g
 
 
-def coverage(ctx: SceneCtx, check: str) -> list[str]:
-    """Pieces of other kinds, then each branching piece with no skeleton (`Unmeasured`)."""
-    lines = skipped_kinds(ctx, check, KINDS)
-    lines += [Unmeasured(f"{check}: skipped (no skeleton): {piece_key(pack, name)}")
-              for pack, name, _ in pieces_of_kind(ctx, KINDS)
-              if piece_key(pack, name) not in ctx.skeletons]
+def coverage(ctx: SceneCtx, check: str, judges_cards: bool = False) -> list[str]:
+    """Pieces of other kinds, then each branching piece with no skeleton (`Unmeasured`). A card
+    piece gets a plain line naming the source that judged it, unless the check judges card pieces
+    itself (`judges_cards`): it then reads like any other piece."""
+    lines: list[str] = skipped_kinds(ctx, check, KINDS)
+    for pack, name, piece in pieces_of_kind(ctx, KINDS):
+        key = piece_key(pack, name)
+        if piece.cards_of and not judges_cards:
+            lines.append(f"{check}: {key} is judged on its source "
+                         f"{piece_key(pack, piece.cards_of)}")
+        elif key not in ctx.skeletons:
+            lines.append(Unmeasured(f"{check}: skipped (no skeleton): {key}"))
     return lines
 
 

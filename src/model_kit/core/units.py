@@ -40,10 +40,10 @@ class Style:
         self.validate("style")
 
     def validate(self, where: str) -> None:
-        """Raise a `RecordError` naming `where` and the dial when `dials.edges`, `dials.leaves` or
-        the page camera's depth declaration is not legal."""
+        """Raise a `RecordError` naming `where` and the dial when `dials.edges`, `dials.leaves`,
+        `dials.cards` or the page camera's depth declaration is not legal."""
         for fault in (_edges_fault(self.dials), _leaves_fault(self.dials),
-                      _depth_fault(self.page_camera)):
+                      _cards_fault(self.dials), _depth_fault(self.page_camera)):
             if fault is not None:
                 raise RecordError(where, *fault)
 
@@ -191,6 +191,30 @@ def _leaves_fault(dials: dict) -> tuple[str, str] | None:
     if not _has_text(leaves.get("why")):
         got = leaves.get("why")
         return "dials.leaves.why", f"needs a why saying where the lean comes from, got {got!r}"
+    return None
+
+
+def _cards_fault(dials: dict) -> tuple[str, str] | None:
+    """(dial, why) of the first fault in `dials.cards`, or None when the dial is absent. A present
+    dial holds `ball_m` (above 0), `normal_mix` (0 to 1), `sky` (0 or more) and a `why`."""
+    cards = (dials or {}).get("cards")
+    if cards is None:
+        return None
+    if not isinstance(cards, dict):
+        return "dials.cards", "must be an object"
+    for key in ("ball_m", "normal_mix", "sky"):
+        value = cards.get(key)
+        if not isinstance(value, int | float) or isinstance(value, bool) or not math.isfinite(value):
+            return f"dials.cards.{key}", f"must be a number, got {value!r}"
+    if cards["ball_m"] <= 0:
+        return "dials.cards.ball_m", f"must be above 0, got {cards['ball_m']!r}"
+    if not 0.0 <= cards["normal_mix"] <= 1.0:
+        return "dials.cards.normal_mix", f"must be 0 to 1, got {cards['normal_mix']!r}"
+    if cards["sky"] < 0:
+        return "dials.cards.sky", f"must be 0 or more, got {cards['sky']!r}"
+    if not _has_text(cards.get("why")):
+        got = cards.get("why")
+        return "dials.cards.why", f"needs a why saying where the dials come from, got {got!r}"
     return None
 
 

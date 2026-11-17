@@ -26,6 +26,12 @@
       "normal_lean": 0.8,
       "centre_drop": 0.35,
       "why": "a render choice: one-volume crown shading under the page light; no botanical fact"
+    },
+    "cards": {
+      "ball_m": 0.5,
+      "normal_mix": 0.5,
+      "sky": 3.0,
+      "why": "budget: a render choice for the game-weight card copy, no botanical fact. The leaf-ball size, the share of the ball's normal against the sky tilt and the sky tilt are the starting values of the ported card rules (Razel, credited in REFERENCE.md), picked by eye on this tree, not fitted"
     }
   }
 }
