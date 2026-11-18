@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "model-kit"
-version = "0.2.0"
+version = "0.2.1"
 description = "Build 3D models for games in Blender, and check them against real-world rules."
 readme = "README.md"
 license = "MIT"

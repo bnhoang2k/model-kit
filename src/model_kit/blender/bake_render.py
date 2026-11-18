@@ -583,10 +583,25 @@ def segments_cross(p: np.ndarray, q: np.ndarray, block: int = 512) -> bool:
     return False
 
 
-def unfold_fault(me, uv: np.ndarray, faces: np.ndarray, seen: np.ndarray, areas: np.ndarray,
+def members(groups: np.ndarray) -> list[np.ndarray]:
+    """For each group id in `groups` (0 to its largest), the ascending indices that hold it. One
+    sort serves every group, so a mesh of many small regions costs no more than one of few."""
+    return np.split(np.argsort(groups, kind="stable"), np.cumsum(np.bincount(groups))[:-1])
+
+
+def signed_uv_areas(uv: np.ndarray, nxt: np.ndarray, loop_poly: np.ndarray) -> np.ndarray:
+    """Each polygon's signed area in `uv`, by the shoelace formula."""
+    cross = uv[:, 0] * uv[nxt, 1] - uv[:, 1] * uv[nxt, 0]
+    return np.bincount(loop_poly, weights=cross, minlength=int(loop_poly.max()) + 1) / 2
+
+
+def unfold_fault(uv: np.ndarray, verts: np.ndarray, nxt: np.ndarray, signed: np.ndarray,
+                 faces: np.ndarray, loops: np.ndarray, seen: np.ndarray, areas: np.ndarray,
                  cut: set[tuple[int, int]]) -> str | None:
-    """Why the unwrap of one region (its polygons `faces`, bool) is not fit for a lightmap, or
-    None. Three tests, none with a chosen limit:
+    """Why the unwrap of one region (its polygons `faces` and their `loops`, as indices) is not
+    fit for a lightmap, or None. `verts`, `nxt` and `signed` describe the whole mesh and are read
+    once per mesh by the caller, so this costs only the region's own size. Three tests, none with
+    a chosen limit:
 
     - a fold: a polygon whose UV winds against the region's (it lies over its neighbours), or a
       seen polygon with no UV area (its light has nowhere to go);
@@ -596,21 +611,14 @@ def unfold_fault(me, uv: np.ndarray, faces: np.ndarray, seen: np.ndarray, areas:
       exceeds `SMART_STRETCH`, the most Smart UV Project allows. The region's own unwrap is kept
       only when it is no less even than the fallback.
     """
-    loop_poly = poly_loops(me)
-    verts = np.empty(len(me.loops), dtype=np.int64)
-    me.loops.foreach_get("vertex_index", verts)
-    nxt = next_loops(me)
-    cross = uv[:, 0] * uv[nxt, 1] - uv[:, 1] * uv[nxt, 0]
-    signed = np.bincount(loop_poly, weights=cross, minlength=len(me.polygons)) / 2
     mine = signed[faces]
     wind = np.sign(mine.sum())
-    lit = faces & seen & (areas > 0)
+    lit = faces[seen[faces] & (areas[faces] > 0)]
     if wind == 0 or (mine * wind < 0).any() or (signed[lit] == 0).any():
         return "a fold"
     ratio = np.abs(signed[lit]) / areas[lit]
     if ratio.max() > SMART_STRETCH * ratio.min():
         return "stretch"
-    loops = np.nonzero(faces[loop_poly])[0]
     a, b = verts[loops], verts[nxt[loops]]
     keys = np.stack([np.minimum(a, b), np.maximum(a, b)], axis=1)
     _, inverse, counts = np.unique(keys, axis=0, return_inverse=True, return_counts=True)
@@ -670,9 +678,17 @@ def unwrap_regions(targets: list) -> dict[str, tuple[bpy.types.Object, np.ndarra
     for _ob, flags, proxy, region, shapes, pairs in work:
         uv = read_uv(proxy)
         areas = world_areas(proxy)
+        me = proxy.data
+        loop_poly = poly_loops(me)
+        verts = np.empty(len(me.loops), dtype=np.int64)
+        me.loops.foreach_get("vertex_index", verts)
+        nxt = next_loops(me)
+        signed = signed_uv_areas(uv, nxt, loop_poly)
+        faces_of, loops_of = members(region), members(region[loop_poly])
         for r, shape in enumerate(shapes):
             if shape in (DISK, TUBE):
-                fault = unfold_fault(proxy.data, uv, region == r, flags, areas, pairs)
+                fault = unfold_fault(uv, verts, nxt, signed, faces_of[r], loops_of[r], flags,
+                                     areas, pairs)
                 if fault:
                     shapes[r] = f"{FALLBACK}: the {shape} unwrap has {fault}"
     unwrap_selected([w[1] & having(w[3], w[4], lambda s: s.startswith(FALLBACK)) for w in work],
@@ -721,14 +737,17 @@ def unwrap(spec: dict, still: dict[str, list], seen: dict[str, np.ndarray]) -> t
         uv = read_uv(stand[ob.name])
         region = regions[ob.name][loop_poly]
         areas = world_areas(ob)
-        scale = np.zeros(len(uv))
-        for r in np.unique(regions[ob.name][flags]):
-            mine = flags & (regions[ob.name] == r)
-            raw = uv_area(uv, loop_poly, mine)
-            if raw <= 0:
-                raise ManifestError(f"{ob.name}: the unwrap left its seen polygons no area")
-            scale[region == r] = ppu * math.sqrt(float(areas[mine].sum()) / raw)
-        pixels[ob.name] = uv * scale[:, None]
+        seen_in = regions[ob.name][flags]  # each seen polygon's region
+        count = int(regions[ob.name].max()) + 1
+        raw = np.bincount(seen_in, np.abs(signed_uv_areas(uv, next_loops(ob.data), loop_poly))[flags],
+                          minlength=count)
+        world = np.bincount(seen_in, areas[flags], minlength=count)
+        lit = np.unique(seen_in)
+        if (raw[lit] <= 0).any():
+            raise ManifestError(f"{ob.name}: the unwrap left its seen polygons no area")
+        factor = np.zeros(count)
+        factor[lit] = ppu * np.sqrt(world[lit] / raw[lit])
+        pixels[ob.name] = uv * factor[region][:, None]
         loop_polys[ob.name] = loop_poly
     wanted = sum(uv_area(pixels[ob.name], loop_polys[ob.name], flags) for ob, flags, _ in targets)
     for ob, flags, _ in targets:
